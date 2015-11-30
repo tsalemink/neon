@@ -22,7 +22,7 @@ from opencmiss.zinc.scenecoordinatesystem import \
         SCENECOORDINATESYSTEM_WORLD
 from opencmiss.zinc.status import OK
 
-from opencmiss.neon.ui.views.zincwidgets.common import ProjectionMode,\
+from opencmiss.neon.ui.zincwidgets.common import ProjectionMode,\
     button_map, modifier_map
 
 # mapping from qt to zinc start

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
-    <height>335</height>
+    <width>477</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
   <customwidget>
    <class>SceneviewerWidget</class>
    <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/views/zincwidgets/sceneviewerwidget.h</header>
+   <header>opencmiss/neon/ui/zincwidgets/sceneviewerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
