@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from opencmiss.zinc.context import Context
 
 class MainApplication(object):
     
@@ -20,6 +21,11 @@ class MainApplication(object):
     def __init__(self):
         self._saveUndoRedoIndex = 0
         self._currentUntoRedoIndex = 0
+        
+        self._context = Context("Main")
+    
+    def getContext(self):
+        return self._context
     
     def isModified(self):
         return self._saveUndoRedoIndex != self._currentUntoRedoIndex

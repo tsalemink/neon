@@ -13,11 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import os.path
+
 from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-import os.path
+from opencmiss.neon.ui.views.default import DefaultView
 
 class MainWindow(QtGui.QMainWindow):
     
@@ -35,6 +37,10 @@ class MainWindow(QtGui.QMainWindow):
         self._readSettings()
         
         self._makeConnections()
+        
+        # List of possible views
+        view_list = [DefaultView()]
+        self._setupViews(view_list)
 
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
@@ -64,6 +70,19 @@ class MainWindow(QtGui.QMainWindow):
         self.move(settings.value('pos', QtCore.QPoint(100, 150)))
         self._location = settings.value('location', QtCore.QDir.homePath())
         settings.endGroup()
+    
+    def _setupViews(self, views):
+        action_group = QtGui.QActionGroup(self)
+        context = self._model.getContext()
+        for v in views:
+            v.setContext(context)
+            self._ui.viewStackedWidget.addWidget(v)
+            
+            action_view = QtGui.QAction(v.name(), self)
+            action_view.setCheckable(True)
+            action_view.setChecked(True)
+            action_view.setActionGroup(action_group)
+            self._ui.menu_View.addAction(action_view)
     
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
