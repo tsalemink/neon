@@ -20,6 +20,7 @@ from PySide import QtCore, QtGui
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.defaultview import DefaultView
+from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
 class MainWindow(QtGui.QMainWindow):
     
@@ -38,6 +39,8 @@ class MainWindow(QtGui.QMainWindow):
         
         self._makeConnections()
         
+        self._actionDockWidgetMap = {self._ui.action_SceneEditor: self._ui.dockWidgetSceneEditor, self._ui.dockWidgetSceneEditor: self._ui.action_SceneEditor}
+        
         # List of possible views
         view_list = [DefaultView()]
         self._setupViews(view_list)
@@ -50,6 +53,8 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
         self._ui.action_Open.triggered.connect(self._open)
         
+        self._ui.action_SceneEditor.triggered.connect(self._dockWidgetTriggered)
+        self._ui.dockWidgetSceneEditor.visibilityChanged.connect(self._dockWidgetVisibilityChanged)
         
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
@@ -61,6 +66,8 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('size', self.size())
         settings.setValue('pos', self.pos())
         settings.setValue('location', self._location)
+        settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
+        settings.setValue('sceneeditor_visibility', self._ui.action_SceneEditor.isChecked())
         settings.endGroup()
         
     def _readSettings(self):
@@ -69,6 +76,10 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(settings.value('size', QtCore.QSize(1200, 900)))
         self.move(settings.value('pos', QtCore.QPoint(100, 150)))
         self._location = settings.value('location', QtCore.QDir.homePath())
+        state = settings.value('dock_locations')
+        if state is not None:
+            self.restoreState(settings.value('dock_locations'), VERSION_MAJOR)
+        self._ui.action_SceneEditor.setChecked(settings.value('sceneeditor_visibility', 'true') == 'true')
         settings.endGroup()
     
     def _setupViews(self, views):
@@ -83,6 +94,16 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setChecked(True)
             action_view.setActionGroup(action_group)
             self._ui.menu_View.addAction(action_view)
+            
+    def _dockWidgetTriggered(self):
+        sender = self.sender()
+        dock_widget = self._actionDockWidgetMap[sender]
+        dock_widget.setVisible(sender.isChecked())
+        
+    
+    def _dockWidgetVisibilityChanged(self, state):
+        action = self._actionDockWidgetMap[self.sender()]
+        action.setChecked(state)
     
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
