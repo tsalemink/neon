@@ -13,25 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from PySide import QtGui
 
-class MainApplication(object):
-    
-    
+
+class CommandEmpty(QtGui.QUndoCommand):
+
     def __init__(self):
-        self._saveUndoRedoIndex = 0
-        self._currentUntoRedoIndex = 0
-    
-    def isModified(self):
-        return self._saveUndoRedoIndex != self._currentUntoRedoIndex
-    
-    def setCurrentUndoRedoIndex(self, index):
-        self._currentUntoRedoIndex = index
-        
-    def setSaveUndoRedoIndex(self, index):
-        self._saveUndoRedoIndex = index
-        
-    def load(self, filename):
+        super(CommandEmpty, self).__init__()
+
+    def redo(self):
         pass
-    
-    
-    
+
+    def undo(self):
+        pass
+
+

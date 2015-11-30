@@ -16,6 +16,8 @@
 from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
+from opencmiss.neon.undoredo.commands import CommandEmpty
+import os.path
 
 class MainWindow(QtGui.QMainWindow):
     
@@ -26,18 +28,33 @@ class MainWindow(QtGui.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
         
+        self._location = None # The last location/directory used by the application
+        
+        self._undoRedoStack = QtGui.QUndoStack(self)
+        
         self._readSettings()
         
         self._makeConnections()
+
+        # Set the undo redo stack state
+        self._undoRedoStack.push(CommandEmpty())
+        self._undoRedoStack.clear()
         
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
+        self._ui.action_Open.triggered.connect(self._open)
+        
+        
+        self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
+        self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
+        self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
         
     def _writeSettings(self):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
         settings.setValue('size', self.size())
         settings.setValue('pos', self.pos())
+        settings.setValue('location', self._location)
         settings.endGroup()
         
     def _readSettings(self):
@@ -45,7 +62,18 @@ class MainWindow(QtGui.QMainWindow):
         settings.beginGroup('MainWindow')
         self.resize(settings.value('size', QtCore.QSize(1200, 900)))
         self.move(settings.value('pos', QtCore.QPoint(100, 150)))
+        self._location = settings.value('location', QtCore.QDir.homePath())
         settings.endGroup()
+    
+    def _undoRedoStackIndexChanged(self, index):
+        self._model.setCurrentUndoRedoIndex(index)
+        
+    def _open(self):
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
+        
+        if filename:
+            self._location = os.path.dirname(filename)
+            self._model.load(filename)
     
     def confirmClose(self):
         # Check to see if the Workflow is in a saved state.
