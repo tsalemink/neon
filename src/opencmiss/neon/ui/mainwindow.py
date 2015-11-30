@@ -19,7 +19,7 @@ from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.neon.ui.views.default import DefaultView
+from opencmiss.neon.ui.views.defaultview import DefaultView
 
 class MainWindow(QtGui.QMainWindow):
     
