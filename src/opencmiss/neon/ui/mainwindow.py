@@ -42,13 +42,13 @@ class MainWindow(QtGui.QMainWindow):
 
         self._readSettings()
         
-        self._makeConnections()
-        
         self._actionDockWidgetMap = {self._ui.action_SceneEditor: self._ui.dockWidgetSceneEditor, self._ui.dockWidgetSceneEditor: self._ui.action_SceneEditor}
         
         # List of possible views
-        view_list = [DefaultView()]
+        view_list = [DefaultView(self)]
         self._setupViews(view_list)
+        
+        self._makeConnections()
         
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
@@ -114,6 +114,7 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setChecked(True)
             action_view.setActionGroup(action_group)
             self._ui.menu_View.addAction(action_view)
+            self._current_view = v
             
     def _dockWidgetTriggered(self):
         sender = self.sender()
@@ -146,14 +147,13 @@ class MainWindow(QtGui.QMainWindow):
         
     def _snapshotTriggered(self):
         self._snapshotDialog.setContext(self._model.getContext())
-        print(self._snapshotDialog.getFilename(), self._location)
         if self._snapshotDialog.getLocation() is None and self._location is not None:
             self._snapshotDialog.setLocation(self._location)
         if self._snapshotDialog.exec_():
             if self._location is None:
                 self._location = self._snapshotDialog.getLocation()
             filename = self._snapshotDialog.getFilename()
-            print("snapshot it!", filename)
+
         
     def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")

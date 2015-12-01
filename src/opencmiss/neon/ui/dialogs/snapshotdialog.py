@@ -39,7 +39,6 @@ class SnapshotDialog(QtGui.QDialog):
         self._ui.checkBoxWYSIWYG.stateChanged.connect(self._wysiwygStateChanged)
         
     def _filenamePushButtonClicked(self):
-        print(self._location)
         filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Image Format (*.png, *.jpeg);;All (*.*)")
         if filename:
             self._location = os.path.dirname(filename)
