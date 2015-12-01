@@ -202,3 +202,4 @@ class SceneEditorWidget(QtGui.QWidget):
             self.ui.graphics_editor.setGraphics(nextGraphics)
             self._scene.removeGraphics(graphics)
             self._buildGraphicsList()
+            

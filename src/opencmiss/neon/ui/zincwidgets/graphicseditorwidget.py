@@ -25,6 +25,8 @@ from opencmiss.zinc.status import OK as ZINC_OK
 
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
 
+STRING_FLOAT_FORMAT = '{:.5g}'
+
 def FieldIsRealValued(field):
     '''
     Conditional function returning true if the field has real values
@@ -232,10 +234,10 @@ class GraphicsEditorWidget(QtGui.QWidget):
         '''
         Display real value in a widget
         '''
-        newText = unicode('{:.5g}'.format(value))
+        newText = STRING_FLOAT_FORMAT.format(value)
         widget.setText(newText)
  
-    def _displayScale(self, widget, values, numberFormat = '{:.5g}'):
+    def _displayScale(self, widget, values, numberFormat=STRING_FLOAT_FORMAT):
         '''
         Display vector values in a widget, separated by '*'
         '''
@@ -258,12 +260,12 @@ class GraphicsEditorWidget(QtGui.QWidget):
         values = [int(value) for value in text.split('*')]
         return values
 
-    def _displayVector(self, widget, values, numberFormat = '{:.5g}'):
+    def _displayVector(self, widget, values, numberFormat=STRING_FLOAT_FORMAT):
         '''
         Display real vector values in a widget. Also handle scalar
         '''
         if isinstance(values, Number):
-            newText = str('{:.5g}'.format(values))
+            newText = STRING_FLOAT_FORMAT.format(values)
         else:
             newText = ", ".join(numberFormat.format(value) for value in values)
         widget.setText(newText)

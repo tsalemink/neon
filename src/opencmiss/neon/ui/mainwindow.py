@@ -22,6 +22,7 @@ from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.defaultview import DefaultView
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 
 class MainWindow(QtGui.QMainWindow):
     
@@ -36,6 +37,9 @@ class MainWindow(QtGui.QMainWindow):
         
         self._undoRedoStack = QtGui.QUndoStack(self)
         
+        # Pre-create dialogs
+        self._createDialogs()
+
         self._readSettings()
         
         self._makeConnections()
@@ -45,7 +49,7 @@ class MainWindow(QtGui.QMainWindow):
         # List of possible views
         view_list = [DefaultView()]
         self._setupViews(view_list)
-
+        
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
         self._undoRedoStack.clear()
@@ -56,6 +60,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_About.triggered.connect(self._aboutTriggered)
         self._ui.action_Save.triggered.connect(self._saveTriggered)
         self._ui.action_Save_As.triggered.connect(self._saveAsTriggered)
+        self._ui.action_Snapshot.triggered.connect(self._snapshotTriggered)
         
         self._ui.action_SceneEditor.triggered.connect(self._dockWidgetTriggered)
         self._ui.dockWidgetSceneEditor.visibilityChanged.connect(self._dockWidgetVisibilityChanged)
@@ -63,6 +68,9 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
+        
+    def _createDialogs(self):
+        self._snapshotDialog = SnapshotDialog(self)
         
     def _writeSettings(self):
         settings = QtCore.QSettings()
@@ -72,6 +80,10 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('location', self._location)
         settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
         settings.setValue('sceneeditor_visibility', self._ui.action_SceneEditor.isChecked())
+        settings.endGroup()
+
+        settings.beginGroup('SnapshotDialog')
+        settings.setValue('state', self._snapshotDialog.serialise())
         settings.endGroup()
         
     def _readSettings(self):
@@ -84,6 +96,10 @@ class MainWindow(QtGui.QMainWindow):
         if state is not None:
             self.restoreState(settings.value('dock_locations'), VERSION_MAJOR)
         self._ui.action_SceneEditor.setChecked(settings.value('sceneeditor_visibility', 'true') == 'true')
+        settings.endGroup()
+        
+        settings.beginGroup('SnapshotDialog')
+        self._snapshotDialog.deserialise(settings.value('state', ''))
         settings.endGroup()
     
     def _setupViews(self, views):
@@ -127,6 +143,13 @@ class MainWindow(QtGui.QMainWindow):
     def _aboutTriggered(self):
         d = AboutDialog(self)
         d.exec_()
+        
+    def _snapshotTriggered(self):
+        self._snapshotDialog.setContext(self._model.getContext())
+        if self._snapshotDialog.exec_():
+            self._location = self._snapshotDialog.getLocation()
+            filename = self._snapshotDialog.getFilename()
+            print("snapshot it!", filename)
         
     def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
