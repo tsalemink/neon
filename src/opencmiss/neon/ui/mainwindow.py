@@ -21,6 +21,7 @@ from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.defaultview import DefaultView
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
+from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 
 class MainWindow(QtGui.QMainWindow):
     
@@ -51,7 +52,10 @@ class MainWindow(QtGui.QMainWindow):
         
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
-        self._ui.action_Open.triggered.connect(self._open)
+        self._ui.action_Open.triggered.connect(self._openTriggered)
+        self._ui.action_About.triggered.connect(self._aboutTriggered)
+        self._ui.action_Save.triggered.connect(self._saveTriggered)
+        self._ui.action_Save_As.triggered.connect(self._saveAsTriggered)
         
         self._ui.action_SceneEditor.triggered.connect(self._dockWidgetTriggered)
         self._ui.dockWidgetSceneEditor.visibilityChanged.connect(self._dockWidgetVisibilityChanged)
@@ -100,6 +104,18 @@ class MainWindow(QtGui.QMainWindow):
         dock_widget = self._actionDockWidgetMap[sender]
         dock_widget.setVisible(sender.isChecked())
         
+    def _saveTriggered(self):
+        if self._model.getLocation() is None:
+            self._saveAsTriggered()
+        else:
+            self._model.save()
+    
+    def _saveAsTriggered(self):
+        filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
+        if filename:
+            self._location = os.path.dirname(filename)
+            self._model.setLocation(filename)
+            self._model.save()
     
     def _dockWidgetVisibilityChanged(self, state):
         action = self._actionDockWidgetMap[self.sender()]
@@ -108,7 +124,11 @@ class MainWindow(QtGui.QMainWindow):
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
         
-    def _open(self):
+    def _aboutTriggered(self):
+        d = AboutDialog(self)
+        d.exec_()
+        
+    def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
         
         if filename:
@@ -121,8 +141,7 @@ class MainWindow(QtGui.QMainWindow):
             ret = QtGui.QMessageBox.warning(self, 'Unsaved Changes', 'You have unsaved changes, would you like to save these changes now?',
                                       QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
             if ret == QtGui.QMessageBox.Yes:
-                self._model.save()
-
+                self._saveTriggered()
     
     def quitApplication(self):
         self.confirmClose()

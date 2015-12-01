@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="neon">
+    <file>images/icons/document-save-as.png</file>
+    <file>images/icons/devices-camera-photo-icon.png</file>
     <file>images/icons/edit-redo.png</file>
     <file>images/icons/edit-undo.png</file>
     <file>images/icons/help-about.png</file>

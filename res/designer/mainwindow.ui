@@ -48,8 +48,9 @@
     <addaction name="menu_Open_recent"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
+    <addaction name="action_Save_As"/>
     <addaction name="separator"/>
-    <addaction name="action_Print"/>
+    <addaction name="action_Snapshot"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -92,11 +93,12 @@
    <addaction name="action_Open"/>
    <addaction name="separator"/>
    <addaction name="action_Save"/>
+   <addaction name="action_Save_As"/>
    <addaction name="separator"/>
    <addaction name="action_Redo"/>
    <addaction name="action_Undo"/>
    <addaction name="separator"/>
-   <addaction name="action_Print"/>
+   <addaction name="action_Snapshot"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetSceneEditor">
    <attribute name="dockWidgetArea">
@@ -165,13 +167,13 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="action_Print">
+  <action name="action_Snapshot">
    <property name="icon">
     <iconset resource="../icons.qrc">
-     <normaloff>:/neon/images/icons/document-print.png</normaloff>:/neon/images/icons/document-print.png</iconset>
+     <normaloff>:/neon/images/icons/devices-camera-photo-icon.png</normaloff>:/neon/images/icons/devices-camera-photo-icon.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print</string>
+    <string>S&amp;napshot</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -219,6 +221,15 @@
    </property>
    <property name="text">
     <string>Scene Editor</string>
+   </property>
+  </action>
+  <action name="action_Save_As">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/neon/images/icons/document-save-as.png</normaloff>:/neon/images/icons/document-save-as.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save &amp;As</string>
    </property>
   </action>
  </widget>
