@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Tue Dec  1 12:43:51 2015
+# Created: Tue Dec  1 16:28:02 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -53,14 +53,14 @@ class Ui_MainWindow(object):
         self.label = QtGui.QLabel(self.dockWidgetContents)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
-        self.widget = SceneEditorWidget(self.dockWidgetContents)
+        self.widgetSceneEditor = SceneEditorWidget(self.dockWidgetContents)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy)
-        self.widget.setObjectName("widget")
-        self.verticalLayout.addWidget(self.widget)
+        sizePolicy.setHeightForWidth(self.widgetSceneEditor.sizePolicy().hasHeightForWidth())
+        self.widgetSceneEditor.setSizePolicy(sizePolicy)
+        self.widgetSceneEditor.setObjectName("widgetSceneEditor")
+        self.verticalLayout.addWidget(self.widgetSceneEditor)
         self.dockWidgetSceneEditor.setWidget(self.dockWidgetContents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSceneEditor)
         self.action_Open = QtGui.QAction(MainWindow)

@@ -34,6 +34,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.setupUi(self)
         
         self._location = None # The last location/directory used by the application
+        self._current_view = None
         
         self._undoRedoStack = QtGui.QUndoStack(self)
         
@@ -68,6 +69,8 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
+        
+        self._current_view.graphicsInitialized.connect(self._viewReady)
         
     def _createDialogs(self):
         self._snapshotDialog = SnapshotDialog(self)
@@ -115,6 +118,9 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setActionGroup(action_group)
             self._ui.menu_View.addAction(action_view)
             self._current_view = v
+    
+    def _viewReady(self):
+        self._ui.widgetSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
             
     def _dockWidgetTriggered(self):
         sender = self.sender()

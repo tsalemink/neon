@@ -13,11 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from PySide import QtCore
+
 from opencmiss.neon.ui.views.base import BaseView
 
 from opencmiss.neon.ui.views.ui_defaultview import Ui_DefaultView
 
 class DefaultView(BaseView):
+    
+    graphicsInitialized = QtCore.Signal()
     
     def __init__(self, parent=None):
         super(DefaultView, self).__init__(parent)
@@ -26,5 +30,13 @@ class DefaultView(BaseView):
         self._ui = Ui_DefaultView()
         self._ui.setupUi(self)
         
+        self._makeConnections()
+        
+    def _makeConnections(self):
+        self._ui.widget.graphicsInitialized.connect(self.graphicsInitialized.emit)
+        
     def setContext(self, context):
         self._ui.widget.setContext(context)
+        
+    def getSceneviewer(self):
+        return self._ui.widget.getSceneviewer()
