@@ -39,6 +39,7 @@ class SnapshotDialog(QtGui.QDialog):
         self._ui.checkBoxWYSIWYG.stateChanged.connect(self._wysiwygStateChanged)
         
     def _filenamePushButtonClicked(self):
+        print(self._location)
         filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Image Format (*.png, *.jpeg);;All (*.*)")
         if filename:
             self._location = os.path.dirname(filename)
@@ -76,6 +77,7 @@ class SnapshotDialog(QtGui.QDialog):
         state = {}
         state['filename'] = self.getFilename()
         state['wysiwyg'] = self.getWYSIWYG()
+        state['location'] = self.getLocation()
         state['width'] = self.getWidth()
         state['height'] = self.getHeight()
         return json.dumps(state)
@@ -85,6 +87,7 @@ class SnapshotDialog(QtGui.QDialog):
             d = json.loads(state)
             self.setFilename(d['filename'])
             self._ui.checkBoxWYSIWYG.setChecked(d['wysiwyg'])
+            self.setLocation(d['location'])
             self._ui.spinBoxHeight.setValue(d['height'])
             self._ui.spinBoxWidth.setValue(d['width'])
         except Exception:

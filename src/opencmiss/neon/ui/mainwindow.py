@@ -146,8 +146,12 @@ class MainWindow(QtGui.QMainWindow):
         
     def _snapshotTriggered(self):
         self._snapshotDialog.setContext(self._model.getContext())
+        print(self._snapshotDialog.getFilename(), self._location)
+        if self._snapshotDialog.getLocation() is None and self._location is not None:
+            self._snapshotDialog.setLocation(self._location)
         if self._snapshotDialog.exec_():
-            self._location = self._snapshotDialog.getLocation()
+            if self._location is None:
+                self._location = self._snapshotDialog.getLocation()
             filename = self._snapshotDialog.getFilename()
             print("snapshot it!", filename)
         
