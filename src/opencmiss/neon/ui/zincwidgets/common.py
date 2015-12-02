@@ -42,5 +42,3 @@ class ProjectionMode(object):
     PARALLEL = 0
     PERSPECTIVE = 1
 # projectionMode end
-
-

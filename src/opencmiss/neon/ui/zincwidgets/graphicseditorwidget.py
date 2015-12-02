@@ -25,11 +25,15 @@ from opencmiss.zinc.status import OK as ZINC_OK
 
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
 
+STRING_FLOAT_FORMAT = '{:.5g}'
+
+
 def FieldIsRealValued(field):
     '''
     Conditional function returning true if the field has real values
     '''
     return field.getValueType() == Field.VALUE_TYPE_REAL
+
 
 def FieldIsScalar(field):
     '''
@@ -38,6 +42,7 @@ def FieldIsScalar(field):
     return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
            (field.getNumberOfComponents() == 1)
 
+
 def FieldIsCoordinateCapable(field):
     '''
     Conditional function returning true if the field can be used as a coordinate
@@ -45,6 +50,7 @@ def FieldIsCoordinateCapable(field):
     '''
     return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
            (field.getNumberOfComponents() <= 3)
+
 
 def FieldIsOrientationScaleCapable(field):
     '''
@@ -58,7 +64,8 @@ def FieldIsOrientationScaleCapable(field):
     9 = 3 3-D vectors = complete definition of 3 axes.
     '''
     return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() in [1,2,3,4,6,9])
+           (field.getNumberOfComponents() in [1, 2, 3, 4, 6, 9])
+
 
 def FieldIsStreamVectorCapable(field):
     '''
@@ -69,7 +76,7 @@ def FieldIsStreamVectorCapable(field):
     For a 2-D domain the stream vector may have 2 components.
     '''
     return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() in [2,3,6,9])
+           (field.getNumberOfComponents() in [2, 3, 6, 9])
 
 
 class GraphicsEditorWidget(QtGui.QWidget):
@@ -95,11 +102,11 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.stream_vector_field_chooser.setConditional(FieldIsStreamVectorCapable)
         # line attributes
         self.ui.line_orientation_scale_field_chooser.setNullObjectName('-')
-        self.ui.line_orientation_scale_field_chooser.setConditional( FieldIsScalar)
+        self.ui.line_orientation_scale_field_chooser.setConditional(FieldIsScalar)
         # point attributes
         self.ui.glyph_chooser.setNullObjectName('-')
         self.ui.point_orientation_scale_field_chooser.setNullObjectName('-')
-        self.ui.point_orientation_scale_field_chooser.setConditional( FieldIsOrientationScaleCapable)
+        self.ui.point_orientation_scale_field_chooser.setConditional(FieldIsOrientationScaleCapable)
         self.ui.label_field_chooser.setNullObjectName('-')
         self.ui.label_field_chooser.setConditional(FieldIsRealValued)
 
@@ -227,15 +234,15 @@ class GraphicsEditorWidget(QtGui.QWidget):
         else:
             self._graphics = graphics
         self._updateWidgets()
- 
+
     def _displayReal(self, widget, value):
         '''
         Display real value in a widget
         '''
-        newText = unicode('{:.5g}'.format(value))
+        newText = STRING_FLOAT_FORMAT.format(value)
         widget.setText(newText)
- 
-    def _displayScale(self, widget, values, numberFormat = '{:.5g}'):
+
+    def _displayScale(self, widget, values, numberFormat=STRING_FLOAT_FORMAT):
         '''
         Display vector values in a widget, separated by '*'
         '''
@@ -258,12 +265,12 @@ class GraphicsEditorWidget(QtGui.QWidget):
         values = [int(value) for value in text.split('*')]
         return values
 
-    def _displayVector(self, widget, values, numberFormat = '{:.5g}'):
+    def _displayVector(self, widget, values, numberFormat=STRING_FLOAT_FORMAT):
         '''
         Display real vector values in a widget. Also handle scalar
         '''
         if isinstance(values, Number):
-            newText = str('{:.5g}'.format(values))
+            newText = STRING_FLOAT_FORMAT.format(values)
         else:
             newText = ", ".join(numberFormat.format(value) for value in values)
         widget.setText(newText)
@@ -358,7 +365,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         if self._graphics:
             material = self.ui.material_chooser.getMaterial()
             self._graphics.setMaterial(material)
-       
+
     def isoscalarFieldChanged(self, index):
         if self._graphics:
             contours = self._graphics.castContours()
@@ -396,7 +403,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         except:
             print("Invalid isovalues")
         self._isovaluesDisplay()
-      
+
     def streamVectorFieldChanged(self, index):
         if self._graphics:
             streamlines = self._graphics.castStreamlines()
@@ -624,7 +631,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         except:
             print("Invalid point scale factors")
         self._pointScaleFactorsDisplay()
-       
+
     def labelFieldChanged(self, index):
         if self._graphics:
             pointattributes = self._graphics.getGraphicspointattributes()
@@ -694,4 +701,3 @@ class GraphicsEditorWidget(QtGui.QWidget):
         except:
             print("Invalid sampling divisions")
         self._samplingDivisionsDisplay()
-        

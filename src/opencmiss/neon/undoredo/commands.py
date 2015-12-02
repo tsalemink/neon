@@ -26,5 +26,3 @@ class CommandEmpty(QtGui.QUndoCommand):
 
     def undo(self):
         pass
-
-

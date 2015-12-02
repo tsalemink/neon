@@ -13,28 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-import sys
-
 from PySide import QtGui
 
-from opencmiss.neon.core.mainapplication import MainApplication
-from opencmiss.neon.ui.mainwindow import MainWindow
-from opencmiss.neon.settings.mainsettings import setApplicationSettings
+from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
 
 
-def main():
-    argv = sys.argv[:]
+class AboutDialog(QtGui.QDialog):
 
-    app = QtGui.QApplication(argv)
+    def __init__(self, parent):
+        super(AboutDialog, self).__init__(parent)
 
-    setApplicationSettings(app)
-
-    m = MainApplication()
-
-    w = MainWindow(m)
-    w.show()
-
-    sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
+        self._ui = Ui_AboutDialog()
+        self._ui.setupUi(self)

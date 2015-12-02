@@ -15,6 +15,7 @@
 '''
 from PySide import QtGui
 
+
 class MaterialChooserWidget(QtGui.QComboBox):
 
     def __init__(self, parent=None):
@@ -63,7 +64,7 @@ class MaterialChooserWidget(QtGui.QComboBox):
         Enable a null object option with the supplied name e.g. '-' or '<select>'
         Default is None
         '''
-        self._nullObjectName  = nullObjectName
+        self._nullObjectName = nullObjectName
 
     def setMaterialmodule(self, materialmodule):
         '''
@@ -92,4 +93,3 @@ class MaterialChooserWidget(QtGui.QComboBox):
         else:
             self._material = material
         self._displayMaterial()
-        
