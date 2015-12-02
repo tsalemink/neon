@@ -56,6 +56,8 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.push(CommandEmpty())
         self._undoRedoStack.clear()
 
+        self._updateUi()
+
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
         self._ui.action_Open.triggered.connect(self._openTriggered)
@@ -72,6 +74,10 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
 
         self._current_view.graphicsInitialized.connect(self._viewReady)
+
+    def _updateUi(self):
+        modified = self._model.isModified()
+        self._ui.action_Save.setEnabled(modified)
 
     def _createDialogs(self):
         self._snapshotDialog = SnapshotDialog(self)
