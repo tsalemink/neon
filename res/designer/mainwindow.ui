@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>919</width>
-    <height>437</height>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -237,7 +237,7 @@
   <customwidget>
    <class>SceneEditorWidget</class>
    <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/zincwidgets/sceneeditorwidget.h</header>
+   <header>opencmiss/neon/ui/editors/sceneeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

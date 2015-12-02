@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Tue Dec  1 16:28:02 2015
+# Created: Thu Dec  3 09:38:36 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(919, 437)
+        MainWindow.resize(919, 447)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/neon/images/icons/neon_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -168,5 +168,5 @@ class Ui_MainWindow(object):
         self.action_SceneEditor.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As", None, QtGui.QApplication.UnicodeUTF8))
 
-from opencmiss.neon.ui.zincwidgets.sceneeditorwidget import SceneEditorWidget
+from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from . import icons_rc
