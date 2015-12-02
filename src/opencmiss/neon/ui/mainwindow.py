@@ -159,6 +159,10 @@ class MainWindow(QtGui.QMainWindow):
             if self._location is None:
                 self._location = self._snapshotDialog.getLocation()
             filename = self._snapshotDialog.getFilename()
+            wysiwyg = self._snapshotDialog.getWYSIWYG()
+            width = self._snapshotDialog.getWidth()
+            height = self._snapshotDialog.getHeight()
+            self._current_view.saveImage(filename, wysiwyg, width, height)
 
         
     def _openTriggered(self):

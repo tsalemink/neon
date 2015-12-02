@@ -40,3 +40,8 @@ class DefaultView(BaseView):
         
     def getSceneviewer(self):
         return self._ui.widget.getSceneviewer()
+    
+    def saveImage(self, filename, wysiwyg, width, height):
+        sv = self._ui.widget.getSceneviewer()
+        sv.writeImageToFile(filename, wysiwyg, width, height, 0, 0)
+    
