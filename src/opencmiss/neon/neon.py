@@ -21,18 +21,19 @@ from opencmiss.neon.core.mainapplication import MainApplication
 from opencmiss.neon.ui.mainwindow import MainWindow
 from opencmiss.neon.settings.mainsettings import setApplicationSettings
 
+
 def main():
     argv = sys.argv[:]
-    
+
     app = QtGui.QApplication(argv)
-    
+
     setApplicationSettings(app)
-    
+
     m = MainApplication()
-    
+
     w = MainWindow(m)
     w.show()
-    
+
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

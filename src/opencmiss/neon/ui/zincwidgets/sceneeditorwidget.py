@@ -30,6 +30,7 @@ from opencmiss.zinc.graphics import Graphics
 
 from opencmiss.neon.ui.zincwidgets.ui_sceneeditorwidget import Ui_SceneEditorWidget
 
+
 class SceneEditorWidget(QtGui.QWidget):
 
     def __init__(self, parent=None):
@@ -120,10 +121,10 @@ class SceneEditorWidget(QtGui.QWidget):
                     selectedIndex = self._graphicsItems.indexFromItem(item)
                 graphics = self._scene.getNextGraphics(graphics)
         self.ui.graphics_listview.setModel(self._graphicsItems)
-        #self.ui.graphics_listview.setMovement(QtGui.QListView.Snap)
-        #self.ui.graphics_listview.setDragDropMode(QtGui.QListView.InternalMove)
-        #self.ui.graphics_listview.setDragDropOverwriteMode(False)
-        #self.ui.graphics_listview.setDropIndicatorShown(True)
+        # self.ui.graphics_listview.setMovement(QtGui.QListView.Snap)
+        # self.ui.graphics_listview.setDragDropMode(QtGui.QListView.InternalMove)
+        # self.ui.graphics_listview.setDragDropOverwriteMode(False)
+        # self.ui.graphics_listview.setDropIndicatorShown(True)
         if selectedIndex:
             self.ui.graphics_listview.setCurrentIndex(selectedIndex)
         self.ui.graphics_listview.show()
@@ -202,4 +203,3 @@ class SceneEditorWidget(QtGui.QWidget):
             self.ui.graphics_editor.setGraphics(nextGraphics)
             self._scene.removeGraphics(graphics)
             self._buildGraphicsList()
-            

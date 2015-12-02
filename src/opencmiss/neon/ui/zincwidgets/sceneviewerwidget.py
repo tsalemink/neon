@@ -18,17 +18,18 @@ from PySide import QtCore, QtOpenGL
 from opencmiss.zinc.sceneviewer import Sceneviewer, Sceneviewerevent
 from opencmiss.zinc.sceneviewerinput import Sceneviewerinput
 from opencmiss.zinc.scenecoordinatesystem import \
-        SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT,\
+        SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT, \
         SCENECOORDINATESYSTEM_WORLD
 from opencmiss.zinc.status import OK
 
-from opencmiss.neon.ui.zincwidgets.common import ProjectionMode,\
+from opencmiss.neon.ui.zincwidgets.common import ProjectionMode, \
     button_map, modifier_map
+
 
 # mapping from qt to zinc start
 # Create a button map of Qt mouse buttons to Zinc input buttons
 class SceneviewerWidget(QtOpenGL.QGLWidget):
-    
+
     graphicsInitialized = QtCore.Signal()
 
     # init start
@@ -61,11 +62,11 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         Get the scene viewer for this ZincWidget.
         '''
         return self._sceneviewer
-    
+
     # initializeGL start
     def initializeGL(self):
         '''
-        Initialise the Zinc scene for drawing the axis glyph at a point.  
+        Initialise the Zinc scene for drawing the axis glyph at a point.
         '''
         # Following throws exception if you haven't called setContext() yet
         self.getContext()
@@ -164,7 +165,7 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         unproject the given point in window coordinates where the origin is
         at the window's top left pixel into global coordinates.  The z value
-        is a depth which is mapped so that 0 is on the near plane and 1 is 
+        is a depth which is mapped so that 0 is on the near plane and 1 is
         on the far plane.
         ???GRC -1 on the far and +1 on the near clipping plane
         '''
@@ -226,7 +227,6 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         self._sceneviewer.setViewportSize(width, height)
         # resizeGL end
-
 
     def mousePressEvent(self, event):
         '''

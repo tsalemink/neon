@@ -19,9 +19,9 @@ from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
 
 
 class AboutDialog(QtGui.QDialog):
-    
+
     def __init__(self, parent):
         super(AboutDialog, self).__init__(parent)
-        
+
         self._ui = Ui_AboutDialog()
         self._ui.setupUi(self)

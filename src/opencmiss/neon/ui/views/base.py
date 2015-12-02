@@ -17,13 +17,13 @@ from PySide import QtGui
 
 
 class BaseView(QtGui.QWidget):
-    
+
     def __init__(self, parent):
         super(BaseView, self).__init__(parent)
         self._name = 'Base View'
-        
+
     def name(self):
         return self._name
-    
+
     def setContext(self, context):
         raise NotImplementedError()

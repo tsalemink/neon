@@ -22,56 +22,56 @@ import json
 
 
 class SnapshotDialog(QtGui.QDialog):
-    
+
     def __init__(self, parent):
         super(SnapshotDialog, self).__init__(parent)
-        
+
         self._ui = Ui_SnapshotDialog()
         self._ui.setupUi(self)
-        
+
         self._location = None
         self._filename = None
-        
+
         self._makeConnections()
-        
+
     def _makeConnections(self):
         self._ui.pushButtonFilename.clicked.connect(self._filenamePushButtonClicked)
         self._ui.checkBoxWYSIWYG.stateChanged.connect(self._wysiwygStateChanged)
-        
+
     def _filenamePushButtonClicked(self):
         filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Image Format (*.png, *.jpeg);;All (*.*)")
         if filename:
             self._location = os.path.dirname(filename)
             self._ui.lineEditFilename.setText(filename)
-    
+
     def _wysiwygStateChanged(self, state):
         self._ui.spinBoxHeight.setEnabled(not state)
         self._ui.spinBoxWidth.setEnabled(not state)
-        
+
     def setLocation(self, location):
         self._location = location
-        
+
     def getLocation(self):
         return self._location
-    
+
     def setFilename(self, filename):
         self._ui.lineEditFilename.setText(filename)
-        
+
     def getFilename(self):
         return self._ui.lineEditFilename.text()
-    
+
     def getWYSIWYG(self):
         return self._ui.checkBoxWYSIWYG.isChecked()
-    
+
     def getHeight(self):
         return self._ui.spinBoxHeight.value()
-    
+
     def getWidth(self):
         return self._ui.spinBoxWidth.value()
-    
+
     def setContext(self, context):
         self._ui.widgetPreview.setContext(context)
-        
+
     def serialise(self):
         state = {}
         state['filename'] = self.getFilename()
@@ -80,7 +80,7 @@ class SnapshotDialog(QtGui.QDialog):
         state['width'] = self.getWidth()
         state['height'] = self.getHeight()
         return json.dumps(state)
-    
+
     def deserialise(self, state):
         try:
             d = json.loads(state)
@@ -91,4 +91,3 @@ class SnapshotDialog(QtGui.QDialog):
             self._ui.spinBoxWidth.setValue(d['width'])
         except Exception:
             pass
-        

@@ -15,40 +15,37 @@
 '''
 from opencmiss.zinc.context import Context
 
+
 class MainApplication(object):
-    
-    
+
     def __init__(self):
         self._saveUndoRedoIndex = 0
         self._currentUntoRedoIndex = 0
-        
+
         self._location = None
-        
+
         self._context = Context("Main")
-    
+
     def getContext(self):
         return self._context
-    
+
     def isModified(self):
         return self._saveUndoRedoIndex != self._currentUntoRedoIndex
-    
+
     def setCurrentUndoRedoIndex(self, index):
         self._currentUntoRedoIndex = index
-        
+
     def setSaveUndoRedoIndex(self, index):
         self._saveUndoRedoIndex = index
-    
+
     def setLocation(self, location):
         self._location = location
-        
+
     def getLocation(self):
         return self._location
-        
+
     def save(self):
         pass
-    
+
     def load(self, filename):
         self._location = filename
-    
-    
-    

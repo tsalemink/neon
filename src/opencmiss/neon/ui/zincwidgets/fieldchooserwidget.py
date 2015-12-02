@@ -17,6 +17,7 @@ from PySide import QtGui
 
 from opencmiss.zinc.field import Field
 
+
 class FieldChooserWidget(QtGui.QComboBox):
 
     def __init__(self, parent=None):
@@ -34,8 +35,9 @@ class FieldChooserWidget(QtGui.QComboBox):
         Callback for change in fields; may need to rebuild field list
         '''
         changeSummary = fieldmoduleevent.getSummaryFieldChangeFlags()
-        #print "_fieldmoduleCallback changeSummary =", changeSummary
-        if (0 != (changeSummary & (Field.CHANGE_FLAG_IDENTIFIER | Field.CHANGE_FLAG_ADD | Field.CHANGE_FLAG_REMOVE))) or ((self._conditional != None) and (0 != (changeSummary & Field.CHANGE_FLAG_DEFINITION))):
+        # print "_fieldmoduleCallback changeSummary =", changeSummary
+        if ((0 != (changeSummary & (Field.CHANGE_FLAG_IDENTIFIER | Field.CHANGE_FLAG_ADD | Field.CHANGE_FLAG_REMOVE))) or
+            ((self._conditional != None) and (0 != (changeSummary & Field.CHANGE_FLAG_DEFINITION)))):
             self._buildFieldList()
 
     def _buildFieldList(self):
@@ -76,7 +78,7 @@ class FieldChooserWidget(QtGui.QComboBox):
         Enable a null object option with the supplied name e.g. '-' or '<select>'
         Default is None
         '''
-        self._nullObjectName  = nullObjectName
+        self._nullObjectName = nullObjectName
 
     def getRegion(self):
         return self._region
@@ -131,4 +133,3 @@ class FieldChooserWidget(QtGui.QComboBox):
         else:
             self._field = field
         self._displayField()
-        
