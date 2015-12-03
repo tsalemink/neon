@@ -34,8 +34,13 @@ class MainWindow(QtGui.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
+        self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
+        self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
+        self._ui.menu_View.addSeparator()
+
         self._location = None  # The last location/directory used by the application
         self._current_view = None
+        self._recents = []
 
         self._undoRedoStack = QtGui.QUndoStack(self)
 
@@ -43,8 +48,6 @@ class MainWindow(QtGui.QMainWindow):
         self._createDialogs()
 
         self._readSettings()
-
-        self._actionDockWidgetMap = {self._ui.action_SceneEditor: self._ui.dockWidgetSceneEditor, self._ui.dockWidgetSceneEditor: self._ui.action_SceneEditor}
 
         # List of possible views
         view_list = [DefaultView(self)]
@@ -66,9 +69,6 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Save_As.triggered.connect(self._saveAsTriggered)
         self._ui.action_Snapshot.triggered.connect(self._snapshotTriggered)
 
-        self._ui.action_SceneEditor.triggered.connect(self._dockWidgetTriggered)
-        self._ui.dockWidgetSceneEditor.visibilityChanged.connect(self._dockWidgetVisibilityChanged)
-
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
@@ -78,9 +78,11 @@ class MainWindow(QtGui.QMainWindow):
     def _updateUi(self):
         modified = self._model.isModified()
         self._ui.action_Save.setEnabled(modified)
+        self._ui.action_Clear.setEnabled(len(self._recents))
 
     def _createDialogs(self):
         self._snapshotDialog = SnapshotDialog(self)
+        self._snapshotDialog.setContext(self._model.getContext())
 
     def _writeSettings(self):
         settings = QtCore.QSettings()
@@ -90,6 +92,12 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('location', self._location)
         settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
         settings.setValue('sceneeditor_visibility', self._ui.action_SceneEditor.isChecked())
+        settings.setValue('spectrumeditor_visibility', self._ui.action_SpectrumEditor.isChecked())
+        settings.beginWriteArray('recents')
+        for i, r in enumerate(self._recents):
+            settings.setArrayIndex(i)
+            settings.setValue('item', r)
+        settings.endArray()
         settings.endGroup()
 
         settings.beginGroup('SnapshotDialog')
@@ -106,6 +114,12 @@ class MainWindow(QtGui.QMainWindow):
         if state is not None:
             self.restoreState(settings.value('dock_locations'), VERSION_MAJOR)
         self._ui.action_SceneEditor.setChecked(settings.value('sceneeditor_visibility', 'true') == 'true')
+        self._ui.action_SpectrumEditor.setChecked(settings.value('spectrumeditor_visibility', 'true') == 'true')
+        size = settings.beginReadArray('recents')
+        for i in range(size):
+            settings.setArrayIndex(i)
+            self._recents.append(settings.value('item'))
+        settings.endArray()
         settings.endGroup()
 
         settings.beginGroup('SnapshotDialog')
@@ -116,8 +130,8 @@ class MainWindow(QtGui.QMainWindow):
         action_group = QtGui.QActionGroup(self)
         context = self._model.getContext()
         for v in views:
-            v.setContext(context)
             self._ui.viewStackedWidget.addWidget(v)
+            v.setContext(context)
 
             action_view = QtGui.QAction(v.name(), self)
             action_view.setCheckable(True)
@@ -127,12 +141,7 @@ class MainWindow(QtGui.QMainWindow):
             self._current_view = v
 
     def _viewReady(self):
-        self._ui.widgetSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
-
-    def _dockWidgetTriggered(self):
-        sender = self.sender()
-        dock_widget = self._actionDockWidgetMap[sender]
-        dock_widget.setVisible(sender.isChecked())
+        self._ui.dockWidgetContentsSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -147,10 +156,6 @@ class MainWindow(QtGui.QMainWindow):
             self._model.setLocation(filename)
             self._model.save()
 
-    def _dockWidgetVisibilityChanged(self, state):
-        action = self._actionDockWidgetMap[self.sender()]
-        action.setChecked(state)
-
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
 
@@ -159,7 +164,6 @@ class MainWindow(QtGui.QMainWindow):
         d.exec_()
 
     def _snapshotTriggered(self):
-        self._snapshotDialog.setContext(self._model.getContext())
         if self._snapshotDialog.getLocation() is None and self._location is not None:
             self._snapshotDialog.setLocation(self._location)
         if self._snapshotDialog.exec_():

@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import json
 import os.path
 
 from PySide import QtGui
 
 from opencmiss.neon.ui.dialogs.ui_snapshotdialog import Ui_SnapshotDialog
-import json
 
 
 class SnapshotDialog(QtGui.QDialog):
