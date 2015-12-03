@@ -15,6 +15,15 @@
 '''
 from PySide import QtGui
 
+from opencmiss.neon.ui.editors.ui_spectrumeditorwidget import Ui_SpectrumEditorWidget
+
 
 class SpectrumEditorWidget(QtGui.QWidget):
-    pass
+
+    def __init__(self, parent=None):
+        super(SpectrumEditorWidget, self).__init__(parent)
+        self._ui = Ui_SpectrumEditorWidget()
+        self._ui.setupUi(self)
+
+    def setContext(self, context):
+        self._ui.widget.setContext(context)

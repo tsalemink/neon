@@ -53,6 +53,8 @@ class MainWindow(QtGui.QMainWindow):
         view_list = [DefaultView(self)]
         self._setupViews(view_list)
 
+        self._shareContext()
+
         self._makeConnections()
 
         # Set the undo redo stack state
@@ -125,6 +127,10 @@ class MainWindow(QtGui.QMainWindow):
         settings.beginGroup('SnapshotDialog')
         self._snapshotDialog.deserialise(settings.value('state', ''))
         settings.endGroup()
+
+    def _shareContext(self):
+        context = self._model.getContext()
+        self._ui.dockWidgetContentsSpectrumEditor.setContext(context)
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
