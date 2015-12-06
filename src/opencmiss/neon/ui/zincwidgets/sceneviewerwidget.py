@@ -148,8 +148,10 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
     def project(self, x, y, z):
         '''
-        project the given point in global coordinates into window coordinates
+        Project the given point in global coordinates into window coordinates
         with the origin at the window's top left pixel.
+        Note the z pixel coordinate is a depth which is mapped so that -1 is
+        on the far clipping plane, and +1 is on the near clipping plane.
         '''
         in_coords = [x, y, z]
         fieldmodule = self._global_coords_from.getFieldmodule()
@@ -163,11 +165,10 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
     def unproject(self, x, y, z):
         '''
-        unproject the given point in window coordinates where the origin is
-        at the window's top left pixel into global coordinates.  The z value
-        is a depth which is mapped so that 0 is on the near plane and 1 is
-        on the far plane.
-        ???GRC -1 on the far and +1 on the near clipping plane
+        Unproject the given point in window coordinates where the origin is
+        at the window's top left pixel into global coordinates.
+        Note the z pixel coordinate is a depth which is mapped so that -1 is
+        on the far clipping plane, and +1 is on the near clipping plane.
         '''
         in_coords = [x, y, z]
         fieldmodule = self._window_coords_from.getFieldmodule()
@@ -232,7 +233,7 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         Inform the scene viewer of a mouse press event.
         '''
-        if not event.modifiers() or (event.modifiers() & self._selectionModifier and button_map[event.button()] == Sceneviewerinput.BUTTON_TYPE_RIGHT):
+        if not event.modifiers():
             scene_input = self._sceneviewer.createSceneviewerinput()
             scene_input.setPosition(event.x(), event.y())
             scene_input.setEventType(Sceneviewerinput.EVENT_TYPE_BUTTON_PRESS)
@@ -243,6 +244,7 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
             self._handle_mouse_events = True
         else:
+            self._handle_mouse_events = False
             event.ignore()
 
     def mouseReleaseEvent(self, event):
