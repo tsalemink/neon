@@ -170,7 +170,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self._lineBaseSizeDisplay()
         self.ui.line_orientation_scale_field_chooser.setField(lineOrientationScaleField)
         self._lineScaleFactorsDisplay()
-        isStreamline = (streamlines != None) and streamlines.isValid()
+        isStreamline = (streamlines is not None) and streamlines.isValid()
         if not isStreamline:
             isStreamline = False
         model = self.ui.line_shape_combobox.model()
