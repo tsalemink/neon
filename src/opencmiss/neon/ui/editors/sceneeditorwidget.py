@@ -181,7 +181,8 @@ class SceneEditorWidget(QtGui.QWidget):
                 graphics.setFieldDomainType(fieldDomainType)
             if fieldDomainType != Field.DOMAIN_TYPE_POINT:
                 coordinateField = self._getDefaultCoordinateField()
-                graphics.setCoordinateField(coordinateField)
+                if coordinateField is not None:
+                    graphics.setCoordinateField(coordinateField)
             self._scene.endChange()
             self.ui.graphics_editor.setGraphics(graphics)
             self._buildGraphicsList()

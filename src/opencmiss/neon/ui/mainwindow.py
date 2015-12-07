@@ -156,7 +156,7 @@ class MainWindow(QtGui.QMainWindow):
             self._model.save()
 
     def _saveAsTriggered(self):
-        filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
+        filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
         if filename:
             self._location = os.path.dirname(filename)
             self._model.setLocation(filename)
@@ -182,11 +182,15 @@ class MainWindow(QtGui.QMainWindow):
             self._current_view.saveImage(filename, wysiwyg, width, height)
 
     def _openTriggered(self):
-        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon, *.json);;All (*.*)")
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
 
         if filename:
             self._location = os.path.dirname(filename)
             self._model.load(filename)
+            region = self._model.getRootRegion()
+            scene = region.getScene()
+            self._ui.widgetSceneEditor.setScene(scene)
+            self._current_view.getSceneviewer().setScene(scene)
 
     def confirmClose(self):
         # Check to see if the Workflow is in a saved state.
