@@ -189,7 +189,7 @@ class MainWindow(QtGui.QMainWindow):
             self._model.load(filename)
             region = self._model.getRootRegion()
             scene = region.getScene()
-            self._ui.widgetSceneEditor.setScene(scene)
+            self._ui.dockWidgetContentsSceneEditor.setScene(scene)
             self._current_view.getSceneviewer().setScene(scene)
 
     def confirmClose(self):
