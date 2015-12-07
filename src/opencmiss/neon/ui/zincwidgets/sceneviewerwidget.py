@@ -15,6 +15,7 @@
 '''
 from PySide import QtCore, QtOpenGL
 
+from opencmiss.zinc.scene import Scene
 from opencmiss.zinc.sceneviewer import Sceneviewer, Sceneviewerevent
 from opencmiss.zinc.sceneviewerinput import Sceneviewerinput
 from opencmiss.zinc.scenecoordinatesystem import \
@@ -92,16 +93,6 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
             self._sceneviewer.setScene(scene)
 
-            # Set up unproject pipeline
-            self._window_coords_from = fieldmodule.createFieldConstant([0, 0, 0])
-            self._global_coords_from = fieldmodule.createFieldConstant([0, 0, 0])
-            unproject = fieldmodule.createFieldSceneviewerProjection(self._sceneviewer, SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT, SCENECOORDINATESYSTEM_WORLD)
-            project = fieldmodule.createFieldSceneviewerProjection(self._sceneviewer, SCENECOORDINATESYSTEM_WORLD, SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT)
-
-    #         unproject_t = fieldmodule.createFieldTranspose(4, unproject)
-            self._global_coords_to = fieldmodule.createFieldProjection(self._window_coords_from, unproject)
-            self._window_coords_to = fieldmodule.createFieldProjection(self._global_coords_from, project)
-
             self._sceneviewer.viewAll()
 
             self._sceneviewernotifier = self._sceneviewer.createSceneviewernotifier()
@@ -148,14 +139,13 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
     def project(self, x, y, z):
         '''
-        project the given point in global coordinates into window coordinates
+        Project the given point in global coordinates into window pixel coordinates
         with the origin at the window's top left pixel.
+        Note the z pixel coordinate is a depth which is mapped so that -1 is
+        on the far clipping plane, and +1 is on the near clipping plane.
         '''
         in_coords = [x, y, z]
-        fieldmodule = self._global_coords_from.getFieldmodule()
-        fieldcache = fieldmodule.createFieldcache()
-        self._global_coords_from.assignReal(fieldcache, in_coords)
-        result, out_coords = self._window_coords_to.evaluateReal(fieldcache, 3)
+        result, out_coords = self._sceneviewer.transformCoordinates(SCENECOORDINATESYSTEM_WORLD, SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT, Scene(), in_coords)
         if result == OK:
             return out_coords  # [out_coords[0] / out_coords[3], out_coords[1] / out_coords[3], out_coords[2] / out_coords[3]]
 
@@ -163,17 +153,13 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
     def unproject(self, x, y, z):
         '''
-        unproject the given point in window coordinates where the origin is
-        at the window's top left pixel into global coordinates.  The z value
-        is a depth which is mapped so that 0 is on the near plane and 1 is
-        on the far plane.
-        ???GRC -1 on the far and +1 on the near clipping plane
+        Unproject the given point in window pixel coordinates where the origin is
+        at the window's top left pixel into global coordinates.
+        Note the z pixel coordinate is a depth which is mapped so that -1 is
+        on the far clipping plane, and +1 is on the near clipping plane.
         '''
         in_coords = [x, y, z]
-        fieldmodule = self._window_coords_from.getFieldmodule()
-        fieldcache = fieldmodule.createFieldcache()
-        self._window_coords_from.assignReal(fieldcache, in_coords)
-        result, out_coords = self._global_coords_to.evaluateReal(fieldcache, 3)
+        result, out_coords = self._sceneviewer.transformCoordinates(SCENECOORDINATESYSTEM_WINDOW_PIXEL_TOP_LEFT, SCENECOORDINATESYSTEM_WORLD, Scene(), in_coords)
         if result == OK:
             return out_coords  # [out_coords[0] / out_coords[3], out_coords[1] / out_coords[3], out_coords[2] / out_coords[3]]
 
@@ -232,7 +218,7 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         Inform the scene viewer of a mouse press event.
         '''
-        if not event.modifiers() or (event.modifiers() & self._selectionModifier and button_map[event.button()] == Sceneviewerinput.BUTTON_TYPE_RIGHT):
+        if not event.modifiers():
             scene_input = self._sceneviewer.createSceneviewerinput()
             scene_input.setPosition(event.x(), event.y())
             scene_input.setEventType(Sceneviewerinput.EVENT_TYPE_BUTTON_PRESS)
@@ -243,6 +229,7 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
             self._handle_mouse_events = True
         else:
+            self._handle_mouse_events = False
             event.ignore()
 
     def mouseReleaseEvent(self, event):
