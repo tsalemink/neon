@@ -92,6 +92,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.setupUi(self)
         # base graphics attributes
         self.ui.data_field_chooser.setNullObjectName('-')
+        self.ui.data_field_chooser.setConditional(FieldIsRealValued)
         self.ui.coordinate_field_chooser.setNullObjectName('-')
         self.ui.coordinate_field_chooser.setConditional(FieldIsCoordinateCapable)
         # contours
@@ -108,7 +109,6 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.point_orientation_scale_field_chooser.setNullObjectName('-')
         self.ui.point_orientation_scale_field_chooser.setConditional(FieldIsOrientationScaleCapable)
         self.ui.label_field_chooser.setNullObjectName('-')
-        self.ui.label_field_chooser.setConditional(FieldIsRealValued)
 
     def _updateWidgets(self):
         # base graphics attributes
