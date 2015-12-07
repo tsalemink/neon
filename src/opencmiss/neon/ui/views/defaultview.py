@@ -45,3 +45,6 @@ class DefaultView(BaseView):
     def saveImage(self, filename, wysiwyg, width, height):
         sv = self._ui.widget.getSceneviewer()
         sv.writeImageToFile(filename, wysiwyg, width, height, 0, 0)
+
+    def getShareGLWidget(self):
+        return self._ui.widget

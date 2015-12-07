@@ -25,6 +25,8 @@ APPLICATION_NAME = 'Neon'
 ORGANISATION_NAME = 'OpenCMISS'
 ORGANISATION_DOMAIN = 'opencmiss.org'
 
+FLOAT_STRING_FORMAT = '{:.5g}'
+
 
 def setApplicationSettings(app):
 

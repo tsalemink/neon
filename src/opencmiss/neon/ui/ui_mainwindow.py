@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Tue Dec  1 16:28:02 2015
+# Created: Thu Dec  3 13:22:43 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -10,9 +10,9 @@
 from PySide import QtCore, QtGui
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, shared_context):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(919, 437)
+        MainWindow.resize(919, 447)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/neon/images/icons/neon_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -46,23 +46,16 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.dockWidgetSceneEditor = QtGui.QDockWidget(MainWindow)
         self.dockWidgetSceneEditor.setObjectName("dockWidgetSceneEditor")
-        self.dockWidgetContents = QtGui.QWidget()
-        self.dockWidgetContents.setObjectName("dockWidgetContents")
-        self.verticalLayout = QtGui.QVBoxLayout(self.dockWidgetContents)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtGui.QLabel(self.dockWidgetContents)
-        self.label.setObjectName("label")
-        self.verticalLayout.addWidget(self.label)
-        self.widgetSceneEditor = SceneEditorWidget(self.dockWidgetContents)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.widgetSceneEditor.sizePolicy().hasHeightForWidth())
-        self.widgetSceneEditor.setSizePolicy(sizePolicy)
-        self.widgetSceneEditor.setObjectName("widgetSceneEditor")
-        self.verticalLayout.addWidget(self.widgetSceneEditor)
-        self.dockWidgetSceneEditor.setWidget(self.dockWidgetContents)
+        self.dockWidgetContentsSceneEditor = SceneEditorWidget()
+        self.dockWidgetContentsSceneEditor.setObjectName("dockWidgetContentsSceneEditor")
+        self.dockWidgetSceneEditor.setWidget(self.dockWidgetContentsSceneEditor)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSceneEditor)
+        self.dockWidgetSpectrumEditor = QtGui.QDockWidget(MainWindow)
+        self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, shared_context)
+        self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
+        self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSpectrumEditor)
         self.action_Open = QtGui.QAction(MainWindow)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/neon/images/icons/document-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -109,6 +102,10 @@ class Ui_MainWindow(object):
         icon8.addPixmap(QtGui.QPixmap(":/neon/images/icons/document-save-as.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.action_Save_As.setIcon(icon8)
         self.action_Save_As.setObjectName("action_Save_As")
+        self.action_SpectrumEditor = QtGui.QAction(MainWindow)
+        self.action_SpectrumEditor.setCheckable(True)
+        self.action_SpectrumEditor.setChecked(True)
+        self.action_SpectrumEditor.setObjectName("action_SpectrumEditor")
         self.menu_Open_recent.addSeparator()
         self.menu_Open_recent.addAction(self.action_Clear)
         self.menu_File.addAction(self.action_Open)
@@ -123,8 +120,6 @@ class Ui_MainWindow(object):
         self.menu_Edit.addAction(self.action_Undo)
         self.menu_Edit.addAction(self.action_Redo)
         self.menu_Help.addAction(self.action_About)
-        self.menu_View.addAction(self.action_SceneEditor)
-        self.menu_View.addSeparator()
         self.menubar.addAction(self.menu_File.menuAction())
         self.menubar.addAction(self.menu_Edit.menuAction())
         self.menubar.addAction(self.menu_View.menuAction())
@@ -150,7 +145,8 @@ class Ui_MainWindow(object):
         self.menu_Help.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_View.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetSceneEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Sce&ne Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetSpectrumEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Spectr&um Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save.setText(QtGui.QApplication.translate("MainWindow", "&Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -167,6 +163,8 @@ class Ui_MainWindow(object):
         self.action_About.setText(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SceneEditor.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
 
-from opencmiss.neon.ui.zincwidgets.sceneeditorwidget import SceneEditorWidget
+from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
+from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from . import icons_rc
