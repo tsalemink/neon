@@ -21,28 +21,27 @@ from opencmiss.neon.ui.editors.ui_spectrumeditorwidget import Ui_SpectrumEditorW
 from opencmiss.neon.settings.mainsettings import FLOAT_STRING_FORMAT
 
 COMPONENT_NAME_FORMAT = '{:d}. '
+SPECTRUM_GLYPH_NAME_FORMAT = 'colour_bar_{0}'
 SPECTRUM_DATA_ROLE = QtCore.Qt.UserRole + 1
+REGION_DATA_ROLE = QtCore.Qt.UserRole + 2
 
 
 class SpectrumEditorWidget(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, shared_context=None):
         super(SpectrumEditorWidget, self).__init__(parent)
         self._ui = Ui_SpectrumEditorWidget()
-        self._ui.setupUi(self)
+        self._ui.setupUi(self, shared_context)
 
         self._ui.comboBoxColourMap.addItems(extractColourMappingEnum())
         self._ui.comboBoxScale.addItems(extractScaleTypeEnum())
 
         self._selected_spectrum_row = -1
         self._selected_spectrum_components_row = -1
-        print('1')
+        self._empty_region = None
         self._updateUi()
 
         self._makeConnections()
-
-        self._colourBarSpectrumMap = {}
-        print('2')
 
     def _makeConnections(self):
         self._ui.pushButtonAddSpectrum.clicked.connect(self._addSpectrumClicked)
@@ -53,6 +52,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.listWidgetSpectrums.itemClicked.connect(self._spectrumItemClicked)
         self._ui.listWidgetSpectrums.itemChanged.connect(self._spectrumChanged)
         self._ui.checkBoxOverwrite.clicked.connect(self._overwriteClicked)
+        self._ui.checkBoxDefault.clicked.connect(self._defaultClicked)
 
         self._ui.listWidgetSpectrumComponents.itemClicked.connect(self._spectrumComponentItemClicked)
 
@@ -60,6 +60,9 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.pushButtonMoveUpSpectrumComponent.clicked.connect(self._moveUpSpectrumComponentClicked)
         self._ui.comboBoxColourMap.currentIndexChanged.connect(self._colourMapIndexChanged)
         self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
+        self._ui.checkBoxReverse.clicked.connect(self._reverseClicked)
+
+        self._ui.widget.graphicsInitialized.connect(self._graphicsInitialised)
 
     def _clearSpectrumUi(self):
         self._ui.listWidgetSpectrumComponents.clear()
@@ -86,12 +89,19 @@ class SpectrumEditorWidget(QtGui.QWidget):
             # Only one spectrum can be selected at a time.
             active_item = spectrum_items[0]
             s = active_item.data(SPECTRUM_DATA_ROLE)
+            sm = self._ui.widget.getContext().getSpectrummodule()
+            default_spectrum = s == sm.getDefaultSpectrum()
+            self._ui.pushButtonDeleteSpectrum.setEnabled(not default_spectrum)
+            self._ui.checkBoxDefault.setChecked(default_spectrum)
             self._ui.checkBoxOverwrite.setChecked(s.isMaterialOverwrite())
             sc = s.getFirstSpectrumcomponent()
             while sc.isValid():
                 count = self._ui.listWidgetSpectrumComponents.count() + 1
-                addItem(self._ui.listWidgetSpectrumComponents, getComponentString(sc, count), sc)
+                self._ui.listWidgetSpectrumComponents.addItem(createItem(getComponentString(sc, count), sc))
                 sc = s.getNextSpectrumcomponent(sc)
+
+            if self._ui.listWidgetSpectrumComponents.count():
+                self._ui.listWidgetSpectrumComponents.setCurrentRow(0)
 
         self._updateComponentUi()
 
@@ -99,6 +109,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         spectrum_component_items = self._ui.listWidgetSpectrumComponents.selectedItems()
         spectrum_component_selected = len(spectrum_component_items)
 
+        self._ui.pushButtonDeleteSpectrumComponent.setEnabled(spectrum_component_selected)
         self._ui.comboBoxColourMap.setEnabled(spectrum_component_selected)
         self._ui.pushButtonAutorange.setEnabled(spectrum_component_selected)
         self._ui.comboBoxScene.setEnabled(spectrum_component_selected)
@@ -132,6 +143,10 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _spectrumChanged(self, item):
         s = item.data(SPECTRUM_DATA_ROLE)
         s.setName(item.text())
+        r = item.data(REGION_DATA_ROLE)
+        scene = r.getScene()
+        graphics = scene.getFirstGraphics()
+        graphics.setName(SPECTRUM_GLYPH_NAME_FORMAT.foramt(s.getName()))
 
     def _spectrumItemClicked(self, item):
         lws = self._ui.listWidgetSpectrums
@@ -140,12 +155,11 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if self._selected_spectrum_row == lws.row(item):
                 self._ui.listWidgetSpectrums.clearSelection()
                 self._selected_spectrum_row = -1
+                self._ui.widget.getSceneviewer().setScene(self._empty_region.getScene())
             else:
                 self._selected_spectrum_row = lws.row(item)
-                s = item.data(SPECTRUM_DATA_ROLE)
-#                 sc = self._colourBarSpectrumMap[s]
-#                 sm = sc.getSceneviewermodule()
-#                 self._ui.widget.set
+                region = item.data(REGION_DATA_ROLE)
+                self._ui.widget.getSceneviewer().setScene(region.getScene())
 
         self._updateUi()
 
@@ -166,8 +180,8 @@ class SpectrumEditorWidget(QtGui.QWidget):
         context = self._ui.widget.getContext()
         sm = context.getSpectrummodule()
         s = sm.createSpectrum()
-        addItem(self._ui.listWidgetSpectrums, s.getName(), s, True)
-        addPrivateSpectrumRegion(self._ui.widget.getContext(), s)
+        region = addPrivateSpectrumRegion(self._ui.widget.getContext(), s)
+        self._ui.listWidgetSpectrums.addItem(createItem(s.getName(), s, True, region))
         self._updateUi()
 
     def _deleteSpectrumClicked(self):
@@ -175,8 +189,6 @@ class SpectrumEditorWidget(QtGui.QWidget):
         if len(selected_items):
             active_spectrum = selected_items[0]
             self._ui.listWidgetSpectrums.takeItem(self._ui.listWidgetSpectrums.row(active_spectrum))
-            s = active_spectrum.data(SPECTRUM_DATA_ROLE)
-            deletePrivateSpectrumRegion(self._ui.widget.getContext(), s)
 
         self._updateUi()
 
@@ -186,8 +198,11 @@ class SpectrumEditorWidget(QtGui.QWidget):
         s = item.data(SPECTRUM_DATA_ROLE)
         sc = s.createSpectrumcomponent()
         count = self._ui.listWidgetSpectrumComponents.count() + 1
-        addItem(self._ui.listWidgetSpectrumComponents, getComponentString(sc, count), sc)
-        self._updateComponentUi()
+        item = createItem(getComponentString(sc, count), sc)
+        self._ui.listWidgetSpectrumComponents.addItem(item)
+        item.setSelected(True)
+        self._spectrumComponentItemClicked(item)
+#         self._updateComponentUi()
 
     def _deleteSpectrumComponentClicked(self):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
@@ -196,10 +211,27 @@ class SpectrumEditorWidget(QtGui.QWidget):
 
         self._updateComponentUi()
 
+    def _defaultClicked(self):
+        active_item = self._ui.listWidgetSpectrums.selectedItems()[0]
+        s = active_item.data(SPECTRUM_DATA_ROLE)
+        sm = self._ui.widget.getContext().getSpectrummodule()
+        sm.setDefaultSpectrum(s)
+
+        self._updateUi()
+
     def _overwriteClicked(self):
         active_item = self._ui.listWidgetSpectrums.selectedItems()[0]
         s = active_item.data(SPECTRUM_DATA_ROLE)
         s.setMaterialOverwrite(self._ui.checkBoxOverwrite.isChecked())
+
+    def _reverseClicked(self):
+        selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
+        if len(selected_items):
+            active_item = selected_items[0]
+            sc = active_item.data(SPECTRUM_DATA_ROLE)
+            sc.setColourReverse(self._ui.checkBoxReverse.isChecked())
+
+            self._updateComponentUi()
 
     def _colourMapIndexChanged(self, index):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
@@ -241,23 +273,23 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _moveUpSpectrumComponentClicked(self):
         self._moveSpectrumComponent(-1)
 
+    def _graphicsInitialised(self):
+        if self._ui.listWidgetSpectrums.count():
+            self._ui.listWidgetSpectrums.setCurrentRow(0)
+            first_item = self._ui.listWidgetSpectrums.item(0)
+            self._spectrumItemClicked(first_item)
+
     def setContext(self, context):
-        print(context, context.isValid())
         self._ui.widget.setContext(context)
+        self._empty_region = context.createRegion()
+
         sm = context.getSpectrummodule()
-        gm = context.getGlyphmodule()
-#         gm.defineStandardGlyphs()
-        sm.getDefaultSpectrum()  # Remove this if spectrum module behaviour changes
         si = sm.createSpectrumiterator()
         s = si.next()
         while s.isValid():
-            addItem(self._ui.listWidgetSpectrums, s.getName(), s, True)
-#             sc = addPrivateSpectrumRegion(context, s)
-#             self._colourBarSpectrumMap[sc] = s
-#             self._colourBarSpectrumMap[s] = sc
+            region = addPrivateSpectrumRegion(context, s)
+            self._ui.listWidgetSpectrums.addItem(createItem(s.getName(), s, True, region))
             s = si.next()
-
-        self._updateUi()
 
 
 INVALID_POSTFIX = '_INVALID'
@@ -265,25 +297,40 @@ COLOUR_MAPPING_PREFIX = 'COLOUR_MAPPING_TYPE_'
 SCALE_TYPE_PREFIX = 'SCALE_TYPE_'
 PRIVATE_SPECTRUM_FORMAT = 'spectrum_{0}'
 
+from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_NORMALISED_WINDOW_FILL as NORMALISED_WINDOW_FILL
+
 
 def addPrivateSpectrumRegion(c, s):
     r = c.createRegion()
-    sc = r.getScene()
-    gm = sc.getGlyphmodule()
-    cb = gm.createGlyphColourBar(s)
-    return sc
+    scene = r.getScene()
+    scene.beginChange()
+
+    glyphmodule = scene.getGlyphmodule()
+
+    graphics = scene.createGraphicsPoints()
+    graphics.setScenecoordinatesystem(NORMALISED_WINDOW_FILL)
+    attributes = graphics.getGraphicspointattributes()
+    colour_bar = glyphmodule.createGlyphColourBar(s)
+    colour_bar.setAxis([1, 0, 0])
+    colour_bar.setSideAxis([0, 1, 0])
+    colour_bar.setNumberFormat('%.2f')
+    colour_bar.setName(SPECTRUM_GLYPH_NAME_FORMAT.format(s.getName()))
+    attributes.setGlyph(colour_bar)
+    attributes.setBaseSize(1.0)
+
+    scene.endChange()
+    return r
 
 
-def deletePrivateSpectrumRegion(c, s):
-    pass
-
-
-def addItem(item_list, name, data, editable=False):
+def createItem(name, data, editable=False, region=None):
     i = QtGui.QListWidgetItem(name)
     i.setData(SPECTRUM_DATA_ROLE, data)
     if editable:
         i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
-    item_list.addItem(i)
+    if region is not None:
+        i.setData(REGION_DATA_ROLE, region)
+
+    return i
 
 
 def getComponentString(sc, row):

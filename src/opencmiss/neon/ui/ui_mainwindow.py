@@ -10,7 +10,7 @@
 from PySide import QtCore, QtGui
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, shared_context):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(919, 447)
         icon = QtGui.QIcon()
@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSceneEditor)
         self.dockWidgetSpectrumEditor = QtGui.QDockWidget(MainWindow)
         self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
-        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget()
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, shared_context)
         self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSpectrumEditor)

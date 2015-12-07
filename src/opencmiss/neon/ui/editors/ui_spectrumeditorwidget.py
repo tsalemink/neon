@@ -9,8 +9,9 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_SpectrumEditorWidget(object):
-    def setupUi(self, SpectrumEditorWidget):
+    def setupUi(self, SpectrumEditorWidget, shared_context):
         SpectrumEditorWidget.setObjectName("SpectrumEditorWidget")
         SpectrumEditorWidget.resize(281, 744)
         self.verticalLayout = QtGui.QVBoxLayout(SpectrumEditorWidget)
@@ -45,14 +46,17 @@ class Ui_SpectrumEditorWidget(object):
         self.formLayout.setObjectName("formLayout")
         self.checkBoxOverwrite = QtGui.QCheckBox(self.groupBoxSpectrumProperties)
         self.checkBoxOverwrite.setObjectName("checkBoxOverwrite")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.checkBoxOverwrite)
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.checkBoxOverwrite)
+        self.checkBoxDefault = QtGui.QCheckBox(self.groupBoxSpectrumProperties)
+        self.checkBoxDefault.setObjectName("checkBoxDefault")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.checkBoxDefault)
         self.verticalLayout.addWidget(self.groupBoxSpectrumProperties)
         self.groupBoxPreview = QtGui.QGroupBox(SpectrumEditorWidget)
         self.groupBoxPreview.setObjectName("groupBoxPreview")
         self.horizontalLayout = QtGui.QHBoxLayout(self.groupBoxPreview)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.widget = SceneviewerWidget(self.groupBoxPreview)
+        self.widget = SceneviewerWidget(self.groupBoxPreview, shared_context)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
@@ -177,6 +181,7 @@ class Ui_SpectrumEditorWidget(object):
         self.groupBoxSpectrumProperties.setTitle(QtGui.QApplication.translate("SpectrumEditorWidget", "Spectrum Properties", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBoxOverwrite.setToolTip(QtGui.QApplication.translate("SpectrumEditorWidget", "Overwrite graphics material colour with spectrum colour", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBoxOverwrite.setText(QtGui.QApplication.translate("SpectrumEditorWidget", "Overwrite", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBoxDefault.setText(QtGui.QApplication.translate("SpectrumEditorWidget", "Default", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBoxPreview.setTitle(QtGui.QApplication.translate("SpectrumEditorWidget", "Preview", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBoxComponents.setTitle(QtGui.QApplication.translate("SpectrumEditorWidget", "Components", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonMoveUpSpectrumComponent.setToolTip(QtGui.QApplication.translate("SpectrumEditorWidget", "Move component up", None, QtGui.QApplication.UnicodeUTF8))

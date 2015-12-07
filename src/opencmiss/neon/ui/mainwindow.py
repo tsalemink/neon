@@ -31,8 +31,11 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
         self._model = model
 
+        # List of possible views
+        view_list = [DefaultView(self)]
+
         self._ui = Ui_MainWindow()
-        self._ui.setupUi(self)
+        self._ui.setupUi(self, view_list[0].getShareGLWidget())
 
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
@@ -44,16 +47,14 @@ class MainWindow(QtGui.QMainWindow):
 
         self._undoRedoStack = QtGui.QUndoStack(self)
 
+        self._shareContext()
+
         # Pre-create dialogs
         self._createDialogs()
 
         self._readSettings()
 
-        # List of possible views
-        view_list = [DefaultView(self)]
         self._setupViews(view_list)
-
-        self._shareContext()
 
         self._makeConnections()
 

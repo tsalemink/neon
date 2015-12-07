@@ -73,13 +73,20 @@
       <string>Spectrum Properties</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QCheckBox" name="checkBoxOverwrite">
         <property name="toolTip">
          <string>Overwrite graphics material colour with spectrum colour</string>
         </property>
         <property name="text">
          <string>Overwrite</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBoxDefault">
+        <property name="text">
+         <string>Default</string>
         </property>
        </widget>
       </item>
