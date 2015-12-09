@@ -100,6 +100,15 @@
    <addaction name="separator"/>
    <addaction name="action_Snapshot"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetRegionEditor">
+   <property name="windowTitle">
+    <string>Region Editor</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="RegionEditorWidget" name="dockWidgetContentsRegionEditor"/>
+  </widget>
   <widget class="QDockWidget" name="dockWidgetSceneEditor">
    <property name="windowTitle">
     <string>&amp;Scene Editor</string>
@@ -255,6 +264,12 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>RegionEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>opencmiss/neon/ui/editors/regioneditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>SceneEditorWidget</class>
    <extends>QWidget</extends>
