@@ -44,6 +44,12 @@ class Ui_MainWindow(object):
         self.toolBar = QtGui.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.dockWidgetRegionEditor = QtGui.QDockWidget(MainWindow)
+        self.dockWidgetRegionEditor.setObjectName("dockWidgetRegionEditor")
+        self.dockWidgetContentsRegionEditor = RegionEditorWidget()
+        self.dockWidgetContentsRegionEditor.setObjectName("dockWidgetContentsRegionEditor")
+        self.dockWidgetRegionEditor.setWidget(self.dockWidgetContentsRegionEditor)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetRegionEditor)
         self.dockWidgetSceneEditor = QtGui.QDockWidget(MainWindow)
         self.dockWidgetSceneEditor.setObjectName("dockWidgetSceneEditor")
         self.dockWidgetContentsSceneEditor = SceneEditorWidget()
@@ -164,6 +170,7 @@ class Ui_MainWindow(object):
         self.menu_Help.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_View.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetRegionEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Region Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetSceneEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetSpectrumEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Spectr&um Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetTessellationEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Tessellation Editor", None, QtGui.QApplication.UnicodeUTF8))
@@ -187,6 +194,7 @@ class Ui_MainWindow(object):
         self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_New.setText(QtGui.QApplication.translate("MainWindow", "&New", None, QtGui.QApplication.UnicodeUTF8))
 
+from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget

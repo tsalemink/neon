@@ -66,7 +66,8 @@ class MainApplication(object):
             neonRegion.pop("Scene")  # remove empty scene description
         if "ChildRegions" in neonRegion:
             for neonChild in neonRegion["ChildRegions"]:
-                zincChild = zincRegion.findChildByName(neonChild["Name"])
+                childName = str(neonChild["Name"])
+                zincChild = zincRegion.findChildByName(childName)
                 self._updateZincDataInNeonRegion(neonChild, zincChild)
 
     def _updateZincDataInDocument(self):
@@ -109,13 +110,14 @@ class MainApplication(object):
         zincChildRef = zincRegion.getFirstChild()
         if "ChildRegions" in neonRegion:
             for neonChild in neonRegion["ChildRegions"]:
-                zincChild = zincRegion.findChildByName(neonChild["Name"])
-                if zincChild == zincChildRef:
-                    zincChildRef = zincChildRef.nextSibling()
+                childName = str(neonChild["Name"])
+                zincChild = zincRegion.findChildByName(childName)
+                if zincChildRef.isValid() and (zincChild == zincChildRef):
+                    zincChildRef = zincChildRef.getNextSibling()
                 else:
                     if not zincChild.isValid():
                         zincChild = zincRegion.createRegion()
-                        zincChild.setName(neonChild["Name"])
+                        zincChild.setName(childName)
                     zincRegion.insertChildBefore(zincChild, zincChildRef)
                 self._defineZincDataFromNeonRegion(neonChild, zincChild)
         # ensure any new zinc regions (read from model sources) are added to neon region. No recursion needed
@@ -124,7 +126,7 @@ class MainApplication(object):
                 neonRegion["ChildRegions"] = []
             while zincChildRef.isValid():
                 neonRegion["ChildRegions"].append({"Name": zincChildRef.getName()})
-                zincChildRef = zincChildRef.nextSibling()
+                zincChildRef = zincChildRef.getNextSibling()
 
     def _defineZincDataFromDocument(self, document):
         zincRegion = self._context.createRegion()
@@ -173,5 +175,8 @@ class MainApplication(object):
                 self._defineZincDataFromDocument(document)
                 self._document = document
 
-    def getRootRegion(self):
+    def getNeonRootRegion(self):
+        return self._document["RootRegion"]
+
+    def getZincRootRegion(self):
         return self._rootRegion
