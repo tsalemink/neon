@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Thu Dec  3 13:22:43 2015
+# Created: Tue Dec  8 14:26:47 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,6 +56,12 @@ class Ui_MainWindow(object):
         self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetSpectrumEditor)
+        self.dockWidgetTessellationEditor = QtGui.QDockWidget(MainWindow)
+        self.dockWidgetTessellationEditor.setObjectName("dockWidgetTessellationEditor")
+        self.dockWidgetContentsTessellationEditor = TessellationEditorWidget()
+        self.dockWidgetContentsTessellationEditor.setObjectName("dockWidgetContentsTessellationEditor")
+        self.dockWidgetTessellationEditor.setWidget(self.dockWidgetContentsTessellationEditor)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
         self.action_Open = QtGui.QAction(MainWindow)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/neon/images/icons/document-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -145,8 +151,9 @@ class Ui_MainWindow(object):
         self.menu_Help.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_View.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
-        self.dockWidgetSceneEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Sce&ne Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetSceneEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetSpectrumEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Spectr&um Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetTessellationEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Tessellation Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save.setText(QtGui.QApplication.translate("MainWindow", "&Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -160,11 +167,12 @@ class Ui_MainWindow(object):
         self.action_Undo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Z", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Redo.setText(QtGui.QApplication.translate("MainWindow", "&Redo", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Redo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+Z", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_About.setText(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_About.setText(QtGui.QApplication.translate("MainWindow", "&About", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SceneEditor.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
 
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
+from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
 from . import icons_rc

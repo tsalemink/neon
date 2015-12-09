@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>919</width>
+    <width>855</width>
     <height>447</height>
    </rect>
   </property>
@@ -29,13 +29,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>919</width>
+     <width>855</width>
      <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>&amp;File</string>
+     <string>Fi&amp;le</string>
     </property>
     <widget class="QMenu" name="menu_Open_recent">
      <property name="title">
@@ -56,7 +56,7 @@
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
-     <string>&amp;Edit</string>
+     <string>E&amp;dit</string>
     </property>
     <addaction name="action_Undo"/>
     <addaction name="action_Redo"/>
@@ -100,7 +100,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidgetSceneEditor">
    <property name="windowTitle">
-    <string>Sce&amp;ne Editor</string>
+    <string>&amp;Scene Editor</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -115,6 +115,15 @@
     <number>1</number>
    </attribute>
    <widget class="SpectrumEditorWidget" name="dockWidgetContentsSpectrumEditor"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetTessellationEditor">
+   <property name="windowTitle">
+    <string>&amp;Tessellation Editor</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="TessellationEditorWidget" name="dockWidgetContentsTessellationEditor"/>
   </widget>
   <action name="action_Open">
    <property name="icon">
@@ -199,7 +208,7 @@
      <normaloff>:/neon/images/icons/help-about.png</normaloff>:/neon/images/icons/help-about.png</iconset>
    </property>
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="action_SceneEditor">
@@ -245,6 +254,12 @@
    <class>SpectrumEditorWidget</class>
    <extends>QWidget</extends>
    <header>opencmiss/neon/ui/editors/spectrumeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TessellationEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>opencmiss/neon/ui/editors/tessellationeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

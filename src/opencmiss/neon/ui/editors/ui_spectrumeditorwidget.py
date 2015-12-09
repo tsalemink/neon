@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/spectrumeditorwidget.ui'
 #
-# Created: Mon Dec  7 10:25:06 2015
+# Created: Tue Dec  8 13:59:46 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
