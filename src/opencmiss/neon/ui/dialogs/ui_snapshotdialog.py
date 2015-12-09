@@ -10,7 +10,7 @@
 from PySide import QtCore, QtGui
 
 class Ui_SnapshotDialog(object):
-    def setupUi(self, SnapshotDialog):
+    def setupUi(self, SnapshotDialog, shared_context):
         SnapshotDialog.setObjectName("SnapshotDialog")
         SnapshotDialog.resize(400, 300)
         self.verticalLayout = QtGui.QVBoxLayout(SnapshotDialog)
@@ -56,7 +56,7 @@ class Ui_SnapshotDialog(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.groupBox_2)
         self.horizontalLayout_2.setContentsMargins(1, 1, 1, 1)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.widgetPreview = SceneviewerWidget(self.groupBox_2)
+        self.widgetPreview = SceneviewerWidget(self.groupBox_2, shared_context)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
@@ -69,7 +69,7 @@ class Ui_SnapshotDialog(object):
         self.verticalLayout.addWidget(self.groupBox)
         self.buttonBox = QtGui.QDialogButtonBox(SnapshotDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
 

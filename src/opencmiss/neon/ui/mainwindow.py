@@ -33,9 +33,10 @@ class MainWindow(QtGui.QMainWindow):
 
         # List of possible views
         view_list = [DefaultView(self)]
+        self._shared_gl_widget = view_list[0].getShareGLWidget()
 
         self._ui = Ui_MainWindow()
-        self._ui.setupUi(self, view_list[0].getShareGLWidget())
+        self._ui.setupUi(self, self._shared_gl_widget)
 
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
@@ -87,7 +88,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Clear.setEnabled(len(self._recents))
 
     def _createDialogs(self):
-        self._snapshotDialog = SnapshotDialog(self)
+        self._snapshotDialog = SnapshotDialog(self, self._shared_gl_widget)
         self._snapshotDialog.setContext(self._model.getContext())
 
     def _writeSettings(self):
@@ -136,7 +137,7 @@ class MainWindow(QtGui.QMainWindow):
         context = self._model.getContext()
         self._ui.dockWidgetContentsSpectrumEditor.setContext(context)
         self._ui.dockWidgetContentsTessellationEditor.setContext(context)
-        self._ui.dockWidgetTimeEditor.setContext(context)
+        self._ui.dockWidgetContentsTimeEditor.setContext(context)
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
