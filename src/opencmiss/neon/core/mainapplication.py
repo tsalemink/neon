@@ -29,6 +29,7 @@ class MainApplication(object):
         self._currentUntoRedoIndex = 0
 
         self._location = None
+        self._recents = []
 
         self._context = Context("Main")
 
@@ -83,7 +84,7 @@ class MainApplication(object):
                 resource = streamInfo.createStreamresourceFile(fileName)
                 if "Time" in source:
                     streamInfo.setResourceAttributeReal(resource, StreaminformationRegion.ATTRIBUTE_TIME, source["Time"])
-                #if "Format" in source:
+                # if "Format" in source:
                 #    format = source["Format"]
                 #    if format == "EX":
                 #        can't set per-resource file format
@@ -133,11 +134,11 @@ class MainApplication(object):
         # loop through document regions, load model data into Zinc
         neonRegion = document["RootRegion"]
         # Not doing here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
-        #zincRegion.beginHierarchicalChange()
+        # zincRegion.beginHierarchicalChange()
         try:
             self._defineZincDataFromNeonRegion(neonRegion, zincRegion)
         finally:
-            #zincRegion.endChange() see zincRegion.beginHierarchicalChange()
+            # zincRegion.endChange() see zincRegion.beginHierarchicalChange()
             pass
         self._rootRegion = zincRegion
 
@@ -180,3 +181,16 @@ class MainApplication(object):
 
     def getZincRootRegion(self):
         return self._rootRegion
+
+    def addRecent(self, recent):
+        if recent in self._recents:
+            index = self._recents.index(recent)
+            del self._recents[index]
+
+        self._recents.append(recent)
+
+    def getRecents(self):
+        return self._recents
+
+    def clearRecents(self):
+        self._recents = []

@@ -46,7 +46,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self._location = None  # The last location/directory used by the application
         self._current_view = None
-        self._recents = []
 
         self._undoRedoStack = QtGui.QUndoStack(self)
 
@@ -75,6 +74,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Save.triggered.connect(self._saveTriggered)
         self._ui.action_Save_As.triggered.connect(self._saveAsTriggered)
         self._ui.action_Snapshot.triggered.connect(self._snapshotTriggered)
+        self._ui.action_Clear.triggered.connect(self._clearTriggered)
 
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
@@ -86,7 +86,8 @@ class MainWindow(QtGui.QMainWindow):
     def _updateUi(self):
         modified = self._model.isModified()
         self._ui.action_Save.setEnabled(modified)
-        self._ui.action_Clear.setEnabled(len(self._recents))
+        recents = self._model.getRecents()
+        self._ui.action_Clear.setEnabled(len(recents))
 
     def _createDialogs(self):
         self._snapshotDialog = SnapshotDialog(self, self._shared_gl_widget)
@@ -102,7 +103,8 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('spectrumeditor_visibility', self._ui.action_SpectrumEditor.isChecked())
 
         settings.beginWriteArray('recents')
-        for i, r in enumerate(self._recents):
+        recents = self._model.getRecents()
+        for i, r in enumerate(recents):
             settings.setArrayIndex(i)
             settings.setValue('item', r)
         settings.endArray()
@@ -129,13 +131,24 @@ class MainWindow(QtGui.QMainWindow):
         size = settings.beginReadArray('recents')
         for i in range(size):
             settings.setArrayIndex(i)
-            self._recents.append(settings.value('item'))
+            self._addRecent(settings.value('item'))
         settings.endArray()
         settings.endGroup()
 
         settings.beginGroup('SnapshotDialog')
         self._snapshotDialog.deserialise(settings.value('state', ''))
         settings.endGroup()
+
+        self._updateUi()
+
+    def _addRecent(self, recent):
+        actions = self._ui.menu_Open_recent.actions()
+        insert_before_action = actions[0]
+        self._model.addRecent(recent)
+        recent_action = QtGui.QAction(self._ui.menu_Open_recent)
+        recent_action.setText(recent)
+        self._ui.menu_Open_recent.insertAction(insert_before_action, recent_action)
+        recent_action.triggered.connect(self._open)
 
     def _shareContext(self):
         context = self._model.getContext()
@@ -171,15 +184,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def _viewReady(self):
         self._resetRootRegion()
-        #self._ui.dockWidgetContentsSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
-
-    def _restoreState(self):
-        print('resore it!!!!')
-        settings = QtCore.QSettings()
-        state = settings.value('dock_locations')
-        if state is not None:
-            print('state is good')
-            self.restoreState(state, VERSION_MAJOR)
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -216,19 +220,41 @@ class MainWindow(QtGui.QMainWindow):
     def _newTriggered(self):
         print('Implement me!')
 
+    def _openModel(self, filename):
+        self._location = os.path.dirname(filename)
+        self._model.load(filename)
+        self._addRecent(filename)
+        # neonRootRegion = self._model.getNeonRootRegion()
+        # zincRootRegion = self._model.getZincRootRegion()
+        # self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
+        # scene = zincRootRegion.getScene()
+        # self._ui.dockWidgetContentsSceneEditor.setScene(scene)
+        # self._current_view.getSceneviewer().setScene(scene)
+        self._resetRootRegion()
+
+        self._updateUi()
+
     def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
 
         if filename:
-            self._location = os.path.dirname(filename)
-            self._model.load(filename)
-            #neonRootRegion = self._model.getNeonRootRegion()
-            #zincRootRegion = self._model.getZincRootRegion()
-            #self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
-            #scene = zincRootRegion.getScene()
-            #self._ui.dockWidgetContentsSceneEditor.setScene(scene)
-            #self._current_view.getSceneviewer().setScene(scene)
-            self._resetRootRegion()
+            self._openModel(filename)
+
+    def _open(self):
+        '''
+        Open a model from a recent file
+        '''
+        filename = self.sender().text()
+        self._ui.menu_Open_recent.removeAction(self.sender())
+        self._openModel(filename)
+
+    def _clearTriggered(self):
+        self._model.clearRecents()
+        actions = self._ui.menu_Open_recent.actions()
+        for action in actions[:-2]:
+            self._ui.menu_Open_recent.removeAction(action)
+
+        self._updateUi()
 
     def confirmClose(self):
         # Check to see if the Workflow is in a saved state.
