@@ -40,6 +40,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetTessellationEditor.toggleViewAction())
+        self._ui.menu_View.addAction(self._ui.dockWidgetTimeEditor.toggleViewAction())
         self._ui.menu_View.addSeparator()
 
         self._location = None  # The last location/directory used by the application
@@ -135,6 +136,7 @@ class MainWindow(QtGui.QMainWindow):
         context = self._model.getContext()
         self._ui.dockWidgetContentsSpectrumEditor.setContext(context)
         self._ui.dockWidgetContentsTessellationEditor.setContext(context)
+        self._ui.dockWidgetTimeEditor.setContext(context)
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
