@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Tue Dec  8 14:26:47 2015
+# Created: Wed Dec  9 13:57:24 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow, shared_context):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(919, 447)
+        MainWindow.resize(855, 447)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/neon/images/icons/neon_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.viewStackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 919, 19))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 855, 19))
         self.menubar.setObjectName("menubar")
         self.menu_File = QtGui.QMenu(self.menubar)
         self.menu_File.setObjectName("menu_File")
@@ -112,8 +112,14 @@ class Ui_MainWindow(object):
         self.action_SpectrumEditor.setCheckable(True)
         self.action_SpectrumEditor.setChecked(True)
         self.action_SpectrumEditor.setObjectName("action_SpectrumEditor")
+        self.action_New = QtGui.QAction(MainWindow)
+        icon9 = QtGui.QIcon()
+        icon9.addPixmap(QtGui.QPixmap(":/neon/images/icons/document-new-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.action_New.setIcon(icon9)
+        self.action_New.setObjectName("action_New")
         self.menu_Open_recent.addSeparator()
         self.menu_Open_recent.addAction(self.action_Clear)
+        self.menu_File.addAction(self.action_New)
         self.menu_File.addAction(self.action_Open)
         self.menu_File.addAction(self.menu_Open_recent.menuAction())
         self.menu_File.addSeparator()
@@ -130,6 +136,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_Edit.menuAction())
         self.menubar.addAction(self.menu_View.menuAction())
         self.menubar.addAction(self.menu_Help.menuAction())
+        self.toolBar.addAction(self.action_New)
         self.toolBar.addAction(self.action_Open)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.action_Save)
@@ -171,6 +178,7 @@ class Ui_MainWindow(object):
         self.action_SceneEditor.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_New.setText(QtGui.QApplication.translate("MainWindow", "&New", None, QtGui.QApplication.UnicodeUTF8))
 
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget

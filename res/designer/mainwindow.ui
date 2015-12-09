@@ -44,6 +44,7 @@
      <addaction name="separator"/>
      <addaction name="action_Clear"/>
     </widget>
+    <addaction name="action_New"/>
     <addaction name="action_Open"/>
     <addaction name="menu_Open_recent"/>
     <addaction name="separator"/>
@@ -88,6 +89,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_New"/>
    <addaction name="action_Open"/>
    <addaction name="separator"/>
    <addaction name="action_Save"/>
@@ -240,6 +242,15 @@
    </property>
    <property name="text">
     <string>Spectrum Editor</string>
+   </property>
+  </action>
+  <action name="action_New">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/neon/images/icons/document-new-icon.png</normaloff>:/neon/images/icons/document-new-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New</string>
    </property>
   </action>
  </widget>

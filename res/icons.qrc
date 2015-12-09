@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="neon">
+    <file>images/icons/document-new-icon.png</file>
     <file>images/icons/go-up-icon.png</file>
     <file>images/icons/application-exit.png</file>
     <file>images/icons/devices-camera-photo-icon.png</file>

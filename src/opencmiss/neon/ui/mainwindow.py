@@ -67,6 +67,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
+        self._ui.action_New.triggered.connect(self._newTriggered)
         self._ui.action_Open.triggered.connect(self._openTriggered)
         self._ui.action_About.triggered.connect(self._aboutTriggered)
         self._ui.action_Save.triggered.connect(self._saveTriggered)
@@ -183,6 +184,9 @@ class MainWindow(QtGui.QMainWindow):
             width = self._snapshotDialog.getWidth()
             height = self._snapshotDialog.getHeight()
             self._current_view.saveImage(filename, wysiwyg, width, height)
+
+    def _newTriggered(self):
+        print('Implement me!')
 
     def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
