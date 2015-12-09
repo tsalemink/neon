@@ -55,8 +55,6 @@ class MainWindow(QtGui.QMainWindow):
         # Pre-create dialogs
         self._createDialogs()
 
-        self._readSettings()
-
         self._setupViews(view_list)
 
         self._makeConnections()
@@ -67,8 +65,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self._updateUi()
 
+        QtCore.QTimer.singleShot(0, self._readSettings)
+
     def _makeConnections(self):
-        self._ui.action_Quit.triggered.connect(self.quitApplication)
+        self._ui.action_Quit.triggered.connect(self.close)
         self._ui.action_New.triggered.connect(self._newTriggered)
         self._ui.action_Open.triggered.connect(self._openTriggered)
         self._ui.action_About.triggered.connect(self._aboutTriggered)
@@ -94,12 +94,12 @@ class MainWindow(QtGui.QMainWindow):
     def _writeSettings(self):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
-        settings.setValue('size', self.size())
-        settings.setValue('pos', self.pos())
         settings.setValue('location', self._location)
+        settings.setValue('geometry', self.saveGeometry())
         settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
         settings.setValue('sceneeditor_visibility', self._ui.action_SceneEditor.isChecked())
         settings.setValue('spectrumeditor_visibility', self._ui.action_SpectrumEditor.isChecked())
+
         settings.beginWriteArray('recents')
         for i, r in enumerate(self._recents):
             settings.setArrayIndex(i)
@@ -114,12 +114,15 @@ class MainWindow(QtGui.QMainWindow):
     def _readSettings(self):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
-        self.resize(settings.value('size', QtCore.QSize(1200, 900)))
-        self.move(settings.value('pos', QtCore.QPoint(100, 150)))
-        self._location = settings.value('location', QtCore.QDir.homePath())
         state = settings.value('dock_locations')
         if state is not None:
-            self.restoreState(settings.value('dock_locations'), VERSION_MAJOR)
+            self.restoreState(state, VERSION_MAJOR)
+        geometry = settings.value('geometry')
+        if geometry is not None:
+            self.restoreGeometry(geometry)
+
+        self._location = settings.value('location', QtCore.QDir.homePath())
+
         self._ui.action_SceneEditor.setChecked(settings.value('sceneeditor_visibility', 'true') == 'true')
         self._ui.action_SpectrumEditor.setChecked(settings.value('spectrumeditor_visibility', 'true') == 'true')
         size = settings.beginReadArray('recents')
@@ -155,6 +158,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def _viewReady(self):
         self._ui.dockWidgetContentsSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
+
+    def _restoreState(self):
+        print('resore it!!!!')
+        settings = QtCore.QSettings()
+        state = settings.value('dock_locations')
+        if state is not None:
+            print('state is good')
+            self.restoreState(state, VERSION_MAJOR)
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -210,9 +221,10 @@ class MainWindow(QtGui.QMainWindow):
             if ret == QtGui.QMessageBox.Yes:
                 self._saveTriggered()
 
-    def quitApplication(self):
+    def _quitApplication(self):
         self.confirmClose()
-
         self._writeSettings()
 
-        QtGui.qApp.quit()
+    def closeEvent(self, event):
+        self._quitApplication()
+        super(MainWindow, self).closeEvent(event)
