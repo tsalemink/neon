@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="neon">
+    <file>images/icons/playback-start-reverse-icon.png</file>
+    <file>images/icons/playback-start-icon.png</file>
+    <file>images/icons/playback-stop-icon.png</file>
     <file>images/icons/document-new-icon.png</file>
     <file>images/icons/go-up-icon.png</file>
     <file>images/icons/application-exit.png</file>
