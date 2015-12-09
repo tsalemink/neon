@@ -77,6 +77,7 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
 
         self._current_view.graphicsInitialized.connect(self._viewReady)
+        self._ui.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
 
     def _updateUi(self):
         modified = self._model.isModified()
@@ -147,8 +148,21 @@ class MainWindow(QtGui.QMainWindow):
             self._ui.menu_View.addAction(action_view)
             self._current_view = v
 
+    def _resetRootRegion(self):
+        neonRootRegion = self._model.getNeonRootRegion()
+        zincRootRegion = self._model.getZincRootRegion()
+        self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
+        scene = zincRootRegion.getScene()
+        self._ui.dockWidgetContentsSceneEditor.setScene(scene)
+        self._current_view.getSceneviewer().setScene(scene)
+
+    def _regionSelected(self, zincRegion):
+        scene = zincRegion.getScene()
+        self._ui.dockWidgetContentsSceneEditor.setScene(scene)
+
     def _viewReady(self):
-        self._ui.dockWidgetContentsSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
+        self._resetRootRegion()
+        #self._ui.dockWidgetContentsSceneEditor.setScene(self._current_view.getSceneviewer().getScene())
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -188,10 +202,13 @@ class MainWindow(QtGui.QMainWindow):
         if filename:
             self._location = os.path.dirname(filename)
             self._model.load(filename)
-            region = self._model.getRootRegion()
-            scene = region.getScene()
-            self._ui.dockWidgetContentsSceneEditor.setScene(scene)
-            self._current_view.getSceneviewer().setScene(scene)
+            #neonRootRegion = self._model.getNeonRootRegion()
+            #zincRootRegion = self._model.getZincRootRegion()
+            #self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
+            #scene = zincRootRegion.getScene()
+            #self._ui.dockWidgetContentsSceneEditor.setScene(scene)
+            #self._current_view.getSceneviewer().setScene(scene)
+            self._resetRootRegion()
 
     def confirmClose(self):
         # Check to see if the Workflow is in a saved state.
