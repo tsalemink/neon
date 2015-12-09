@@ -39,6 +39,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
+        self._ui.menu_View.addAction(self._ui.dockWidgetTessellationEditor.toggleViewAction())
         self._ui.menu_View.addSeparator()
 
         self._location = None  # The last location/directory used by the application
@@ -66,6 +67,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.quitApplication)
+        self._ui.action_New.triggered.connect(self._newTriggered)
         self._ui.action_Open.triggered.connect(self._openTriggered)
         self._ui.action_About.triggered.connect(self._aboutTriggered)
         self._ui.action_Save.triggered.connect(self._saveTriggered)
@@ -132,6 +134,7 @@ class MainWindow(QtGui.QMainWindow):
     def _shareContext(self):
         context = self._model.getContext()
         self._ui.dockWidgetContentsSpectrumEditor.setContext(context)
+        self._ui.dockWidgetContentsTessellationEditor.setContext(context)
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
@@ -181,6 +184,9 @@ class MainWindow(QtGui.QMainWindow):
             width = self._snapshotDialog.getWidth()
             height = self._snapshotDialog.getHeight()
             self._current_view.saveImage(filename, wysiwyg, width, height)
+
+    def _newTriggered(self):
+        print('Implement me!')
 
     def _openTriggered(self):
         filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
