@@ -21,54 +21,56 @@ Displays and allows editing of the the Neon region tree.
 
 from PySide import QtCore, QtGui
 
+from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.ui.editors.ui_regioneditorwidget import Ui_RegionEditorWidget
 
 class RegionTreeItem(object):
 
-    def __init__(self, neonRegion, row, parent=None):
-        self._neonRegion = neonRegion
+    def __init__(self, region, row, parent=None):
+        self._region = region
         self._row = row
         self._parent = parent
         self._children = []
-        if "ChildRegions" in neonRegion:
-            childRow = 0
-            for neonChild in neonRegion["ChildRegions"]:
-                self._children.append(RegionTreeItem(neonChild, childRow, self))
-                childRow += 1
+        childCount = region.getChildCount()
+        for childRow in range(childCount):
+            childRegion = region.getChild(childRow)
+            childItem = RegionTreeItem(childRegion, childRow, self)
+            self._children.append(childItem)
 
-    def neonRegion(self):
-        return self._neonRegion
+    def getRegion(self):
+        return self._region
 
-    def row(self):
+    def getRow(self):
         return self._row
 
-    def parent(self):
+    def getParent(self):
         return self._parent
 
-    def child(self, i):
+    def getChild(self, i):
         if i < len(self._children):
             return self._children[i]
         return None
 
-    def childCount(self):
+    def getChildCount(self):
         return len(self._children)
 
-    def setRootChild(self, neonRootItem):
-        self._children = [ neonRootItem ]
+    def setInvisibleRootChild(self, rootItem):
+        self._children = [rootItem]
 
 class RegionTreeModel(QtCore.QAbstractItemModel):
 
-    def __init__(self, neonRootRegion, parent):
+    def __init__(self, rootRegion, parent):
         QtCore.QAbstractItemModel.__init__(self, parent)
-        self._neonRootRegion = neonRootRegion
-        self._rootItem = RegionTreeItem({}, 0)
-        if neonRootRegion is not None:
-            neonRootItem = RegionTreeItem(neonRootRegion, 0, self._rootItem)
-            self._rootItem.setRootChild(neonRootItem)
+        self._rootRegion = rootRegion
+        dummyRegion = NeonRegion(None, None, None)
+        self._invisibleRootItem = RegionTreeItem(dummyRegion, 0)
+        if rootRegion is not None:
+            rootItem = RegionTreeItem(rootRegion, 0, self._invisibleRootItem)
+            self._invisibleRootItem.setInvisibleRootChild(rootItem)
 
-    def setRootRegion(self, neonRootRegion):
-        neonRootItem = RegionTreeItem(neonRootRegion, 0)
-        self._rootItem.setRootChild(neonRootItem)
+    def setRootRegion(self, rootRegion):
+        rootItem = RegionTreeItem(rootRegion, 0)
+        self._invisibleRootItem.setInvisibleRootChild(rootItem)
 
     def columnCount(self, parentIndex):
         return 1
@@ -89,8 +91,8 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         if parentIndex.isValid():
             parentItem = parentIndex.internalPointer()
         else:
-            parentItem = self._rootItem
-        childItem = parentItem.child(row)
+            parentItem = self._invisibleRootItem
+        childItem = parentItem.getChild(row)
         if childItem:
             return self.createIndex(row, column, childItem)
         return QtCore.QModelIndex()
@@ -101,16 +103,16 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         if parentIndex.isValid():
             parentItem = parentIndex.internalPointer()
         else:
-            parentItem = self._rootItem
-        return parentItem.childCount()
+            parentItem = self._invisibleRootItem
+        return parentItem.getChildCount()
 
     def parent(self, index):
         if not index.isValid():
             return QtCore.QModelIndex()
         item = index.internalPointer()
-        parentItem = item.parent()
-        if parentItem and (parentItem is not self._rootItem):
-            return self.createIndex(parentItem.row(), 0, parentItem)
+        parentItem = item.getParent()
+        if parentItem and (parentItem is not self._invisibleRootItem):
+            return self.createIndex(parentItem.getRow(), 0, parentItem)
         return QtCore.QModelIndex()
 
     def data(self, index, role):
@@ -118,33 +120,27 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
             return None
         item = index.internalPointer()
         if (role == QtCore.Qt.DisplayRole) and (index.column() == 0):
-            neonRegion = item.neonRegion()
-            if "Name" in neonRegion:
-                return neonRegion["Name"]
+            region = item.getRegion()
+            regionName = region.getName()
+            if regionName:
+                return regionName
             else:
                 return "/"
         return None
 
-    def getPathToIndex(self, index):
+    def getRegionAtIndex(self, index):
         if not index.isValid():
-            return ""
+            return None
         item = index.internalPointer()
-        neonRegion = item.neonRegion()
-        if "Name" in neonRegion:
-            return self.getPathToIndex(self.parent(index)) + str(neonRegion["Name"]) + "/"
-        return "/"
+        return item.getRegion()
 
 class RegionEditorWidget(QtGui.QWidget):
 
     regionSelected = QtCore.Signal(object)
 
     def __init__(self, parent=None):
-        '''
-        Call the super class init functions
-        '''
         QtGui.QWidget.__init__(self, parent)
-        self._neonRootRegion = None
-        self._zincRootRegion = None
+        self._rootRegion = None
         self._regionItems = None
         # Using composition to include the visual element of the GUI.
         self._ui = Ui_RegionEditorWidget()
@@ -154,14 +150,16 @@ class RegionEditorWidget(QtGui.QWidget):
     def _makeConnections(self):
         self._ui.treeViewRegion.clicked.connect(self._regionTreeItemClicked)
 
-    def setRootRegion(self, neonRootRegion, zincRootRegion):
-        self._neonRootRegion = neonRootRegion
-        self._zincRootRegion = zincRootRegion
+    def setRootRegion(self, rootRegion):
+        '''
+        :param rootRegion: The root NeonRegion
+        '''
+        self._rootRegion = rootRegion
         # rebuild tree
         self._buildTree()
 
     def _buildTree(self):
-        self._regionItems = RegionTreeModel(self._neonRootRegion, None)
+        self._regionItems = RegionTreeModel(self._rootRegion, None)
         self._ui.treeViewRegion.setModel(self._regionItems)
         self._ui.treeViewRegion.header().hide()
         self._ui.treeViewRegion.expandAll()
@@ -171,10 +169,10 @@ class RegionEditorWidget(QtGui.QWidget):
 
     def _regionTreeItemClicked(self, index):
         '''
-        Either changes visibility flag or selects current graphics
+        Calls back clients with newly selected region
         '''
         model = index.model()
-        regionPath = model.getPathToIndex(index)
-        print("Clicked on region " + regionPath)
-        zincRegion = self._zincRootRegion.findSubregionAtPath(regionPath)
-        self.regionSelected.emit(zincRegion)
+        region = model.getRegionAtIndex(index)
+        # regionPath = region.getPath()
+        # print("Clicked on region " + regionPath)
+        self.regionSelected.emit(region)
