@@ -57,11 +57,7 @@ class MainApplication(object):
 
     def _updateZincDataInNeonRegion(self, neonRegion, zincRegion):
         scene = zincRegion.getScene()
-        streamInfo = scene.createStreaminformationScene()
-        streamInfo.setIOFormat(StreaminformationScene.IO_FORMAT_DESCRIPTION)
-        streamMemory = streamInfo.createStreamresourceMemory()
-        scene.write(streamInfo)
-        result, sceneDescription = streamMemory.getBuffer()
+        sceneDescription = scene.writeDescription()
         neonRegion["Scene"] = json.loads(sceneDescription)
         if not neonRegion["Scene"]:
             neonRegion.pop("Scene")  # remove empty scene description
@@ -101,12 +97,7 @@ class MainApplication(object):
         if "Scene" in neonRegion:
             sceneDescription = json.dumps(neonRegion["Scene"])
             scene = zincRegion.getScene()
-            streamInfo = scene.createStreaminformationScene()
-            streamInfo.setIOFormat(StreaminformationScene.IO_FORMAT_DESCRIPTION)
-            streamInfo.createStreamresourceMemoryBuffer(sceneDescription)
-            result = scene.read(streamInfo)
-            if result != ZINC_OK:
-                print("Failed to read scene")
+            scene.readDescription(sceneDescription, True)
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
         zincChildRef = zincRegion.getFirstChild()
         if "ChildRegions" in neonRegion:
