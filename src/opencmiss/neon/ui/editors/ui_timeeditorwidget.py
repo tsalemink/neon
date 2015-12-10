@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'res/designer/timeeditorwidget.ui'
+#
+# Created: Wed Dec  9 15:24:51 2015
+#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_TimeEditorWidget(object):
+    def setupUi(self, TimeEditorWidget):
+        TimeEditorWidget.setObjectName("TimeEditorWidget")
+        TimeEditorWidget.resize(853, 103)
+        self.gridLayout = QtGui.QGridLayout(TimeEditorWidget)
+        self.gridLayout.setObjectName("gridLayout")
+        self.groupBox = QtGui.QGroupBox(TimeEditorWidget)
+        self.groupBox.setObjectName("groupBox")
+        self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label = QtGui.QLabel(self.groupBox)
+        self.label.setObjectName("label")
+        self.horizontalLayout.addWidget(self.label)
+        self.doubleSpinBoxMinimumTime = QtGui.QDoubleSpinBox(self.groupBox)
+        self.doubleSpinBoxMinimumTime.setMinimum(-99999999.99)
+        self.doubleSpinBoxMinimumTime.setObjectName("doubleSpinBoxMinimumTime")
+        self.horizontalLayout.addWidget(self.doubleSpinBoxMinimumTime)
+        spacerItem = QtGui.QSpacerItem(71, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.pushButtonPlayReverse = QtGui.QPushButton(self.groupBox)
+        self.pushButtonPlayReverse.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/neon/images/icons/playback-start-reverse-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonPlayReverse.setIcon(icon)
+        self.pushButtonPlayReverse.setObjectName("pushButtonPlayReverse")
+        self.horizontalLayout.addWidget(self.pushButtonPlayReverse)
+        self.pushButtonStop = QtGui.QPushButton(self.groupBox)
+        self.pushButtonStop.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/neon/images/icons/playback-stop-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonStop.setIcon(icon1)
+        self.pushButtonStop.setObjectName("pushButtonStop")
+        self.horizontalLayout.addWidget(self.pushButtonStop)
+        self.pushButtonPlay = QtGui.QPushButton(self.groupBox)
+        self.pushButtonPlay.setText("")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/neon/images/icons/playback-start-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonPlay.setIcon(icon2)
+        self.pushButtonPlay.setObjectName("pushButtonPlay")
+        self.horizontalLayout.addWidget(self.pushButtonPlay)
+        spacerItem1 = QtGui.QSpacerItem(71, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
+        self.label_2 = QtGui.QLabel(self.groupBox)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout.addWidget(self.label_2)
+        self.doubleSpinBoxMaximumTime = QtGui.QDoubleSpinBox(self.groupBox)
+        self.doubleSpinBoxMaximumTime.setMaximum(99999999.99)
+        self.doubleSpinBoxMaximumTime.setProperty("value", 10.0)
+        self.doubleSpinBoxMaximumTime.setObjectName("doubleSpinBoxMaximumTime")
+        self.horizontalLayout.addWidget(self.doubleSpinBoxMaximumTime)
+        self.gridLayout_2.addLayout(self.horizontalLayout, 1, 2, 1, 1)
+        self.horizontalSliderTimer = QtGui.QSlider(self.groupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.horizontalSliderTimer.sizePolicy().hasHeightForWidth())
+        self.horizontalSliderTimer.setSizePolicy(sizePolicy)
+        self.horizontalSliderTimer.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSliderTimer.setObjectName("horizontalSliderTimer")
+        self.gridLayout_2.addWidget(self.horizontalSliderTimer, 0, 2, 1, 1)
+        self.lineEditTimer = QtGui.QLineEdit(self.groupBox)
+        self.lineEditTimer.setObjectName("lineEditTimer")
+        self.gridLayout_2.addWidget(self.lineEditTimer, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.groupBox, 0, 1, 1, 1)
+
+        self.retranslateUi(TimeEditorWidget)
+        QtCore.QMetaObject.connectSlotsByName(TimeEditorWidget)
+
+    def retranslateUi(self, TimeEditorWidget):
+        TimeEditorWidget.setWindowTitle(QtGui.QApplication.translate("TimeEditorWidget", "Time Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("TimeEditorWidget", "Timer", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("TimeEditorWidget", "Min.:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("TimeEditorWidget", "Max.:", None, QtGui.QApplication.UnicodeUTF8))

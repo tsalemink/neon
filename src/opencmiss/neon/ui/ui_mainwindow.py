@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
 #
-# Created: Wed Dec  9 13:57:24 2015
+# Created: Wed Dec  9 14:13:39 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -68,6 +68,12 @@ class Ui_MainWindow(object):
         self.dockWidgetContentsTessellationEditor.setObjectName("dockWidgetContentsTessellationEditor")
         self.dockWidgetTessellationEditor.setWidget(self.dockWidgetContentsTessellationEditor)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
+        self.dockWidgetTimeEditor = QtGui.QDockWidget(MainWindow)
+        self.dockWidgetTimeEditor.setObjectName("dockWidgetTimeEditor")
+        self.dockWidgetContentsTimeEditor = TimeEditorWidget()
+        self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
+        self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
         self.action_Open = QtGui.QAction(MainWindow)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/neon/images/icons/document-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -168,6 +174,7 @@ class Ui_MainWindow(object):
         self.dockWidgetSceneEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetSpectrumEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Spectr&um Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidgetTessellationEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Tessellation Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.dockWidgetTimeEditor.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Ti&me Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save.setText(QtGui.QApplication.translate("MainWindow", "&Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -187,8 +194,9 @@ class Ui_MainWindow(object):
         self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_New.setText(QtGui.QApplication.translate("MainWindow", "&New", None, QtGui.QApplication.UnicodeUTF8))
 
-from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
+from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
+from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from . import icons_rc

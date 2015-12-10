@@ -136,6 +136,15 @@
    </attribute>
    <widget class="TessellationEditorWidget" name="dockWidgetContentsTessellationEditor"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetTimeEditor">
+   <property name="windowTitle">
+    <string>Ti&amp;me Editor</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="TimeEditorWidget" name="dockWidgetContentsTimeEditor"/>
+  </widget>
   <action name="action_Open">
    <property name="icon">
     <iconset resource="../icons.qrc">
@@ -286,6 +295,12 @@
    <class>TessellationEditorWidget</class>
    <extends>QWidget</extends>
    <header>opencmiss/neon/ui/editors/tessellationeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TimeEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>opencmiss/neon/ui/editors/timeeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

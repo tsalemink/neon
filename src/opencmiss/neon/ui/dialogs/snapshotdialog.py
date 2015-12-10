@@ -23,11 +23,11 @@ from opencmiss.neon.ui.dialogs.ui_snapshotdialog import Ui_SnapshotDialog
 
 class SnapshotDialog(QtGui.QDialog):
 
-    def __init__(self, parent):
+    def __init__(self, parent, shared_gl_context):
         super(SnapshotDialog, self).__init__(parent)
 
         self._ui = Ui_SnapshotDialog()
-        self._ui.setupUi(self)
+        self._ui.setupUi(self, shared_gl_context)
 
         self._location = None
         self._filename = None
