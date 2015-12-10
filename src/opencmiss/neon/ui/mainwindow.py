@@ -170,20 +170,22 @@ class MainWindow(QtGui.QMainWindow):
             self._ui.menu_View.addAction(action_view)
             self._current_view = v
 
-    def _resetRootRegion(self):
-        neonRootRegion = self._model.getNeonRootRegion()
-        zincRootRegion = self._model.getZincRootRegion()
-        self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
+    def _refreshRootRegion(self):
+        document = self._model.getDocument()
+        rootRegion = document.getRootRegion()
+        self._ui.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
+        zincRootRegion = rootRegion.getZincRegion()
         scene = zincRootRegion.getScene()
         self._ui.dockWidgetContentsSceneEditor.setScene(scene)
         self._current_view.getSceneviewer().setScene(scene)
 
-    def _regionSelected(self, zincRegion):
+    def _regionSelected(self, region):
+        zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
         self._ui.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _viewReady(self):
-        self._resetRootRegion()
+        self._refreshRootRegion()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -218,19 +220,14 @@ class MainWindow(QtGui.QMainWindow):
             self._current_view.saveImage(filename, wysiwyg, width, height)
 
     def _newTriggered(self):
-        print('Implement me!')
+        self._model.new()
+        self._refreshRootRegion()
 
     def _openModel(self, filename):
         self._location = os.path.dirname(filename)
         self._model.load(filename)
         self._addRecent(filename)
-        # neonRootRegion = self._model.getNeonRootRegion()
-        # zincRootRegion = self._model.getZincRootRegion()
-        # self._ui.dockWidgetContentsRegionEditor.setRootRegion(neonRootRegion, zincRootRegion)
-        # scene = zincRootRegion.getScene()
-        # self._ui.dockWidgetContentsSceneEditor.setScene(scene)
-        # self._current_view.getSceneviewer().setScene(scene)
-        self._resetRootRegion()
+        self._refreshRootRegion()
 
         self._updateUi()
 
