@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_SceneEditorWidget(object):
     def setupUi(self, SceneEditorWidget):
         SceneEditorWidget.setObjectName("SceneEditorWidget")
