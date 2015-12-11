@@ -211,7 +211,7 @@ def processMultiFormatData(data):
     if value is None:
         try:
             value = json.loads(data)
-        except json.decoder.JSONDecodeError:
+        except json.decoder.JSONDecodeError:  # @UndefinedVariable
             pass
 
     return value

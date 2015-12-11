@@ -62,6 +62,8 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
         self._ui.checkBoxReverse.clicked.connect(self._reverseClicked)
 
+        self._ui.spinBoxDataFieldComponent.valueChanged.connect(self._dataFieldComponentValueChanged)
+
         self._ui.widget.graphicsInitialized.connect(self._graphicsInitialised)
 
     def _clearSpectrumUi(self):
@@ -230,6 +232,15 @@ class SpectrumEditorWidget(QtGui.QWidget):
             active_item = selected_items[0]
             sc = active_item.data(SPECTRUM_DATA_ROLE)
             sc.setColourReverse(self._ui.checkBoxReverse.isChecked())
+
+            self._updateComponentUi()
+
+    def _dataFieldComponentValueChanged(self, value):
+        selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
+        if len(selected_items):
+            active_item = selected_items[0]
+            sc = active_item.data(SPECTRUM_DATA_ROLE)
+            sc.setFieldComponent(value)
 
             self._updateComponentUi()
 

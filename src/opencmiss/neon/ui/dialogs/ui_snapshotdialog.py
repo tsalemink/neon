@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_SnapshotDialog(object):
     def setupUi(self, SnapshotDialog, shared_context):
         SnapshotDialog.setObjectName("SnapshotDialog")
