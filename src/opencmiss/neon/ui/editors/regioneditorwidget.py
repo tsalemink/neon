@@ -24,6 +24,7 @@ from PySide import QtCore, QtGui
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.ui.editors.ui_regioneditorwidget import Ui_RegionEditorWidget
 
+
 class RegionTreeItem(object):
 
     def __init__(self, region, row, parent=None):
@@ -57,6 +58,7 @@ class RegionTreeItem(object):
     def setInvisibleRootChild(self, rootItem):
         self._children = [rootItem]
 
+
 class RegionTreeModel(QtCore.QAbstractItemModel):
 
     def __init__(self, rootRegion, parent):
@@ -80,7 +82,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
             return 0
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
-    #def headerData(self, section, orientation, role):
+    # def headerData(self, section, orientation, role):
     #    if (orientation == QtCore.Qt.Horizontal) and (role == QtCore.Qt.DisplayRole) and (section == 0):
     #         return 'Name'
     #    return None
@@ -134,6 +136,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         item = index.internalPointer()
         return item.getRegion()
 
+
 class RegionEditorWidget(QtGui.QWidget):
 
     regionSelected = QtCore.Signal(object)
@@ -163,7 +166,7 @@ class RegionEditorWidget(QtGui.QWidget):
         self._ui.treeViewRegion.setModel(self._regionItems)
         self._ui.treeViewRegion.header().hide()
         self._ui.treeViewRegion.expandAll()
-        #if selectedIndex:
+        # if selectedIndex:
         #    self._ui.treeViewRegion.setCurrentIndex(selectedIndex)
         self._ui.treeViewRegion.show()
 

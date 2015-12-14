@@ -204,12 +204,17 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.listWidgetSpectrumComponents.addItem(item)
         item.setSelected(True)
         self._spectrumComponentItemClicked(item)
-#         self._updateComponentUi()
 
     def _deleteSpectrumComponentClicked(self):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
         if len(selected_items):
-            self._ui.listWidgetSpectrumComponents.takeItem(self._ui.listWidgetSpectrumComponents.row(selected_items[0]))
+            row = self._ui.listWidgetSpectrumComponents.row(selected_items[0])
+            item = self._ui.listWidgetSpectrumComponents.takeItem(row)
+            sc = item.data(SPECTRUM_DATA_ROLE)
+            selected_spectrums = self._ui.listWidgetSpectrums.selectedItems()
+            if len(selected_spectrums):
+                s = selected_spectrums[0].data(SPECTRUM_DATA_ROLE)
+                s.removeSpectrumcomponent(sc)
 
         self._updateComponentUi()
 

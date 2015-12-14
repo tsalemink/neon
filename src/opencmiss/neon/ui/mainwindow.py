@@ -38,6 +38,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self, self._shared_gl_widget)
 
+        self._ui.menu_View.addAction(self._ui.dockWidgetRegionEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetTessellationEditor.toggleViewAction())
