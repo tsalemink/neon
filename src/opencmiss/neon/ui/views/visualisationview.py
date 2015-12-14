@@ -17,18 +17,18 @@ from PySide import QtCore
 
 from opencmiss.neon.ui.views.base import BaseView
 
-from opencmiss.neon.ui.views.ui_defaultview import Ui_DefaultView
+from opencmiss.neon.ui.views.ui_visualisationview import Ui_VisualisationView
 
 
-class DefaultView(BaseView):
+class VisualisationView(BaseView):
 
     graphicsInitialized = QtCore.Signal()
 
     def __init__(self, parent=None):
-        super(DefaultView, self).__init__(parent)
-        self._name = 'Default'
+        super(VisualisationView, self).__init__(parent)
+        self._name = 'Visualisation'
 
-        self._ui = Ui_DefaultView()
+        self._ui = Ui_VisualisationView()
         self._ui.setupUi(self)
 
         self._makeConnections()

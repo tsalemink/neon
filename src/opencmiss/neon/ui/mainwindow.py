@@ -19,7 +19,7 @@ from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.neon.ui.views.defaultview import DefaultView
+from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         self._model = model
 
         # List of possible views
-        view_list = [DefaultView(self)]
+        view_list = [VisualisationView(self)]
         self._shared_gl_widget = view_list[0].getShareGLWidget()
 
         self._ui = Ui_MainWindow()
