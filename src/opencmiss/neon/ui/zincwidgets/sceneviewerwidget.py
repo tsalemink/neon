@@ -89,7 +89,6 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
             self._sceneviewer.setScenefilter(graphics_filter)
             region = self._context.getDefaultRegion()
             scene = region.getScene()
-            fieldmodule = region.getFieldmodule()
 
             self._sceneviewer.setScene(scene)
 
@@ -100,6 +99,12 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
 
             self.graphicsInitialized.emit()
             # initializeGL end
+
+    def sizeHint(self):
+        return QtCore.QSize(200, 400)
+
+    def minimumSizeHint(self):
+        return QtCore.QSize(20, 30)
 
     def setProjectionMode(self, mode):
         if mode == ProjectionMode.PARALLEL:
