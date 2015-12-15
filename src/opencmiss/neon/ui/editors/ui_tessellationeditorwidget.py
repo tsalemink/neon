@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_TessellationEditorWidget(object):
     def setupUi(self, TessellationEditorWidget):
         TessellationEditorWidget.setObjectName("TessellationEditorWidget")
@@ -71,6 +72,5 @@ class Ui_TessellationEditorWidget(object):
         self.pushButtonDeleteTessellation.setToolTip(QtGui.QApplication.translate("TessellationEditorWidget", "Remove spectrum", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBoxProperties.setTitle(QtGui.QApplication.translate("TessellationEditorWidget", "Properties", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBoxDefaultTessellation.setText(QtGui.QApplication.translate("TessellationEditorWidget", "Default Tessellation", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxDefaultPointsTessellation.setText(QtGui.QApplication.translate("TessellationEditorWidget", "Default Points Tessellation", None, QtGui.QApplication.UnicodeUTF8))
-
-from opencmiss.neon.ui import icons_rc
+        self.checkBoxDefaultPointsTessellation.setText(QtGui.QApplication.translate("TessellationEditorWidget", "Default Points Tessellation",
+                                                                                    None, QtGui.QApplication.UnicodeUTF8))

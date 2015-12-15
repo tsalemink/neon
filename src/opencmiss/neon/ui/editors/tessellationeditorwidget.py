@@ -173,7 +173,6 @@ class TessellationEditorWidget(QtGui.QWidget):
         t = ti.next()
         self._ui.tableWidgetTessellations.blockSignals(True)
         while t.isValid():
-            t.setMinimumDivisions([3, 5, 7])
             min_value_count, _ = t.getMinimumDivisions(0)
             ref_value_count, _ = t.getRefinementFactors(0)
             _, min_values = t.getMinimumDivisions(min_value_count)
@@ -211,7 +210,7 @@ def processMultiFormatData(data):
     if value is None:
         try:
             value = json.loads(data)
-        except json.decoder.JSONDecodeError:
+        except json.decoder.JSONDecodeError:  # @UndefinedVariable
             pass
 
     return value

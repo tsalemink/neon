@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/timeeditorwidget.ui'
 #
-# Created: Wed Dec  9 15:24:51 2015
+# Created: Fri Dec 11 10:32:56 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,13 +12,36 @@ from PySide import QtCore, QtGui
 class Ui_TimeEditorWidget(object):
     def setupUi(self, TimeEditorWidget):
         TimeEditorWidget.setObjectName("TimeEditorWidget")
-        TimeEditorWidget.resize(853, 103)
+        TimeEditorWidget.resize(853, 106)
         self.gridLayout = QtGui.QGridLayout(TimeEditorWidget)
         self.gridLayout.setObjectName("gridLayout")
         self.groupBox = QtGui.QGroupBox(TimeEditorWidget)
         self.groupBox.setObjectName("groupBox")
         self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        self.lineEditTime = QtGui.QLineEdit(self.groupBox)
+        self.lineEditTime.setObjectName("lineEditTime")
+        self.gridLayout_2.addWidget(self.lineEditTime, 0, 0, 1, 1)
+        self.horizontalSliderTime = QtGui.QSlider(self.groupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.horizontalSliderTime.sizePolicy().hasHeightForWidth())
+        self.horizontalSliderTime.setSizePolicy(sizePolicy)
+        self.horizontalSliderTime.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSliderTime.setObjectName("horizontalSliderTime")
+        self.gridLayout_2.addWidget(self.horizontalSliderTime, 0, 1, 1, 1)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_3 = QtGui.QLabel(self.groupBox)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_2.addWidget(self.label_3)
+        self.spinBoxNumberofSteps = QtGui.QSpinBox(self.groupBox)
+        self.spinBoxNumberofSteps.setMinimum(2)
+        self.spinBoxNumberofSteps.setMaximum(999999)
+        self.spinBoxNumberofSteps.setObjectName("spinBoxNumberofSteps")
+        self.horizontalLayout_2.addWidget(self.spinBoxNumberofSteps)
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label = QtGui.QLabel(self.groupBox)
@@ -57,23 +80,12 @@ class Ui_TimeEditorWidget(object):
         self.label_2.setObjectName("label_2")
         self.horizontalLayout.addWidget(self.label_2)
         self.doubleSpinBoxMaximumTime = QtGui.QDoubleSpinBox(self.groupBox)
+        self.doubleSpinBoxMaximumTime.setMinimum(-99999999.99)
         self.doubleSpinBoxMaximumTime.setMaximum(99999999.99)
         self.doubleSpinBoxMaximumTime.setProperty("value", 10.0)
         self.doubleSpinBoxMaximumTime.setObjectName("doubleSpinBoxMaximumTime")
         self.horizontalLayout.addWidget(self.doubleSpinBoxMaximumTime)
-        self.gridLayout_2.addLayout(self.horizontalLayout, 1, 2, 1, 1)
-        self.horizontalSliderTimer = QtGui.QSlider(self.groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(1)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.horizontalSliderTimer.sizePolicy().hasHeightForWidth())
-        self.horizontalSliderTimer.setSizePolicy(sizePolicy)
-        self.horizontalSliderTimer.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSliderTimer.setObjectName("horizontalSliderTimer")
-        self.gridLayout_2.addWidget(self.horizontalSliderTimer, 0, 2, 1, 1)
-        self.lineEditTimer = QtGui.QLineEdit(self.groupBox)
-        self.lineEditTimer.setObjectName("lineEditTimer")
-        self.gridLayout_2.addWidget(self.lineEditTimer, 0, 1, 1, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout, 1, 1, 1, 1)
         self.gridLayout.addWidget(self.groupBox, 0, 1, 1, 1)
 
         self.retranslateUi(TimeEditorWidget)
@@ -82,5 +94,6 @@ class Ui_TimeEditorWidget(object):
     def retranslateUi(self, TimeEditorWidget):
         TimeEditorWidget.setWindowTitle(QtGui.QApplication.translate("TimeEditorWidget", "Time Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("TimeEditorWidget", "Timer", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("TimeEditorWidget", "# of steps:", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("TimeEditorWidget", "Min.:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("TimeEditorWidget", "Max.:", None, QtGui.QApplication.UnicodeUTF8))

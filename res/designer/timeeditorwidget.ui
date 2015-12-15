@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>853</width>
-    <height>103</height>
+    <height>106</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,44 @@
       <string>Timer</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="2">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="lineEditTime"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSlider" name="horizontalSliderTime">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string># of steps:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBoxNumberofSteps">
+          <property name="minimum">
+           <number>2</number>
+          </property>
+          <property name="maximum">
+           <number>999999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label">
@@ -104,6 +141,9 @@
         </item>
         <item>
          <widget class="QDoubleSpinBox" name="doubleSpinBoxMaximumTime">
+          <property name="minimum">
+           <double>-99999999.989999994635582</double>
+          </property>
           <property name="maximum">
            <double>99999999.989999994635582</double>
           </property>
@@ -113,22 +153,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="0" column="2">
-       <widget class="QSlider" name="horizontalSliderTimer">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditTimer"/>
       </item>
      </layout>
     </widget>
