@@ -43,11 +43,13 @@ class VisualisationView(BaseView):
         return self._ui.widget.getSceneviewer()
 
     def saveImage(self, filename, wysiwyg, width, height):
-        self._ui.widget.makeCurrent()
         sv = self._ui.widget.getSceneviewer()
         if isinstance(filename, unicode):
             filename = str(filename)
-        sv.writeImageToFile(filename, wysiwyg, width, height, 0, 0)
+        if wysiwyg:
+            width = self._ui.widget.width()
+            height = self._ui.widget.height()
+        sv.writeImageToFile(filename, wysiwyg, width, height, 8, 0)
 
     def getShareGLWidget(self):
         return self._ui.widget

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/snapshotdialog.ui'
 #
-# Created: Tue Dec  1 15:08:10 2015
+# Created: Tue Dec 15 14:53:49 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,6 +25,7 @@ class Ui_SnapshotDialog(object):
         self.gridLayout.addWidget(self.label_3, 2, 0, 1, 1)
         self.spinBoxHeight = QtGui.QSpinBox(self.groupBox)
         self.spinBoxHeight.setEnabled(False)
+        self.spinBoxHeight.setMaximum(999999)
         self.spinBoxHeight.setObjectName("spinBoxHeight")
         self.gridLayout.addWidget(self.spinBoxHeight, 2, 1, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
@@ -44,6 +45,7 @@ class Ui_SnapshotDialog(object):
         self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
         self.spinBoxWidth = QtGui.QSpinBox(self.groupBox)
         self.spinBoxWidth.setEnabled(False)
+        self.spinBoxWidth.setMaximum(999999)
         self.spinBoxWidth.setObjectName("spinBoxWidth")
         self.gridLayout.addWidget(self.spinBoxWidth, 1, 1, 1, 1)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
