@@ -182,9 +182,10 @@ class RegionEditorWidget(QtGui.QWidget):
 
     def _regionChange(self, changedRegion, treeChange):
         if treeChange:
-            self._regionItems.reconstructRegionTree(changedRegion)
-            self._ui.treeViewRegion.setModel(self._regionItems)
-            self._ui.treeViewRegion.expandAll()
+            self._buildTree()
+            # self._regionItems.reconstructRegionTree(changedRegion)
+            # self._ui.treeViewRegion.setModel(self._regionItems)
+            # self._ui.treeViewRegion.expandAll()
             # in future, reselect current region after tree change; for now just select changedRegion
             self.regionSelected.emit(changedRegion)
 
