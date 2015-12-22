@@ -22,6 +22,7 @@ class NeonDocument(object):
         self._zincContext = zincContext
         zincRootRegion = zincContext.createRegion()
         self._rootRegion = NeonRegion(name=None, zincRegion=zincRootRegion, parent=None)
+        self._rootRegion._document = self
 
     def deserialize(self, dictInput):
         '''

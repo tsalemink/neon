@@ -109,6 +109,15 @@
    </attribute>
    <widget class="RegionEditorWidget" name="dockWidgetContentsRegionEditor"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetModelSourcesEditor">
+   <property name="windowTitle">
+    <string>Model Sources Editor</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="ModelSourcesEditorWidget" name="dockWidgetContentsModelSourcesEditor"/>
+  </widget>
   <widget class="QDockWidget" name="dockWidgetSceneEditor">
    <property name="windowTitle">
     <string>&amp;Scene Editor</string>
@@ -231,6 +240,28 @@
     <string>&amp;About</string>
    </property>
   </action>
+  <action name="action_RegionEditor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Region Editor</string>
+   </property>
+  </action>
+  <action name="action_ModelSourcesEditor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Model Sources Editor</string>
+   </property>
+  </action>
   <action name="action_SceneEditor">
    <property name="checkable">
     <bool>true</bool>
@@ -277,6 +308,12 @@
    <class>RegionEditorWidget</class>
    <extends>QWidget</extends>
    <header>opencmiss/neon/ui/editors/regioneditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModelSourcesEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>opencmiss/neon/ui/editors/modelsourceseditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

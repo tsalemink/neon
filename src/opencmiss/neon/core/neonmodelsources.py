@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import os
 from opencmiss.zinc.streamregion import StreaminformationRegion
 
 
@@ -21,13 +22,24 @@ class NeonModelSourceFile(object):
     def __init__(self, fileName=None, dictInput=None):
         self._time = None
         self._format = None
-        if fileName:
+        self._edit = False
+        self._loaded = False
+        if fileName is not None:
             self._fileName = fileName
         else:
             self._deserialize(dictInput)
 
+    def getType(self):
+        return "FILE"
+
     def addToZincStreaminformationRegion(self, streamInfo):
+        if self._edit:
+            return
+        if not self._fileName:
+            self._edit = True
+            return
         resource = streamInfo.createStreamresourceFile(self._fileName)
+        self._loaded = True
         if self._time is not None:
             streamInfo.setResourceAttributeReal(resource, StreaminformationRegion.ATTRIBUTE_TIME, self._time)
         #if self._format is not None:
@@ -35,8 +47,35 @@ class NeonModelSourceFile(object):
         #        #can't set per-resource file format
         #        #streamInfo.setResourceFileFormat(resource, StreaminformationRegion.FILE_FORMAT_EX)
 
+    def getFileName(self):
+        return self._fileName
+
+    def setFileName(self, fileName):
+        self._fileName = fileName
+
+    def getTime(self):
+        return self._time
+
     def setTime(self, time):
         self._time = time
+
+    def getDisplayName(self):
+        editText = "[To Apply] " if self._edit else ""
+        if self._time is None:
+            timeText = ""
+        else:
+            timeText = ", time " + repr(self._time)
+        displayFileName = os.path.basename(self._fileName)
+        return editText + "File " + displayFileName + timeText
+
+    def isLoaded(self):
+        return self._loaded
+
+    def isEdit(self):
+        return self._edit
+
+    def setEdit(self, edit):
+        self._edit = edit
 
     def _deserialize(self, dictInput):
         self._fileName = str(dictInput["FileName"])
@@ -44,15 +83,18 @@ class NeonModelSourceFile(object):
             self._time = dictInput["Time"]
         if "Format" in dictInput:
             self._format = dictInput["Format"]
+        if "Edit" in dictInput:
+            self._edit = dictInput["Edit"]
 
     def serialize(self):
         dictOutput = {}
-        dictOutput["Type"] = "FILE"
+        dictOutput["Type"] = self.getType()
         dictOutput["FileName"] = self._fileName
         if self._time is not None:
             dictOutput["Time"] = self._time
+        if self._edit:
+            dictOutput["Edit"] = True
         return dictOutput
-
 
 def deserializeNeonModelSource(dictInput):
     '''
