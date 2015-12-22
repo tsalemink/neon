@@ -39,6 +39,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.setupUi(self, self._shared_gl_widget)
 
         self._ui.menu_View.addAction(self._ui.dockWidgetRegionEditor.toggleViewAction())
+        self._ui.menu_View.addAction(self._ui.dockWidgetModelSourcesEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSceneEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetSpectrumEditor.toggleViewAction())
         self._ui.menu_View.addAction(self._ui.dockWidgetTessellationEditor.toggleViewAction())
@@ -100,6 +101,7 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('location', self._location)
         settings.setValue('geometry', self.saveGeometry())
         settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
+        settings.setValue('regioneditor_visibility', self._ui.action_RegionEditor.isChecked())
         settings.setValue('sceneeditor_visibility', self._ui.action_SceneEditor.isChecked())
         settings.setValue('spectrumeditor_visibility', self._ui.action_SpectrumEditor.isChecked())
 
@@ -127,6 +129,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self._location = settings.value('location', QtCore.QDir.homePath())
 
+        self._ui.action_RegionEditor.setChecked(settings.value('regioneditor_visibility', 'true') == 'true')
         self._ui.action_SceneEditor.setChecked(settings.value('sceneeditor_visibility', 'true') == 'true')
         self._ui.action_SpectrumEditor.setChecked(settings.value('spectrumeditor_visibility', 'true') == 'true')
         size = settings.beginReadArray('recents')
@@ -171,16 +174,28 @@ class MainWindow(QtGui.QMainWindow):
             self._ui.menu_View.addAction(action_view)
             self._current_view = v
 
+    def _regionChange(self, changedRegion, treeChange):
+        if treeChange and (changedRegion is self._model.getDocument().getRootRegion()):
+            # following will need changing once there are multiple views:
+            defaultView = self._current_view
+            # pass the new root region's scene to the sceneviewer
+            sceneviewer = defaultView._ui.widget.getSceneviewer()
+            zincRootRegion = changedRegion.getZincRegion()
+            sceneviewer.setScene(zincRootRegion.getScene())
+
     def _refreshRootRegion(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
+        rootRegion.connectRegionChange(self._regionChange)
         self._ui.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
+        self._ui.dockWidgetContentsModelSourcesEditor.setRegion(rootRegion)
         zincRootRegion = rootRegion.getZincRegion()
         scene = zincRootRegion.getScene()
         self._ui.dockWidgetContentsSceneEditor.setScene(scene)
         self._current_view.getSceneviewer().setScene(scene)
 
     def _regionSelected(self, region):
+        self._ui.dockWidgetContentsModelSourcesEditor.setRegion(region)
         zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
         self._ui.dockWidgetContentsSceneEditor.setScene(scene)

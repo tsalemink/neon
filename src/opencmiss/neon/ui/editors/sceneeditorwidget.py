@@ -190,7 +190,7 @@ class SceneEditorWidget(QtGui.QWidget):
 
     def deleteGraphicsClicked(self):
         '''
-        Add a new chosen graphics type
+        Delete the current graphics type
         '''
         if not self._scene:
             return
@@ -201,6 +201,8 @@ class SceneEditorWidget(QtGui.QWidget):
                 nextGraphics = self._scene.getPreviousGraphics(graphics)
             if not (nextGraphics and nextGraphics.isValid()):
                 nextGraphics = self._scene.getFirstGraphics()
+            if nextGraphics == graphics:
+                nextGraphics = None
             self.ui.graphics_editor.setGraphics(nextGraphics)
             self._scene.removeGraphics(graphics)
             self._buildGraphicsList()

@@ -31,10 +31,13 @@ class RegionTreeItem(object):
         self._region = region
         self._row = row
         self._parent = parent
+        self._buildChildItems()
+
+    def _buildChildItems(self):
         self._children = []
-        childCount = region.getChildCount()
+        childCount = self._region.getChildCount()
         for childRow in range(childCount):
-            childRegion = region.getChild(childRow)
+            childRegion = self._region.getChild(childRow)
             childItem = RegionTreeItem(childRegion, childRow, self)
             self._children.append(childItem)
 
@@ -58,6 +61,21 @@ class RegionTreeItem(object):
     def setInvisibleRootChild(self, rootItem):
         self._children = [rootItem]
 
+    def _findItemForRegion(self, region):
+        if self._region is region:
+            return self
+        for child in self._children:
+            item = child._findItemForRegion(region)
+            if item:
+                return item
+        return None
+
+    def rebuildRegionTreeItems(self, region):
+        item = self._findItemForRegion(region)
+        if item:
+            item._buildChildItems()
+        else:
+            print("Missing item for region ", region.getDisplayName())
 
 class RegionTreeModel(QtCore.QAbstractItemModel):
 
@@ -71,8 +89,16 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
             self._invisibleRootItem.setInvisibleRootChild(rootItem)
 
     def setRootRegion(self, rootRegion):
-        rootItem = RegionTreeItem(rootRegion, 0)
+        self._rootRegion = rootRegion
+        rootItem = RegionTreeItem(rootRegion, self._invisibleRootItem)
         self._invisibleRootItem.setInvisibleRootChild(rootItem)
+
+    def reconstructRegionTree(self, region):
+        parentRegion = region.getParent()
+        if not parentRegion:
+            self.setRootRegion(region)
+        else:
+            item = self._invisibleRootItem.rebuildRegionTreeItems(region)
 
     def columnCount(self, parentIndex):
         return 1
@@ -123,11 +149,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         item = index.internalPointer()
         if (role == QtCore.Qt.DisplayRole) and (index.column() == 0):
             region = item.getRegion()
-            regionName = region.getName()
-            if regionName:
-                return regionName
-            else:
-                return "/"
+            return region.getDisplayName()
         return None
 
     def getRegionAtIndex(self, index):
@@ -150,14 +172,28 @@ class RegionEditorWidget(QtGui.QWidget):
         self._ui.setupUi(self)
         self._makeConnections()
 
+    def getCurrentRegion(self):
+        currentIndex = self._ui.treeViewRegion.currentIndex()
+        region = self._regionItems.getRegionAtIndex(currentIndex)
+        return region
+
     def _makeConnections(self):
         self._ui.treeViewRegion.clicked.connect(self._regionTreeItemClicked)
+
+    def _regionChange(self, changedRegion, treeChange):
+        if treeChange:
+            self._regionItems.reconstructRegionTree(changedRegion)
+            self._ui.treeViewRegion.setModel(self._regionItems)
+            self._ui.treeViewRegion.expandAll()
+            # in future, reselect current region after tree change; for now just select changedRegion
+            self.regionSelected.emit(changedRegion)
 
     def setRootRegion(self, rootRegion):
         '''
         :param rootRegion: The root NeonRegion
         '''
         self._rootRegion = rootRegion
+        self._rootRegion.connectRegionChange(self._regionChange)
         # rebuild tree
         self._buildTree()
 
