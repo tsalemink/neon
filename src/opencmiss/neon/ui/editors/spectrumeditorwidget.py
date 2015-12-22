@@ -62,6 +62,8 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
         self._ui.checkBoxReverse.clicked.connect(self._reverseClicked)
 
+        self._ui.spinBoxDataFieldComponent.valueChanged.connect(self._dataFieldComponentValueChanged)
+
         self._ui.widget.graphicsInitialized.connect(self._graphicsInitialised)
 
     def _clearSpectrumUi(self):
@@ -202,12 +204,17 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.listWidgetSpectrumComponents.addItem(item)
         item.setSelected(True)
         self._spectrumComponentItemClicked(item)
-#         self._updateComponentUi()
 
     def _deleteSpectrumComponentClicked(self):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
         if len(selected_items):
-            self._ui.listWidgetSpectrumComponents.takeItem(self._ui.listWidgetSpectrumComponents.row(selected_items[0]))
+            row = self._ui.listWidgetSpectrumComponents.row(selected_items[0])
+            item = self._ui.listWidgetSpectrumComponents.takeItem(row)
+            sc = item.data(SPECTRUM_DATA_ROLE)
+            selected_spectrums = self._ui.listWidgetSpectrums.selectedItems()
+            if len(selected_spectrums):
+                s = selected_spectrums[0].data(SPECTRUM_DATA_ROLE)
+                s.removeSpectrumcomponent(sc)
 
         self._updateComponentUi()
 
@@ -230,6 +237,15 @@ class SpectrumEditorWidget(QtGui.QWidget):
             active_item = selected_items[0]
             sc = active_item.data(SPECTRUM_DATA_ROLE)
             sc.setColourReverse(self._ui.checkBoxReverse.isChecked())
+
+            self._updateComponentUi()
+
+    def _dataFieldComponentValueChanged(self, value):
+        selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
+        if len(selected_items):
+            active_item = selected_items[0]
+            sc = active_item.data(SPECTRUM_DATA_ROLE)
+            sc.setFieldComponent(value)
 
             self._updateComponentUi()
 

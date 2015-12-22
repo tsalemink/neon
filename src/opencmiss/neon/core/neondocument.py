@@ -16,6 +16,7 @@
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 
+
 class NeonDocument(object):
 
     def __init__(self, zincContext):
@@ -32,7 +33,7 @@ class NeonDocument(object):
         if not (("OpenCMISS-Neon Version" in dictInput) and ("RootRegion" in dictInput)):
             print("Invalid format for Neon")
             return False
-        inputVersion = dictInput["OpenCMISS-Neon Version"]
+        _ = dictInput["OpenCMISS-Neon Version"]
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
         # zincRegion.beginHierarchicalChange()
         result = True

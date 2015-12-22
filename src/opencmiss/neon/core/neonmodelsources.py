@@ -42,7 +42,7 @@ class NeonModelSourceFile(object):
         self._loaded = True
         if self._time is not None:
             streamInfo.setResourceAttributeReal(resource, StreaminformationRegion.ATTRIBUTE_TIME, self._time)
-        #if self._format is not None:
+        # if self._format is not None:
         #    if format == "EX":
         #        #can't set per-resource file format
         #        #streamInfo.setResourceFileFormat(resource, StreaminformationRegion.FILE_FORMAT_EX)
@@ -104,9 +104,9 @@ def deserializeNeonModelSource(dictInput):
         print("Model source is missing Type")
         return None
     modelSource = None
-    typeString = dictInput["Type"].upper() # wasn't originally uppercase
+    typeString = dictInput["Type"].upper()  # wasn't originally uppercase
     if typeString == "FILE":
-        modelSource = NeonModelSourceFile(dictInput = dictInput)
+        modelSource = NeonModelSourceFile(dictInput=dictInput)
     else:
         print("Model source has unrecognised Type \"" + typeString + "\"")
     return modelSource

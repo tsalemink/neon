@@ -14,7 +14,8 @@
    limitations under the License.
 '''
 import json
-from opencmiss.neon.core.neonmodelsources import NeonModelSourceFile, deserializeNeonModelSource
+
+from opencmiss.neon.core.neonmodelsources import deserializeNeonModelSource
 from opencmiss.zinc.status import OK as ZINC_OK
 
 class NeonRegion(object):

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/graphicseditorwidget.ui'
 #
-# Created: Tue Dec  1 10:14:51 2015
+# Created: Thu Dec 10 15:22:41 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.face_combobox.sizePolicy().hasHeightForWidth())
         self.face_combobox.setSizePolicy(sizePolicy)
+        self.face_combobox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.face_combobox.setObjectName("face_combobox")
         self.face_combobox.addItem("")
         self.face_combobox.addItem("")
@@ -63,6 +64,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.material_chooser.sizePolicy().hasHeightForWidth())
         self.material_chooser.setSizePolicy(sizePolicy)
+        self.material_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.material_chooser.setObjectName("material_chooser")
         self.formLayout_3.setWidget(4, QtGui.QFormLayout.FieldRole, self.material_chooser)
         self.data_field_label = QtGui.QLabel(self.general_groupbox)
@@ -75,6 +77,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setHeightForWidth(self.data_field_chooser.sizePolicy().hasHeightForWidth())
         self.data_field_chooser.setSizePolicy(sizePolicy)
         self.data_field_chooser.setEditable(False)
+        self.data_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.data_field_chooser.setObjectName("data_field_chooser")
         self.formLayout_3.setWidget(7, QtGui.QFormLayout.FieldRole, self.data_field_chooser)
         self.wireframe_checkbox = QtGui.QCheckBox(self.general_groupbox)
@@ -100,6 +103,7 @@ class Ui_GraphicsEditorWidget(object):
         self.exterior_checkbox.setObjectName("exterior_checkbox")
         self.formLayout_3.setWidget(2, QtGui.QFormLayout.LabelRole, self.exterior_checkbox)
         self.coordinate_field_chooser = FieldChooserWidget(self.general_groupbox)
+        self.coordinate_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.coordinate_field_chooser.setObjectName("coordinate_field_chooser")
         self.formLayout_3.setWidget(1, QtGui.QFormLayout.FieldRole, self.coordinate_field_chooser)
         self.verticalLayout.addWidget(self.general_groupbox)
@@ -130,6 +134,7 @@ class Ui_GraphicsEditorWidget(object):
         self.isoscalar_field_label.setObjectName("isoscalar_field_label")
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.isoscalar_field_label)
         self.isoscalar_field_chooser = FieldChooserWidget(self.contours_groupbox)
+        self.isoscalar_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.isoscalar_field_chooser.setObjectName("isoscalar_field_chooser")
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.isoscalar_field_chooser)
         self.isovalues_label = QtGui.QLabel(self.contours_groupbox)
@@ -150,6 +155,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.stream_vector_field_chooser.sizePolicy().hasHeightForWidth())
         self.stream_vector_field_chooser.setSizePolicy(sizePolicy)
+        self.stream_vector_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.stream_vector_field_chooser.setObjectName("stream_vector_field_chooser")
         self.formLayout_5.setWidget(0, QtGui.QFormLayout.FieldRole, self.stream_vector_field_chooser)
         self.streamlines_track_length_label = QtGui.QLabel(self.streamlines_groupbox)
@@ -162,11 +168,13 @@ class Ui_GraphicsEditorWidget(object):
         self.streamline_track_direction_label.setObjectName("streamline_track_direction_label")
         self.formLayout_5.setWidget(2, QtGui.QFormLayout.LabelRole, self.streamline_track_direction_label)
         self.streamlines_track_direction_combobox = QtGui.QComboBox(self.streamlines_groupbox)
+        self.streamlines_track_direction_combobox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.streamlines_track_direction_combobox.setObjectName("streamlines_track_direction_combobox")
         self.streamlines_track_direction_combobox.addItem("")
         self.streamlines_track_direction_combobox.addItem("")
         self.formLayout_5.setWidget(2, QtGui.QFormLayout.FieldRole, self.streamlines_track_direction_combobox)
         self.streamlines_colour_data_type_combobox = QtGui.QComboBox(self.streamlines_groupbox)
+        self.streamlines_colour_data_type_combobox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.streamlines_colour_data_type_combobox.setObjectName("streamlines_colour_data_type_combobox")
         self.streamlines_colour_data_type_combobox.addItem("")
         self.streamlines_colour_data_type_combobox.addItem("")
@@ -186,6 +194,7 @@ class Ui_GraphicsEditorWidget(object):
         self.line_shape_label.setObjectName("line_shape_label")
         self.formLayout_4.setWidget(0, QtGui.QFormLayout.LabelRole, self.line_shape_label)
         self.line_shape_combobox = QtGui.QComboBox(self.lines_groupbox)
+        self.line_shape_combobox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.line_shape_combobox.setObjectName("line_shape_combobox")
         self.line_shape_combobox.addItem("")
         self.line_shape_combobox.addItem("")
@@ -212,6 +221,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_orientation_scale_field_chooser.sizePolicy().hasHeightForWidth())
         self.line_orientation_scale_field_chooser.setSizePolicy(sizePolicy)
+        self.line_orientation_scale_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.line_orientation_scale_field_chooser.setObjectName("line_orientation_scale_field_chooser")
         self.formLayout_4.setWidget(2, QtGui.QFormLayout.FieldRole, self.line_orientation_scale_field_chooser)
         self.line_scale_factors_label = QtGui.QLabel(self.lines_groupbox)
@@ -248,6 +258,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.glyph_chooser.sizePolicy().hasHeightForWidth())
         self.glyph_chooser.setSizePolicy(sizePolicy)
+        self.glyph_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.glyph_chooser.setObjectName("glyph_chooser")
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.glyph_chooser)
         self.point_base_size_label = QtGui.QLabel(self.points_groupbox)
@@ -270,6 +281,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.point_orientation_scale_field_chooser.sizePolicy().hasHeightForWidth())
         self.point_orientation_scale_field_chooser.setSizePolicy(sizePolicy)
+        self.point_orientation_scale_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.point_orientation_scale_field_chooser.setObjectName("point_orientation_scale_field_chooser")
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.point_orientation_scale_field_chooser)
         self.point_scale_factors_label = QtGui.QLabel(self.points_groupbox)
@@ -284,6 +296,7 @@ class Ui_GraphicsEditorWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_field_chooser.sizePolicy().hasHeightForWidth())
         self.label_field_chooser.setSizePolicy(sizePolicy)
+        self.label_field_chooser.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.label_field_chooser.setObjectName("label_field_chooser")
         self.formLayout.setWidget(7, QtGui.QFormLayout.FieldRole, self.label_field_chooser)
         self.point_scale_factors_lineedit = QtGui.QLineEdit(self.points_groupbox)
@@ -306,6 +319,7 @@ class Ui_GraphicsEditorWidget(object):
         self.sampling_divisions_label.setObjectName("sampling_divisions_label")
         self.formLayout_6.setWidget(1, QtGui.QFormLayout.LabelRole, self.sampling_divisions_label)
         self.sampling_mode_combobox = QtGui.QComboBox(self.sampling_groupbox)
+        self.sampling_mode_combobox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.sampling_mode_combobox.setObjectName("sampling_mode_combobox")
         self.sampling_mode_combobox.addItem("")
         self.sampling_mode_combobox.addItem("")
@@ -393,6 +407,6 @@ class Ui_GraphicsEditorWidget(object):
         self.sampling_mode_combobox.setItemText(1, QtGui.QApplication.translate("GraphicsEditorWidget", "cell corners", None, QtGui.QApplication.UnicodeUTF8))
         self.sampling_mode_label.setText(QtGui.QApplication.translate("GraphicsEditorWidget", "Mode:", None, QtGui.QApplication.UnicodeUTF8))
 
-from opencmiss.neon.ui.zincwidgets.glyphchooserwidget import GlyphChooserWidget
 from opencmiss.neon.ui.zincwidgets.fieldchooserwidget import FieldChooserWidget
 from opencmiss.neon.ui.zincwidgets.materialchooserwidget import MaterialChooserWidget
+from opencmiss.neon.ui.zincwidgets.glyphchooserwidget import GlyphChooserWidget
