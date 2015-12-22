@@ -13,26 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide  import QtGui
+
+from opencmiss.neon.ui.problems.ui_ventilationwidget import Ui_VenitlationWidget
 
 
-class BaseView(QtGui.QWidget):
+class Ventilation(QtGui.QWidget):
 
-    def __init__(self, parent):
-        super(BaseView, self).__init__(parent)
-        self._name = 'Base View'
-
-    def name(self):
-        return self._name
-
-    def setContext(self, context):
-        raise NotImplementedError()
-
-    def getDependentEditors(self):
-        return []
-
-    def serialise(self):
-        return ''
-
-    def deserialise(self, string):
-        pass
+    def __init__(self, parent=None):
+        super(Ventilation, self).__init__(parent)
+        self._ui = Ui_VenitlationWidget()
+        self._ui.setupUi(self)

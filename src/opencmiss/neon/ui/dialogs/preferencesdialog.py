@@ -15,24 +15,13 @@
 '''
 from PySide import QtGui
 
+from opencmiss.neon.ui.dialogs.ui_preferencesdialog import Ui_PreferencesDialog
 
-class BaseView(QtGui.QWidget):
+
+class PreferencesDialog(QtGui.QDialog):
 
     def __init__(self, parent):
-        super(BaseView, self).__init__(parent)
-        self._name = 'Base View'
+        super(PreferencesDialog, self).__init__(parent)
 
-    def name(self):
-        return self._name
-
-    def setContext(self, context):
-        raise NotImplementedError()
-
-    def getDependentEditors(self):
-        return []
-
-    def serialise(self):
-        return ''
-
-    def deserialise(self, string):
-        pass
+        self._ui = Ui_PreferencesDialog()
+        self._ui.setupUi(self)

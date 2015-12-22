@@ -14,8 +14,8 @@
    <string>OpenCMISS-Neon</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/neon/images/icons/neon_icon.png</normaloff>:/neon/images/icons/neon_icon.png</iconset>
+   <iconset resource="../icons.qrc">
+    <normaloff>:/neon/images/icons/neon-icon.png</normaloff>:/neon/images/icons/neon-icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -52,6 +52,8 @@
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
     <addaction name="action_Snapshot"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreferences"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -100,51 +102,6 @@
    <addaction name="separator"/>
    <addaction name="action_Snapshot"/>
   </widget>
-  <widget class="QDockWidget" name="dockWidgetRegionEditor">
-   <property name="windowTitle">
-    <string>Region Editor</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="RegionEditorWidget" name="dockWidgetContentsRegionEditor"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidgetSceneEditor">
-   <property name="windowTitle">
-    <string>&amp;Scene Editor</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="SceneEditorWidget" name="dockWidgetContentsSceneEditor"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidgetSpectrumEditor">
-   <property name="windowTitle">
-    <string>Spectr&amp;um Editor</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="SpectrumEditorWidget" name="dockWidgetContentsSpectrumEditor"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidgetTessellationEditor">
-   <property name="windowTitle">
-    <string>&amp;Tessellation Editor</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="TessellationEditorWidget" name="dockWidgetContentsTessellationEditor"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidgetTimeEditor">
-   <property name="windowTitle">
-    <string>Ti&amp;me Editor</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>8</number>
-   </attribute>
-   <widget class="TimeEditorWidget" name="dockWidgetContentsTimeEditor"/>
-  </widget>
   <action name="action_Open">
    <property name="icon">
     <iconset resource="../icons.qrc">
@@ -192,7 +149,7 @@
      <normaloff>:/neon/images/icons/devices-camera-photo-icon.png</normaloff>:/neon/images/icons/devices-camera-photo-icon.png</iconset>
    </property>
    <property name="text">
-    <string>S&amp;napshot</string>
+    <string>Sna&amp;pshot</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -271,39 +228,16 @@
     <string>&amp;New</string>
    </property>
   </action>
+  <action name="actionPreferences">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/neon/images/icons/applications-system-icon.png</normaloff>:/neon/images/icons/applications-system-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>RegionEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/editors/regioneditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SceneEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/editors/sceneeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SpectrumEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/editors/spectrumeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TessellationEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/editors/tessellationeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TimeEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>opencmiss/neon/ui/editors/timeeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../icons.qrc"/>
  </resources>

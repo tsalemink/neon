@@ -17,6 +17,8 @@ import json
 import os
 from opencmiss.neon.core.neondocument import NeonDocument
 from opencmiss.zinc.context import Context
+from opencmiss.neon.core.problems.ventilation import Ventilation
+from opencmiss.neon.core.problemmodel import ProblemModel
 
 
 class MainApplication(object):
@@ -37,6 +39,15 @@ class MainApplication(object):
         glyphmodule.defineStandardGlyphs()
 
         self._document = NeonDocument(self._zincContext)
+
+        self._problem_model = ProblemModel()
+        self._setupModel()
+
+    def _setupModel(self):
+        row = self._problem_model.rowCount()
+        if self._problem_model.insertRow(row):
+            index = self._problem_model.index(row)
+            self._problem_model.setData(index, Ventilation())
 
     def getContext(self):
         return self._zincContext
@@ -93,3 +104,6 @@ class MainApplication(object):
 
     def getDocument(self):
         return self._document
+
+    def getProblemModel(self):
+        return self._problem_model

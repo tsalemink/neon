@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/problemview.ui'
 #
-# Created: Tue Dec 15 11:45:43 2015
+# Created: Wed Dec 16 10:19:46 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,9 @@ class Ui_ProblemView(object):
         self.lineEditFilter = QtGui.QLineEdit(self.widget)
         self.lineEditFilter.setObjectName("lineEditFilter")
         self.verticalLayout.addWidget(self.lineEditFilter)
-        self.listWidgetProblems = QtGui.QListWidget(self.widget)
-        self.listWidgetProblems.setObjectName("listWidgetProblems")
-        self.verticalLayout.addWidget(self.listWidgetProblems)
+        self.listViewProblems = QtGui.QListView(self.widget)
+        self.listViewProblems.setObjectName("listViewProblems")
+        self.verticalLayout.addWidget(self.listViewProblems)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -39,12 +39,6 @@ class Ui_ProblemView(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.stackedWidgetProblemView = QtGui.QStackedWidget(self.splitter)
         self.stackedWidgetProblemView.setObjectName("stackedWidgetProblemView")
-        self.page = QtGui.QWidget()
-        self.page.setObjectName("page")
-        self.stackedWidgetProblemView.addWidget(self.page)
-        self.page_2 = QtGui.QWidget()
-        self.page_2.setObjectName("page_2")
-        self.stackedWidgetProblemView.addWidget(self.page_2)
         self.horizontalLayout_2.addWidget(self.splitter)
 
         self.retranslateUi(ProblemView)

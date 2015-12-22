@@ -13,26 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from opencmiss.neon.ui.views.base import BaseView
+from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
 
-class BaseView(QtGui.QWidget):
+class SimulationView(BaseView):
 
-    def __init__(self, parent):
-        super(BaseView, self).__init__(parent)
-        self._name = 'Base View'
+    def __init__(self, parent=None):
+        super(SimulationView, self).__init__(parent)
+        self._name = 'Simulation'
 
-    def name(self):
-        return self._name
+        self._ui = Ui_SimulationView()
+        self._ui.setupUi(self)
 
     def setContext(self, context):
-        raise NotImplementedError()
-
-    def getDependentEditors(self):
-        return []
-
-    def serialise(self):
-        return ''
-
-    def deserialise(self, string):
         pass

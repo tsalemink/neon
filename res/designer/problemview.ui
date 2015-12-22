@@ -29,7 +29,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="listWidgetProblems"/>
+        <widget class="QListView" name="listViewProblems"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -57,10 +57,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QStackedWidget" name="stackedWidgetProblemView">
-      <widget class="QWidget" name="page"/>
-      <widget class="QWidget" name="page_2"/>
-     </widget>
+     <widget class="QStackedWidget" name="stackedWidgetProblemView"/>
     </widget>
    </item>
   </layout>

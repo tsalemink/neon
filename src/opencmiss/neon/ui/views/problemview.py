@@ -13,6 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import importlib
+
+from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.views.base import BaseView
 
@@ -28,10 +31,31 @@ class ProblemView(BaseView):
         self._ui = Ui_ProblemView()
         self._ui.setupUi(self)
 
+        self._selection_model = None
+
         self._makeConnections()
 
     def _makeConnections(self):
         pass
 
+    def _selectionChanged(self, current_index, previous_index):
+        self._ui.stackedWidgetProblemView.setCurrentIndex(current_index.row())
+
+    def _setupProblems(self, model):
+        for row in range(model.rowCount()):
+            index = model.index(row)
+            name = model.data(index, QtCore.Qt.DisplayRole)
+            module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.ui.problems')
+            class_ = getattr(module_name, name)
+            view = class_(self._ui.stackedWidgetProblemView)
+            self._ui.stackedWidgetProblemView.addWidget(view)
+
     def setContext(self, context):
         pass
+
+    def setModel(self, model):
+        self._ui.listViewProblems.setModel(model)
+        self._setupProblems(model)
+        self._selection_model = self._ui.listViewProblems.selectionModel()
+        self._selection_model.currentChanged.connect(self._selectionChanged)
+        self._selection_model.setCurrentIndex(model.index(0), QtGui.QItemSelectionModel.Select)
