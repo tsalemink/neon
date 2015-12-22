@@ -54,12 +54,6 @@ class NeonRegion(object):
         for callback in rootRegion._regionChangeCallbacks:
             callback(self, treeChange)
 
-    def _getDescendantCount(self):
-        descendantCount = len(self._children)
-        for child in self._children:
-            descendantCount += child._getDescendantCount()
-        return descendantCount
-
     def connectRegionChange(self, callableObject):
         """
         Request callbacks on region tree changes.
@@ -77,17 +71,14 @@ class NeonRegion(object):
         return result
 
     def _loadModelSource(self, modelSource):
-        descendantCountBefore = self._getDescendantCount()
         streamInfo = self._zincRegion.createStreaminformationRegion()
         modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
             print("Failed to read model source")
         else:
-            # discover new child regions read from model sources:
-            self.deserialize({})
-            descendantCountAfter = self._getDescendantCount()
-            self._informRegionChange(descendantCountAfter > descendantCountBefore)
+            newRegionCount = self._discoverNewZincRegions()
+            self._informRegionChange(newRegionCount > 0)
 
     def _loadModelSources(self):
         streamInfo = self._zincRegion.createStreaminformationRegion()
@@ -157,14 +148,31 @@ class NeonRegion(object):
                 neonChild._ancestorModelSourceCreated = ancestorModelSourceCreated
                 self._children.append(neonChild)
                 neonChild.deserialize(dictChild)
-        # ensure any new zinc regions (read from model sources) are added to neon region, recurse to find subregions
+        self._discoverNewZincRegions()
+
+    def _findChildByName(self, name):
+        for child in self._children:
+            if child._name == name:
+                return child
+        return None
+
+    def _discoverNewZincRegions(self):
+        """
+        Ensure there are Neon regions for every Zinc Region in tree
+        :return: Number of new descendant regions created
+        """
+        newRegionCount = 0
+        zincChildRef = self._zincRegion.getFirstChild()
         while zincChildRef.isValid():
             childName = zincChildRef.getName()
-            neonChild = NeonRegion(childName, zincChildRef, self)
-            neonChild._ancestorModelSourceCreated = True
-            self._children.append(neonChild)
-            neonChild.deserialize({})
+            neonChild = self._findChildByName(childName)
+            if not neonChild:
+                neonChild = NeonRegion(childName, zincChildRef, self)
+                neonChild._ancestorModelSourceCreated = True
+                self._children.append(neonChild)
+                newRegionCount += (1 + neonChild._discoverNewZincRegions())
             zincChildRef = zincChildRef.getNextSibling()
+        return newRegionCount
 
     def serialize(self):
         dictOutput = {}
