@@ -169,6 +169,8 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
                     self._fileNameDisplay()
                     self._fileTimeDisplay()
             self._ui.groupBoxFileSource.setVisible(isFileType)
+        elif not modelSource:
+            self._ui.groupBoxFileSource.setVisible(False)
 
     def _editedCurrentModelSource(self):
         if self._currentModelSource:
