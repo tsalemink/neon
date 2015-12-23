@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/ventilationwidget.ui'
 #
-# Created: Wed Dec 16 15:25:54 2015
+# Created: Thu Dec 24 09:53:36 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_VenitlationWidget(object):
     def setupUi(self, VenitlationWidget):
         VenitlationWidget.setObjectName("VenitlationWidget")
-        VenitlationWidget.resize(666, 633)
+        VenitlationWidget.resize(666, 913)
         self.verticalLayout = QtGui.QVBoxLayout(VenitlationWidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox = QtGui.QGroupBox(VenitlationWidget)
@@ -203,6 +203,23 @@ class Ui_VenitlationWidget(object):
 
         self.retranslateUi(VenitlationWidget)
         QtCore.QMetaObject.connectSlotsByName(VenitlationWidget)
+        VenitlationWidget.setTabOrder(self.spinBoxNumberOfBreaths, self.spinBoxNumberOfIterations)
+        VenitlationWidget.setTabOrder(self.spinBoxNumberOfIterations, self.doubleSpinBoxTimeStep)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxTimeStep, self.doubleSpinBoxErrorTolerance)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxErrorTolerance, self.doubleSpinBoxFRC)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxFRC, self.doubleSpinBoxConstrict)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxConstrict, self.doubleSpinBoxTInterval)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxTInterval, self.spinBoxGdirn)
+        VenitlationWidget.setTabOrder(self.spinBoxGdirn, self.doubleSpinBoxPressIn)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxPressIn, self.doubleSpinBoxCOV)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxCOV, self.doubleSpinBoxRMaxMean)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxRMaxMean, self.doubleSpinBoxRMinMean)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxRMinMean, self.doubleSpinBoxIERatio)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxIERatio, self.doubleSpinBoxRefVolume)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxRefVolume, self.doubleSpinBoxVolumeTarget)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxVolumeTarget, self.doubleSpinBoxPMusStep)
+        VenitlationWidget.setTabOrder(self.doubleSpinBoxPMusStep, self.comboBoxExpirationType)
+        VenitlationWidget.setTabOrder(self.comboBoxExpirationType, self.doubleSpinBoxChestWallCompliance)
 
     def retranslateUi(self, VenitlationWidget):
         VenitlationWidget.setWindowTitle(QtGui.QApplication.translate("VenitlationWidget", "Ventilation", None, QtGui.QApplication.UnicodeUTF8))

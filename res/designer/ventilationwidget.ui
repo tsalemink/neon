@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>666</width>
-    <height>633</height>
+    <height>913</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -442,6 +442,26 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>spinBoxNumberOfBreaths</tabstop>
+  <tabstop>spinBoxNumberOfIterations</tabstop>
+  <tabstop>doubleSpinBoxTimeStep</tabstop>
+  <tabstop>doubleSpinBoxErrorTolerance</tabstop>
+  <tabstop>doubleSpinBoxFRC</tabstop>
+  <tabstop>doubleSpinBoxConstrict</tabstop>
+  <tabstop>doubleSpinBoxTInterval</tabstop>
+  <tabstop>spinBoxGdirn</tabstop>
+  <tabstop>doubleSpinBoxPressIn</tabstop>
+  <tabstop>doubleSpinBoxCOV</tabstop>
+  <tabstop>doubleSpinBoxRMaxMean</tabstop>
+  <tabstop>doubleSpinBoxRMinMean</tabstop>
+  <tabstop>doubleSpinBoxIERatio</tabstop>
+  <tabstop>doubleSpinBoxRefVolume</tabstop>
+  <tabstop>doubleSpinBoxVolumeTarget</tabstop>
+  <tabstop>doubleSpinBoxPMusStep</tabstop>
+  <tabstop>comboBoxExpirationType</tabstop>
+  <tabstop>doubleSpinBoxChestWallCompliance</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

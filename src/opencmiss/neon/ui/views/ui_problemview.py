@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'res/designer/problemview.ui'
 #
-# Created: Wed Dec 16 10:19:46 2015
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# Created: Thu Dec 24 09:51:44 2015
+#      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -18,22 +18,22 @@ class Ui_ProblemView(object):
         self.splitter = QtGui.QSplitter(ProblemView)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
-        self.widget = QtGui.QWidget(self.splitter)
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
+        self.layoutWidget = QtGui.QWidget(self.splitter)
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.lineEditFilter = QtGui.QLineEdit(self.widget)
+        self.lineEditFilter = QtGui.QLineEdit(self.layoutWidget)
         self.lineEditFilter.setObjectName("lineEditFilter")
         self.verticalLayout.addWidget(self.lineEditFilter)
-        self.listViewProblems = QtGui.QListView(self.widget)
+        self.listViewProblems = QtGui.QListView(self.layoutWidget)
         self.listViewProblems.setObjectName("listViewProblems")
         self.verticalLayout.addWidget(self.listViewProblems)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.pushButtonRun = QtGui.QPushButton(self.widget)
+        self.pushButtonRun = QtGui.QPushButton(self.layoutWidget)
         self.pushButtonRun.setObjectName("pushButtonRun")
         self.horizontalLayout.addWidget(self.pushButtonRun)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -43,6 +43,8 @@ class Ui_ProblemView(object):
 
         self.retranslateUi(ProblemView)
         QtCore.QMetaObject.connectSlotsByName(ProblemView)
+        ProblemView.setTabOrder(self.pushButtonRun, self.lineEditFilter)
+        ProblemView.setTabOrder(self.lineEditFilter, self.listViewProblems)
 
     def retranslateUi(self, ProblemView):
         ProblemView.setWindowTitle(QtGui.QApplication.translate("ProblemView", "Problem", None, QtGui.QApplication.UnicodeUTF8))

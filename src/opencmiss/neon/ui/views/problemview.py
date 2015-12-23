@@ -32,13 +32,16 @@ class ProblemView(BaseView):
         self._ui.setupUi(self)
 
         self._selection_model = None
+        self._proxy_model = QtGui.QSortFilterProxyModel()
+        self._proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
         self._makeConnections()
 
     def _makeConnections(self):
-        pass
+        self._ui.lineEditFilter.textChanged.connect(self._proxy_model.setFilterFixedString)
 
     def _selectionChanged(self, current_index, previous_index):
+        current_index = self._proxy_model.mapToSource(current_index)
         self._ui.stackedWidgetProblemView.setCurrentIndex(current_index.row())
 
     def _setupProblems(self, model):
@@ -54,8 +57,9 @@ class ProblemView(BaseView):
         pass
 
     def setModel(self, model):
-        self._ui.listViewProblems.setModel(model)
+        self._proxy_model.setSourceModel(model)
+        self._ui.listViewProblems.setModel(self._proxy_model)
         self._setupProblems(model)
         self._selection_model = self._ui.listViewProblems.selectionModel()
         self._selection_model.currentChanged.connect(self._selectionChanged)
-        self._selection_model.setCurrentIndex(model.index(0), QtGui.QItemSelectionModel.Select)
+        self._selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtGui.QItemSelectionModel.Select)
