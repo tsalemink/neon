@@ -34,14 +34,25 @@ class NeonRegion(object):
 
     def _assign(self, source):
         """
-        Replace contents of self with that of source
+        Replace contents of self with that of source. Fixes up Zinc parent/child region relationships
         """
+        if self._parent:
+            oldZincRegion = self._zincRegion
+            zincSiblingAfter = oldZincRegion.getNextSibling()
+        else:
+            oldZincRegion = None
+            zincSiblingAfter = None
         self._name = source._name
-        self._parent = source._parent
+        # self._parent = source._parent should not be changed
         self._children = source._children
+        for child in self._children:
+            child._parent = self
         self._modelSources = source._modelSources
         self._zincRegion = source._zincRegion
-        self._ancestorModelSourceCreated = source._ancestorModelSourceCreated
+        # self._ancestorModelSourceCreated is unchanged
+        if self._parent:
+            self._parent._zincRegion.removeChild(oldZincRegion)
+            self._parent._zincRegion.insertChildBefore(self._zincRegion, zincSiblingAfter)
 
     def _informRegionChange(self, treeChange):
         """
@@ -53,12 +64,6 @@ class NeonRegion(object):
             rootRegion = rootRegion._parent
         for callback in rootRegion._regionChangeCallbacks:
             callback(self, treeChange)
-
-    def _getDescendantCount(self):
-        descendantCount = len(self._children)
-        for child in self._children:
-            descendantCount += child._getDescendantCount()
-        return descendantCount
 
     def connectRegionChange(self, callableObject):
         """
@@ -77,17 +82,14 @@ class NeonRegion(object):
         return result
 
     def _loadModelSource(self, modelSource):
-        descendantCountBefore = self._getDescendantCount()
         streamInfo = self._zincRegion.createStreaminformationRegion()
         modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
             print("Failed to read model source")
         else:
-            # discover new child regions read from model sources:
-            self.deserialize({})
-            descendantCountAfter = self._getDescendantCount()
-            self._informRegionChange(descendantCountAfter > descendantCountBefore)
+            newRegionCount = self._discoverNewZincRegions()
+            self._informRegionChange(newRegionCount > 0)
 
     def _loadModelSources(self):
         streamInfo = self._zincRegion.createStreaminformationRegion()
@@ -101,25 +103,56 @@ class NeonRegion(object):
         """
         Must be called when already-loaded model source modified or deleted.
         Saves and reloads region tree, starting at ancestor if this region was created by its model source.
-        :return: Neon Region to rebuild tree from, can be ancestor of self
         """
         if self._ancestorModelSourceCreated:
             self._parent._reload()
         else:
             # beware this breaks parent/child links such as current selection / hierarchical groups
             dictSave = self.serialize()
-            zincRegion = self._zincRegion.createRegion()
-            if self._name:
-                zincRegion.setName(self._name)
-            tmpRegion = NeonRegion(self._name, zincRegion, self._parent)
+            tmpRegion = self._createBlank()
             tmpRegion.deserialize(dictSave)
-            if self._parent is not None:
-                # replace old zinc child region with new one in zinc parent
-                zincSiblingAfter = self._zincRegion.getNextSibling()
-                self._parent._zincRegion.removeChild(self._zincRegion)
-                self._parent._zincRegion.insertChildBefore(zincRegion, zincSiblingAfter)
             self._assign(tmpRegion)
             self._informRegionChange(True)
+
+    def _createBlank(self):
+        zincRegion = self._zincRegion.createRegion()
+        if self._name:
+            zincRegion.setName(self._name)
+        blankRegion = NeonRegion(self._name, zincRegion, self._parent)
+        return blankRegion
+
+    def _discoverNewZincRegions(self):
+        """
+        Ensure there are Neon regions for every Zinc Region in tree
+        :return: Number of new descendant regions created
+        """
+        newRegionCount = 0
+        zincChildRef = self._zincRegion.getFirstChild()
+        while zincChildRef.isValid():
+            childName = zincChildRef.getName()
+            neonChild = self._findChildByName(childName)
+            if not neonChild:
+                neonChild = NeonRegion(childName, zincChildRef, self)
+                neonChild._ancestorModelSourceCreated = True
+                self._children.append(neonChild)
+                newRegionCount += (1 + neonChild._discoverNewZincRegions())
+            zincChildRef = zincChildRef.getNextSibling()
+        return newRegionCount
+
+    def _findChildByName(self, name):
+        for child in self._children:
+            if child._name == name:
+                return child
+        return None
+
+    def _generateChildName(self):
+        count = len(self._children) + 1
+        while True:
+            name = "region" + str(count)
+            if not self._findChildByName(name):
+                return name
+            count += 1
+        return None
 
     def deserialize(self, dictInput):
         if "Model" in dictInput:
@@ -157,14 +190,7 @@ class NeonRegion(object):
                 neonChild._ancestorModelSourceCreated = ancestorModelSourceCreated
                 self._children.append(neonChild)
                 neonChild.deserialize(dictChild)
-        # ensure any new zinc regions (read from model sources) are added to neon region, recurse to find subregions
-        while zincChildRef.isValid():
-            childName = zincChildRef.getName()
-            neonChild = NeonRegion(childName, zincChildRef, self)
-            neonChild._ancestorModelSourceCreated = True
-            self._children.append(neonChild)
-            neonChild.deserialize({})
-            zincChildRef = zincChildRef.getNextSibling()
+        self._discoverNewZincRegions()
 
     def serialize(self):
         dictOutput = {}
@@ -215,6 +241,62 @@ class NeonRegion(object):
 
     def getChild(self, index):
         return self._children[index]
+
+    def clear(self):
+        """
+        Clear all contents of region. Can be called for root region
+        """
+        tmpRegion = self._createBlank()
+        self._assign(tmpRegion)
+        if self._ancestorModelSourceCreated:
+            self._reload()
+        else:
+            self._informRegionChange(True)
+
+    def createChild(self):
+        """
+        Create a child region with a default name
+        :return: The new Neon Region
+        """
+        childName = self._generateChildName()
+        zincRegion = self._zincRegion.createChild(childName)
+        if zincRegion.isValid():
+            childRegion = NeonRegion(childName, zincRegion, self)
+            self._children.append(childRegion)
+            self._informRegionChange(True)
+            return childRegion
+        return None
+
+    def removeChild(self, childRegion):
+        self._children.remove(childRegion)
+        self._zincRegion.removeChild(childRegion._zincRegion)
+        childRegion._parent = None
+        if childRegion._ancestorModelSourceCreated:
+            self._reload()
+        else:
+            self._informRegionChange(True)
+
+    def remove(self):
+        """
+        Remove self from region tree; replace with blank region if root
+        """
+        if self._parent:
+            self._parent.removeChild(self)
+        else:
+            self.clear()
+
+    def setName(self, name):
+        if not self._parent:
+            return False
+        if len(name) == 0:
+            return False
+        if self._ancestorModelSourceCreated:
+            return False
+        if ZINC_OK != self._zincRegion.setName(name):
+            return False
+        self._name = name
+        self._informRegionChange(True)
+        return True
 
     def getModelSources(self):
         return self._modelSources
