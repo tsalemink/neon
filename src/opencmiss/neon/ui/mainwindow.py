@@ -25,6 +25,12 @@ from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
+from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
+from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
+from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
+from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
+from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
+from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -43,6 +49,11 @@ class MainWindow(QtGui.QMainWindow):
         self._problem_view = ProblemView(self)
         self._problem_view.setModel(self._model.getProblemModel())
         self._simulation_view = SimulationView(self)
+
+        self._view_states[self._visualisation_view] = ''
+        self._view_states[self._problem_view] = ''
+        self._view_states[self._simulation_view] = ''
+
         view_list = [self._problem_view, self._simulation_view, self._visualisation_view]
         self._shared_gl_widget = self._visualisation_view.getShareGLWidget()
 
@@ -53,6 +64,10 @@ class MainWindow(QtGui.QMainWindow):
 
         # Pre-create dialogs
         self._createDialogs()
+
+        self._setupEditors()
+
+        self._registerEditors()
 
         self._setupViews(view_list)
 
@@ -83,15 +98,98 @@ class MainWindow(QtGui.QMainWindow):
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
 
         self._visualisation_view.graphicsInitialized.connect(self._visualisationViewReady)
-        self._visualisation_view.regionClicked.connect(self._regionSelected)
 
         self._snapshot_dialog.sceneviewerInitialized.connect(self._snapshotDialogReady)
+
+        self.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
 
     def _updateUi(self):
         modified = self._model.isModified()
         self._ui.action_Save.setEnabled(modified)
         recents = self._model.getRecents()
         self._ui.action_Clear.setEnabled(len(recents))
+
+    def _setupEditors(self):
+        self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
+        self.dockWidgetRegionEditor.setWindowTitle('Region Editor')
+        self.dockWidgetRegionEditor.setObjectName("dockWidgetRegionEditor")
+        self.dockWidgetContentsRegionEditor = RegionEditorWidget()
+        self.dockWidgetContentsRegionEditor.setObjectName("dockWidgetContentsRegionEditor")
+        self.dockWidgetRegionEditor.setWidget(self.dockWidgetContentsRegionEditor)
+        self.dockWidgetRegionEditor.setHidden(True)
+
+        self.dockWidgetSceneEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSceneEditor.setWindowTitle('Scene Editor')
+        self.dockWidgetSceneEditor.setObjectName("dockWidgetSceneEditor")
+        self.dockWidgetContentsSceneEditor = SceneEditorWidget()
+        self.dockWidgetContentsSceneEditor.setObjectName("dockWidgetContentsSceneEditor")
+        self.dockWidgetSceneEditor.setWidget(self.dockWidgetContentsSceneEditor)
+        self.dockWidgetSceneEditor.setHidden(True)
+
+        self.dockWidgetSpectrumEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
+        self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._shared_gl_widget)
+        self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
+        self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
+        self.dockWidgetSpectrumEditor.setHidden(True)
+
+        self.dockWidgetTessellationEditor = QtGui.QDockWidget(self)
+        self.dockWidgetTessellationEditor.setWindowTitle('Tessellation Editor')
+        self.dockWidgetTessellationEditor.setObjectName("dockWidgetTessellationEditor")
+        self.dockWidgetContentsTessellationEditor = TessellationEditorWidget()
+        self.dockWidgetContentsTessellationEditor.setObjectName("dockWidgetContentsTessellationEditor")
+        self.dockWidgetTessellationEditor.setWidget(self.dockWidgetContentsTessellationEditor)
+        self.dockWidgetTessellationEditor.setHidden(True)
+
+        self.dockWidgetTimeEditor = QtGui.QDockWidget(self)
+        self.dockWidgetTimeEditor.setWindowTitle('Time Editor')
+        self.dockWidgetTimeEditor.setObjectName("dockWidgetTimeEditor")
+        self.dockWidgetContentsTimeEditor = TimeEditorWidget()
+        self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
+        self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
+        self.dockWidgetTimeEditor.setHidden(True)
+
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
+        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
+        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
+        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetRegionEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
+
+        context = self._model.getContext()
+        self.dockWidgetContentsSpectrumEditor.setContext(context)
+        self.dockWidgetContentsTessellationEditor.setContext(context)
+        self.dockWidgetContentsTimeEditor.setContext(context)
+
+    def _registerEditors(self):
+        self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetTimeEditor)
+
+        self._ui.menu_View.addSeparator()
+
+    def _registerEditor(self, view, editor):
+        action_name = getEditorMenuName(view)
+        action = self._getEditorAction(action_name)
+        if action is None:
+            menu = self._ui.menu_View.addMenu(action_name)
+            menu.setEnabled(False)
+        else:
+            menu = action.menu()
+
+        menu.addAction(editor.toggleViewAction())
+        view.registerDependentEditor(editor)
+
+    def _getEditorAction(self, action_name):
+        action = None
+        actions = self._ui.menu_View.actions()
+        existing_actions = [a for a in actions if a.text() == action_name]
+        if existing_actions:
+            action = existing_actions[0]
+
+        return action
 
     def _createDialogs(self):
         self._snapshot_dialog = SnapshotDialog(self, self._shared_gl_widget)
@@ -103,8 +201,8 @@ class MainWindow(QtGui.QMainWindow):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
         settings.setValue('location', self._location)
-        # settings.setValue('geometry', self.saveGeometry())
-        # settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
+        settings.setValue('geometry', self.saveGeometry())
+        settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
         settings.setValue('current_view', self._ui.viewStackedWidget.currentIndex())
 
         settings.beginWriteArray('recents')
@@ -115,6 +213,11 @@ class MainWindow(QtGui.QMainWindow):
         settings.endArray()
         settings.endGroup()
 
+        settings.beginGroup('views')
+        for key in self._view_states:
+            settings.setValue(key.getName(), self._view_states[key])
+        settings.endGroup()
+
         settings.beginGroup('SnapshotDialog')
         settings.setValue('state', self._snapshot_dialog.serialise())
         settings.endGroup()
@@ -122,12 +225,12 @@ class MainWindow(QtGui.QMainWindow):
     def _readSettings(self):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
-        # geometry = settings.value('geometry')
-        # if geometry is not None:
-        #    self.restoreGeometry(geometry)
-        # state = settings.value('dock_locations')
-        # if state is not None:
-        #    self.restoreState(state, VERSION_MAJOR)
+        geometry = settings.value('geometry')
+        if geometry is not None:
+            self.restoreGeometry(geometry)
+        state = settings.value('dock_locations')
+        if state is not None:
+            self.restoreState(state, VERSION_MAJOR)
         self._location = settings.value('location', QtCore.QDir.homePath())
 
         size = settings.beginReadArray('recents')
@@ -136,6 +239,12 @@ class MainWindow(QtGui.QMainWindow):
             self._addRecent(settings.value('item'))
         settings.endArray()
         self._setCurrentView(settings.value('current_view', '0'))
+        settings.endGroup()
+
+        settings.beginGroup('views')
+        for key in self._view_states:
+            state = settings.value(key.getName(), '')
+            self._view_states[key] = state
         settings.endGroup()
 
         settings.beginGroup('SnapshotDialog')
@@ -154,8 +263,9 @@ class MainWindow(QtGui.QMainWindow):
         recent_action.triggered.connect(self._open)
 
     def _setCurrentView(self, index):
-        self._ui.viewStackedWidget.setCurrentIndex(int(index))
-        v = self._ui.viewStackedWidget.currentWidget()
+        v = self._ui.viewStackedWidget.widget(int(index))
+        self._changeView(v)
+        self._postChangeView()
         actions = self._ui.menu_View.actions()
         for action in actions:
             if action.data() == v:
@@ -163,8 +273,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def _preChangeView(self):
         current_view = self._ui.viewStackedWidget.currentWidget()
-        view_state = current_view.serialise()
+        view_state = self.saveState(VERSION_MAJOR)
         self._view_states[current_view] = view_state
+
+        action_name = getEditorMenuName(current_view)
+        action = self._getEditorAction(action_name)
+        if action is not None:
+            menu = action.menu()
+            menu.setEnabled(False)
 
     def _changeView(self, view):
         self._ui.viewStackedWidget.setCurrentWidget(view)
@@ -172,7 +288,13 @@ class MainWindow(QtGui.QMainWindow):
     def _postChangeView(self):
         current_view = self._ui.viewStackedWidget.currentWidget()
         view_state = self._view_states[current_view]
-        current_view.deserialise(view_state)
+        self.restoreState(view_state, VERSION_MAJOR)
+
+        action_name = getEditorMenuName(current_view)
+        action = self._getEditorAction(action_name)
+        if action is not None:
+            menu = action.menu()
+            menu.setEnabled(True)
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
@@ -181,7 +303,7 @@ class MainWindow(QtGui.QMainWindow):
             self._ui.viewStackedWidget.addWidget(v)
             v.setContext(context)
 
-            action_view = QtGui.QAction(v.name(), self)
+            action_view = QtGui.QAction(v.getName(), self)
             action_view.setData(v)
             action_view.setCheckable(True)
             action_view.setActionGroup(action_group)
@@ -197,11 +319,12 @@ class MainWindow(QtGui.QMainWindow):
     def _refreshRootRegion(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
-        self._visualisation_view.setRootRegion(rootRegion)
+        self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
         if self._visualisation_view_ready:
             zincRootRegion = rootRegion.getZincRegion()
             scene = zincRootRegion.getScene()
             self._visualisation_view.setScene(scene)
+            self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _regionSelected(self, region):
         zincRegion = region.getZincRegion()
@@ -305,3 +428,7 @@ class MainWindow(QtGui.QMainWindow):
     def closeEvent(self, event):
         self._quitApplication()
         super(MainWindow, self).closeEvent(event)
+
+
+def getEditorMenuName(view):
+    return view.getName() + ' Editors'

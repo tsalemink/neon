@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import sys
+
 from PySide import QtCore
 
 
@@ -26,6 +28,11 @@ ORGANISATION_NAME = 'OpenCMISS'
 ORGANISATION_DOMAIN = 'opencmiss.org'
 
 FLOAT_STRING_FORMAT = '{:.5g}'
+
+if sys.version_info > (3, 0):
+    PYTHON3 = True
+else:
+    PYTHON3 = False
 
 
 def setApplicationSettings(app):
