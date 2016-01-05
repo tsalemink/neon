@@ -26,6 +26,7 @@ from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
+from opencmiss.neon.ui.editors.modelsourceseditorwidget import ModelSourcesEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
@@ -124,6 +125,14 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetRegionEditor.setWidget(self.dockWidgetContentsRegionEditor)
         self.dockWidgetRegionEditor.setHidden(True)
 
+        self.dockWidgetModelSourcesEditor = QtGui.QDockWidget(self)
+        self.dockWidgetModelSourcesEditor.setWindowTitle('Model Sources Editor')
+        self.dockWidgetModelSourcesEditor.setObjectName("dockWidgetModelSourcesEditor")
+        self.dockWidgetContentsModelSourcesEditor = ModelSourcesEditorWidget()
+        self.dockWidgetContentsModelSourcesEditor.setObjectName("dockWidgetContentsModelSourcesEditor")
+        self.dockWidgetModelSourcesEditor.setWidget(self.dockWidgetContentsModelSourcesEditor)
+        self.dockWidgetModelSourcesEditor.setHidden(True)
+
         self.dockWidgetSceneEditor = QtGui.QDockWidget(self)
         self.dockWidgetSceneEditor.setWindowTitle('Scene Editor')
         self.dockWidgetSceneEditor.setObjectName("dockWidgetSceneEditor")
@@ -159,7 +168,8 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
         self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
-        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetRegionEditor)
+        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
 
         context = self._model.getContext()
@@ -169,6 +179,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _registerEditors(self):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetModelSourcesEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
