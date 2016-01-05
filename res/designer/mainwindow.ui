@@ -188,6 +188,28 @@
     <string>&amp;About</string>
    </property>
   </action>
+  <action name="action_RegionEditor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Region Editor</string>
+   </property>
+  </action>
+  <action name="action_ModelSourcesEditor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Model Sources Editor</string>
+   </property>
+  </action>
   <action name="action_SceneEditor">
    <property name="checkable">
     <bool>true</bool>

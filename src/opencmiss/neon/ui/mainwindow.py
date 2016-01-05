@@ -345,10 +345,21 @@ class MainWindow(QtGui.QMainWindow):
         self._changeView(v)
         self._postChangeView()
 
+    def _regionChange(self, changedRegion, treeChange):
+        if treeChange and (changedRegion is self._model.getDocument().getRootRegion()):
+            # following will need changing once there are multiple views:
+            defaultView = self._current_view
+            # pass the new root region's scene to the sceneviewer
+            sceneviewer = defaultView._ui.widget.getSceneviewer()
+            zincRootRegion = changedRegion.getZincRegion()
+            sceneviewer.setScene(zincRootRegion.getScene())
+
     def _refreshRootRegion(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
+        rootRegion.connectRegionChange(self._regionChange)
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
+        self.dockWidgetContentsModelSourcesEditor.setRegion(rootRegion)
         if self._visualisation_view_ready:
             zincRootRegion = rootRegion.getZincRegion()
             scene = zincRootRegion.getScene()
@@ -356,6 +367,7 @@ class MainWindow(QtGui.QMainWindow):
             self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _regionSelected(self, region):
+        self._ui.dockWidgetContentsModelSourcesEditor.setRegion(region)
         zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)

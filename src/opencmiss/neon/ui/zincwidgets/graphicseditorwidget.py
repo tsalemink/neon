@@ -133,6 +133,9 @@ class GraphicsEditorWidget(QtGui.QWidget):
             pointattributes = self._graphics.getGraphicspointattributes()
             lineattributes = self._graphics.getGraphicslineattributes()
             samplingattributes = self._graphics.getGraphicssamplingattributes()
+            self.ui.general_groupbox.show()
+        else:
+            self.ui.general_groupbox.hide()
         self.ui.coordinate_field_chooser.setField(coordinateField)
         self.ui.material_chooser.setMaterial(material)
         self.ui.data_field_chooser.setField(dataField)
@@ -229,10 +232,10 @@ class GraphicsEditorWidget(QtGui.QWidget):
         '''
         Set the graphics to be edited
         '''
-        if not (graphics and graphics.isValid()):
-            self._graphics = None
-        else:
+        if graphics and graphics.isValid():
             self._graphics = graphics
+        else:
+            self._graphics = None
         self._updateWidgets()
 
     def _displayReal(self, widget, value):

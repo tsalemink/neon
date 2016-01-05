@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -81,6 +82,14 @@ class Ui_MainWindow(object):
         icon7.addPixmap(QtGui.QPixmap(":/neon/images/icons/help-about.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.action_About.setIcon(icon7)
         self.action_About.setObjectName("action_About")
+        self.action_RegionEditor = QtGui.QAction(MainWindow)
+        self.action_RegionEditor.setCheckable(True)
+        self.action_RegionEditor.setChecked(True)
+        self.action_RegionEditor.setObjectName("action_RegionEditor")
+        self.action_ModelSourcesEditor = QtGui.QAction(MainWindow)
+        self.action_ModelSourcesEditor.setCheckable(True)
+        self.action_ModelSourcesEditor.setChecked(True)
+        self.action_ModelSourcesEditor.setObjectName("action_ModelSourcesEditor")
         self.action_SceneEditor = QtGui.QAction(MainWindow)
         self.action_SceneEditor.setCheckable(True)
         self.action_SceneEditor.setChecked(True)
@@ -161,6 +170,8 @@ class Ui_MainWindow(object):
         self.action_Redo.setText(QtGui.QApplication.translate("MainWindow", "&Redo", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Redo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+Z", None, QtGui.QApplication.UnicodeUTF8))
         self.action_About.setText(QtGui.QApplication.translate("MainWindow", "&About", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_RegionEditor.setText(QtGui.QApplication.translate("MainWindow", "Region Editor", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_ModelSourcesEditor.setText(QtGui.QApplication.translate("MainWindow", "Model Sources Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SceneEditor.setText(QtGui.QApplication.translate("MainWindow", "Scene Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Save_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As", None, QtGui.QApplication.UnicodeUTF8))
         self.action_SpectrumEditor.setText(QtGui.QApplication.translate("MainWindow", "Spectrum Editor", None, QtGui.QApplication.UnicodeUTF8))
