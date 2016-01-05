@@ -13,16 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-import importlib
-
 from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.views.base import BaseView
+from opencmiss.neon.ui.misc.factory import generateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
+import json
 
 
 class ProblemView(BaseView):
+
+    runClicked = QtCore.Signal()
+    selectionChanged = QtCore.Signal(object, object)
 
     def __init__(self, parent=None):
         super(ProblemView, self).__init__(parent)
@@ -39,19 +42,20 @@ class ProblemView(BaseView):
 
     def _makeConnections(self):
         self._ui.lineEditFilter.textChanged.connect(self._proxy_model.setFilterFixedString)
+        self._ui.pushButtonRun.clicked.connect(self.runClicked)
 
     def _selectionChanged(self, current_index, previous_index):
         current_index = self._proxy_model.mapToSource(current_index)
         self._ui.stackedWidgetProblemView.setCurrentIndex(current_index.row())
+        self.selectionChanged.emit(current_index, previous_index)
 
     def _setupProblems(self, model):
-        for row in range(model.rowCount()):
-            index = model.index(row)
-            name = model.data(index, QtCore.Qt.DisplayRole)
-            module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.ui.problems')
-            class_ = getattr(module_name, name)
-            view = class_(self._ui.stackedWidgetProblemView)
-            self._ui.stackedWidgetProblemView.addWidget(view)
+        classes = generateRelatedClasses(model, 'problems')
+        for c in classes:
+            c.setParent(self._ui.stackedWidgetProblemView)
+            problem = model.getProblem(self._ui.stackedWidgetProblemView.count())
+            c.setProblem(problem)
+            self._ui.stackedWidgetProblemView.addWidget(c)
 
     def setContext(self, context):
         pass
@@ -63,3 +67,29 @@ class ProblemView(BaseView):
         self._selection_model = self._ui.listViewProblems.selectionModel()
         self._selection_model.currentChanged.connect(self._selectionChanged)
         self._selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtGui.QItemSelectionModel.Select)
+
+    def getProblem(self):
+        index = self._ui.stackedWidgetProblemView.currentIndex()
+        return self._proxy_model.sourceModel().getProblem(index)
+
+    def serialise(self):
+        state = {}
+        state['current_index'] = self._ui.stackedWidgetProblemView.currentIndex()
+        for index in range(self._ui.stackedWidgetProblemView.count()):
+            w = self._ui.stackedWidgetProblemView.widget(index)
+            state[w.getName()] = w.serialise()
+        return json.dumps(state)
+
+    def deserialise(self, string):
+        try:
+            d = json.loads(string)
+            for index in range(self._ui.stackedWidgetProblemView.count()):
+                w = self._ui.stackedWidgetProblemView.widget(index)
+                w.deserialise(d[w.getName()])
+
+            saved_current_index = d['current_index'] if 'current_index' in d else 0
+            current_index = self._ui.stackedWidgetProblemView.currentIndex()
+            if saved_current_index != current_index:
+                self._selection_model.setCurrentIndex(self._proxy_model.index(saved_current_index, 0), QtGui.QItemSelectionModel.Select)
+        except Exception:
+            pass

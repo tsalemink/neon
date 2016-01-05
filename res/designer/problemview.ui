@@ -48,6 +48,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonRun">
+           <property name="toolTip">
+            <string>Run the selected simulation</string>
+           </property>
            <property name="text">
             <string>Run</string>
            </property>

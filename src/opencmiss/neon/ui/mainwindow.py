@@ -38,18 +38,20 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self, model):
         super(MainWindow, self).__init__()
         self._model = model
+        problem_model = self._model.getProblemModel()
 
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
         # List of possible views
-        self._view_states = {}
         self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
         self._problem_view = ProblemView(self)
-        self._problem_view.setModel(self._model.getProblemModel())
+        self._problem_view.setModel(problem_model)
         self._simulation_view = SimulationView(self)
+        self._simulation_view.setModel(problem_model)
 
+        self._view_states = {}
         self._view_states[self._visualisation_view] = ''
         self._view_states[self._problem_view] = ''
         self._view_states[self._simulation_view] = ''
@@ -102,6 +104,10 @@ class MainWindow(QtGui.QMainWindow):
         self._snapshot_dialog.sceneviewerInitialized.connect(self._snapshotDialogReady)
 
         self.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
+
+        self._problem_view.runClicked.connect(self._runSimulationClicked)
+        self._problem_view.selectionChanged.connect(self._simulation_view.selectionChanged)
+        self._simulation_view.runClicked.connect(self._runSimulationClicked)
 
     def _updateUi(self):
         modified = self._model.isModified()
@@ -222,6 +228,10 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue('state', self._snapshot_dialog.serialise())
         settings.endGroup()
 
+        settings.beginGroup('Problems')
+        settings.setValue('state', self._problem_view.serialise())
+        settings.endGroup()
+
     def _readSettings(self):
         settings = QtCore.QSettings()
         settings.beginGroup('MainWindow')
@@ -249,6 +259,10 @@ class MainWindow(QtGui.QMainWindow):
 
         settings.beginGroup('SnapshotDialog')
         self._snapshot_dialog.deserialise(settings.value('state', ''))
+        settings.endGroup()
+
+        settings.beginGroup('Problems')
+        self._problem_view.deserialise(settings.value('state', ''))
         settings.endGroup()
 
         self._updateUi()
@@ -310,6 +324,21 @@ class MainWindow(QtGui.QMainWindow):
             action_view.triggered.connect(self._viewTriggered)
             self._ui.menu_View.addAction(action_view)
 
+    def _runSimulationClicked(self):
+        sender = self.sender()
+        if sender == self._problem_view:
+            actions = self._ui.menu_View.actions()
+            simulate_action = [a for a in actions if a.text() == self._simulation_view.getName()][0]
+            simulate_action.activate(QtGui.QAction.ActionEvent.Trigger)
+
+        problem = self._problem_view.getProblem()
+        if problem.validate():
+            self._simulation_view.setProblem(problem)
+            self._simulation_view.setPreferences(self._model.getPreferences())
+            self._simulation_view.run()
+        else:
+            print('pop up error box')
+
     def _viewTriggered(self):
         v = self.sender().data()
         self._preChangeView()
@@ -329,7 +358,7 @@ class MainWindow(QtGui.QMainWindow):
     def _regionSelected(self, region):
         zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
-        self._ui.dockWidgetContentsSceneEditor.setScene(scene)
+        self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True

@@ -17,8 +17,10 @@ import json
 import os
 from opencmiss.neon.core.neondocument import NeonDocument
 from opencmiss.zinc.context import Context
-from opencmiss.neon.core.problems.ventilation import Ventilation
 from opencmiss.neon.core.problemmodel import ProblemModel
+from opencmiss.neon.core.preferences import Preferences
+from opencmiss.neon.core.neonproblems import names
+from opencmiss.neon.core.misc.utils import importProblem
 
 
 class MainApplication(object):
@@ -43,11 +45,14 @@ class MainApplication(object):
         self._problem_model = ProblemModel()
         self._setupModel()
 
+        self._preferences = Preferences(self._problem_model)
+
     def _setupModel(self):
-        row = self._problem_model.rowCount()
-        if self._problem_model.insertRow(row):
-            index = self._problem_model.index(row)
-            self._problem_model.setData(index, Ventilation())
+        for name in names:
+            row = self._problem_model.rowCount()
+            if self._problem_model.insertRow(row):
+                index = self._problem_model.index(row)
+                self._problem_model.setData(index, importProblem(name))
 
     def getContext(self):
         return self._zincContext
@@ -107,3 +112,6 @@ class MainApplication(object):
 
     def getProblemModel(self):
         return self._problem_model
+
+    def getPreferences(self):
+        return self._preferences

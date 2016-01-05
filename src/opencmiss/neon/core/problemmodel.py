@@ -49,3 +49,6 @@ class ProblemModel(QtCore.QAbstractListModel):
     def insertRow(self, row, parent_index=None):
         self._problems.insert(row, None)
         return True
+
+    def getProblem(self, index):
+        return self._problems[index]

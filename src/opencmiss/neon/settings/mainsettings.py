@@ -16,6 +16,7 @@
 import sys
 
 from PySide import QtCore
+import os.path
 
 
 VERSION_MAJOR = 0
@@ -28,6 +29,9 @@ ORGANISATION_NAME = 'OpenCMISS'
 ORGANISATION_DOMAIN = 'opencmiss.org'
 
 FLOAT_STRING_FORMAT = '{:.5g}'
+
+EXTERNAL_BINARIES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'bin'))
+EXTERNAL_DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'data'))
 
 if sys.version_info > (3, 0):
     PYTHON3 = True

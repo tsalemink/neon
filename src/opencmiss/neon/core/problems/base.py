@@ -18,4 +18,19 @@
 class BaseProblem(object):
 
     def __init__(self):
+        self._name = 'Base'
+
+    def getName(self):
+        return self._name
+
+    def setName(self, name):
+        self._name = name
+
+    def serialise(self):
+        return ''
+
+    def deserialise(self, string):
         pass
+
+    def validate(self):
+        return False

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'res/designer/problemview.ui'
 #
-# Created: Thu Dec 24 09:51:44 2015
+# Created: Thu Dec 24 10:15:31 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,5 +49,6 @@ class Ui_ProblemView(object):
     def retranslateUi(self, ProblemView):
         ProblemView.setWindowTitle(QtGui.QApplication.translate("ProblemView", "Problem", None, QtGui.QApplication.UnicodeUTF8))
         self.lineEditFilter.setPlaceholderText(QtGui.QApplication.translate("ProblemView", "Filter", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButtonRun.setToolTip(QtGui.QApplication.translate("ProblemView", "Run the selected simulation", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonRun.setText(QtGui.QApplication.translate("ProblemView", "Run", None, QtGui.QApplication.UnicodeUTF8))
 

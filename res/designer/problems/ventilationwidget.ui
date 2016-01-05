@@ -1,0 +1,703 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VentilationWidget</class>
+ <widget class="QWidget" name="VentilationWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>976</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ventilation</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tabExecutable">
+      <attribute name="title">
+       <string>Executable</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Executable</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxInBuiltExecutable">
+            <property name="text">
+             <string>Use in-built executable</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Executable:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEditExecutable"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonChooseExecutable">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>766</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabFileInputs">
+      <attribute name="title">
+       <string>File Input/Output(s)</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Tree</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="5" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_24">
+              <property name="text">
+               <string>exelem:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditExElem"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseExElem">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>exnode:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditExNode"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseExNode">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>ipnode:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditIpNode"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseIpNode">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>ipfiel:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditIpField"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseIpField">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxInBuiltTree">
+            <property name="text">
+             <string>Use in-built tree files</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>ipelem:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditIpElem"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseIpElem">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Flow</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QCheckBox" name="checkBoxInBuiltFlow">
+            <property name="text">
+             <string>Use in-built flow file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>Executable:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditFlow"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseFlow">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Output</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_26">
+              <property name="text">
+               <string>Out exnode:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditOutExNode"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonChooseOutExNode">
+              <property name="text">
+               <string>Choose</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabParameters">
+      <attribute name="title">
+       <string>Parameters</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBoxMainParameters">
+         <property name="title">
+          <string>Main Parameters</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Number of breaths:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinBoxNumberOfBreaths">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Number of iterations:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBoxNumberOfIterations">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>999999999</number>
+            </property>
+            <property name="singleStep">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>dt:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxTimeStep"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Error tolerance:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxErrorTolerance">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxFlowParameters">
+         <property name="title">
+          <string>Flow Parameters</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>FRC:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxFRC">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Constrict:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxConstrict">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>T interval:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxTInterval">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>G dirn:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QSpinBox" name="spinBoxGdirn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Press in</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxPressIn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>COV:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxCOV">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>R max. mean:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxRMaxMean">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>R min. mean:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxRMinMean">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>i-e ratio:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxIERatio">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="18" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Ref. volume:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="18" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxRefVolume">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="20" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Volume target:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="20" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxVolumeTarget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="22" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Pmus step:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="22" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxPMusStep">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimum">
+             <double>-9999999.990000000223517</double>
+            </property>
+           </widget>
+          </item>
+          <item row="24" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Expiration type:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="26" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Chest wall compliance:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="26" column="1">
+           <widget class="ScientificDoubleSpinBox" name="doubleSpinBoxChestWallCompliance">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="24" column="1">
+           <widget class="QComboBox" name="comboBoxExpirationType">
+            <item>
+             <property name="text">
+              <string>Passive</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ScientificDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>opencmiss/neon/ui/misc/scientificdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>spinBoxNumberOfBreaths</tabstop>
+  <tabstop>spinBoxNumberOfIterations</tabstop>
+  <tabstop>doubleSpinBoxTimeStep</tabstop>
+  <tabstop>doubleSpinBoxErrorTolerance</tabstop>
+  <tabstop>doubleSpinBoxFRC</tabstop>
+  <tabstop>doubleSpinBoxConstrict</tabstop>
+  <tabstop>doubleSpinBoxTInterval</tabstop>
+  <tabstop>spinBoxGdirn</tabstop>
+  <tabstop>doubleSpinBoxPressIn</tabstop>
+  <tabstop>doubleSpinBoxCOV</tabstop>
+  <tabstop>doubleSpinBoxRMaxMean</tabstop>
+  <tabstop>doubleSpinBoxRMinMean</tabstop>
+  <tabstop>doubleSpinBoxIERatio</tabstop>
+  <tabstop>doubleSpinBoxRefVolume</tabstop>
+  <tabstop>doubleSpinBoxVolumeTarget</tabstop>
+  <tabstop>doubleSpinBoxPMusStep</tabstop>
+  <tabstop>comboBoxExpirationType</tabstop>
+  <tabstop>doubleSpinBoxChestWallCompliance</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
