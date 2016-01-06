@@ -21,9 +21,26 @@ class BaseView(QtGui.QWidget):
     def __init__(self, parent):
         super(BaseView, self).__init__(parent)
         self._name = 'Base View'
+        self._dock_widgets = []
 
-    def name(self):
+    def getName(self):
         return self._name
 
     def setContext(self, context):
         raise NotImplementedError()
+
+    def getDependentEditors(self):
+        return self._dock_widgets
+
+    def registerDependentEditor(self, editor):
+        '''
+        Add the given editor to the list of dependent editors for
+        this view.
+        '''
+        self._dock_widgets.append(editor)
+
+    def serialise(self):
+        return ''
+
+    def deserialise(self, string):
+        pass

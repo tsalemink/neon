@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="neon">
+    <file>images/icons/applications-system-icon.png</file>
+    <file>images/icons/mathematics-icon.png</file>
     <file>images/icons/playback-start-reverse-icon.png</file>
     <file>images/icons/playback-start-icon.png</file>
     <file>images/icons/playback-stop-icon.png</file>

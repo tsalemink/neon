@@ -16,12 +16,14 @@
 import json
 import os.path
 
-from PySide import QtGui
+from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.dialogs.ui_snapshotdialog import Ui_SnapshotDialog
 
 
 class SnapshotDialog(QtGui.QDialog):
+
+    sceneviewerInitialized = QtCore.Signal()
 
     def __init__(self, parent, shared_gl_context):
         super(SnapshotDialog, self).__init__(parent)
@@ -37,6 +39,7 @@ class SnapshotDialog(QtGui.QDialog):
     def _makeConnections(self):
         self._ui.pushButtonFilename.clicked.connect(self._filenamePushButtonClicked)
         self._ui.checkBoxWYSIWYG.stateChanged.connect(self._wysiwygStateChanged)
+        self._ui.widgetPreview.graphicsInitialized.connect(self.sceneviewerInitialized)
 
     def _filenamePushButtonClicked(self):
         filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Image Format (*.png, *.jpeg);;All (*.*)")
@@ -71,6 +74,9 @@ class SnapshotDialog(QtGui.QDialog):
 
     def setContext(self, context):
         self._ui.widgetPreview.setContext(context)
+
+    def setScene(self, scene):
+        self._ui.widgetPreview.getSceneviewer().setScene(scene)
 
     def serialise(self):
         state = {}
