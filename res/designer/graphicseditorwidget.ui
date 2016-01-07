@@ -93,12 +93,17 @@
         </property>
         <item>
          <property name="text">
-          <string>-</string>
+          <string>all</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>all</string>
+          <string>any face</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>no face</string>
          </property>
         </item>
         <item>

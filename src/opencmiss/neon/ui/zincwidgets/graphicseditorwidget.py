@@ -327,11 +327,11 @@ class GraphicsEditorWidget(QtGui.QWidget):
         '''
         Show the current state of the face combo box
         '''
-        faceType = Element.FACE_TYPE_INVALID
+        faceType = Element.FACE_TYPE_ALL
         if self._graphics:
             faceType = self._graphics.getElementFaceType()
         self.ui.face_combobox.blockSignals(True)
-        self.ui.face_combobox.setCurrentIndex(faceType - Element.FACE_TYPE_INVALID)
+        self.ui.face_combobox.setCurrentIndex(faceType - Element.FACE_TYPE_ALL)
         self.ui.face_combobox.blockSignals(False)
 
     def faceChanged(self, index):
@@ -339,7 +339,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         Element face combo box changed
         '''
         if self._graphics:
-            self._graphics.setElementFaceType(index + Element.FACE_TYPE_INVALID)
+            self._graphics.setElementFaceType(index + Element.FACE_TYPE_ALL)
 
     def wireframeClicked(self, isChecked):
         '''
