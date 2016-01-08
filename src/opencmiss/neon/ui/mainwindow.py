@@ -357,13 +357,15 @@ class MainWindow(QtGui.QMainWindow):
         self._postChangeView()
 
     def _regionChange(self, changedRegion, treeChange):
+        """
+        Notifies sceneviewer if affected by tree change i.e. needs new scene.
+        :param changedRegion: The top region changed
+        :param treeChange: True if structure of tree, or zinc objects reconstructed
+        """
+        # following may need changing once sceneviewer can look at sub scenes, since resets to root scene:
         if treeChange and (changedRegion is self._model.getDocument().getRootRegion()):
-            # following will need changing once there are multiple views:
-            defaultView = self._current_view
-            # pass the new root region's scene to the sceneviewer
-            sceneviewer = defaultView._ui.widget.getSceneviewer()
             zincRootRegion = changedRegion.getZincRegion()
-            sceneviewer.setScene(zincRootRegion.getScene())
+            self._visualisation_view.setScene(zincRootRegion.getScene())
 
     def _refreshRootRegion(self):
         document = self._model.getDocument()
@@ -378,7 +380,7 @@ class MainWindow(QtGui.QMainWindow):
             self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _regionSelected(self, region):
-        self._ui.dockWidgetContentsModelSourcesEditor.setRegion(region)
+        self.dockWidgetContentsModelSourcesEditor.setRegion(region)
         zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
