@@ -57,7 +57,7 @@ class ProblemView(BaseView):
             c.setProblem(problem)
             self._ui.stackedWidgetProblemView.addWidget(c)
 
-    def setContext(self, context):
+    def setZincContext(self, zincContext):
         pass
 
     def setModel(self, model):

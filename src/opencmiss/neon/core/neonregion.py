@@ -32,9 +32,20 @@ class NeonRegion(object):
         if not parent:
             self._regionChangeCallbacks = []
 
+    #def __del__(self):
+    #    print("NeonRegion.__del__ " + self.getDisplayName())
+
+    def freeContents(self):
+        """
+        Deletes subobjects of region to help free memory held by Zinc objects earlier.
+        """
+        del self._zincRegion
+        for child in self._children:
+            child.freeContents()
+
     def _assign(self, source):
         """
-        Replace contents of self with that of source. Fixes up Zinc parent/child region relationships
+        Replace contents of self with that of source. Fixes up Zinc parent/child region relationships.
         """
         if self._parent:
             oldZincRegion = self._zincRegion
@@ -42,6 +53,7 @@ class NeonRegion(object):
         else:
             oldZincRegion = None
             zincSiblingAfter = None
+        self.freeContents()
         self._name = source._name
         # self._parent = source._parent should not be changed
         self._children = source._children
@@ -109,12 +121,12 @@ class NeonRegion(object):
         else:
             # beware this breaks parent/child links such as current selection / hierarchical groups
             dictSave = self.serialize()
-            tmpRegion = self._createBlank()
+            tmpRegion = self._createBlankCopy()
             tmpRegion.deserialize(dictSave)
             self._assign(tmpRegion)
             self._informRegionChange(True)
 
-    def _createBlank(self):
+    def _createBlankCopy(self):
         zincRegion = self._zincRegion.createRegion()
         if self._name:
             zincRegion.setName(self._name)
@@ -246,7 +258,7 @@ class NeonRegion(object):
         """
         Clear all contents of region. Can be called for root region
         """
-        tmpRegion = self._createBlank()
+        tmpRegion = self._createBlankCopy()
         self._assign(tmpRegion)
         if self._ancestorModelSourceCreated:
             self._reload()
@@ -268,9 +280,13 @@ class NeonRegion(object):
         return None
 
     def removeChild(self, childRegion):
+        """
+        Remove child region and destroy
+        """
         self._children.remove(childRegion)
         self._zincRegion.removeChild(childRegion._zincRegion)
         childRegion._parent = None
+        childRegion.freeContents()
         if childRegion._ancestorModelSourceCreated:
             self._reload()
         else:
@@ -278,7 +294,7 @@ class NeonRegion(object):
 
     def remove(self):
         """
-        Remove self from region tree; replace with blank region if root
+        Remove self from region tree and destroy; replace with blank region if root
         """
         if self._parent:
             self._parent.removeChild(self)

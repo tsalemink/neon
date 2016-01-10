@@ -148,7 +148,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         r = item.data(REGION_DATA_ROLE)
         scene = r.getScene()
         graphics = scene.getFirstGraphics()
-        graphics.setName(SPECTRUM_GLYPH_NAME_FORMAT.foramt(s.getName()))
+        graphics.setName(SPECTRUM_GLYPH_NAME_FORMAT.format(s.getName()))
 
     def _spectrumItemClicked(self, item):
         lws = self._ui.listWidgetSpectrums
@@ -295,15 +295,18 @@ class SpectrumEditorWidget(QtGui.QWidget):
             first_item = self._ui.listWidgetSpectrums.item(0)
             self._spectrumItemClicked(first_item)
 
-    def setContext(self, context):
+    def setZincContext(self, context):
         self._ui.widget.setContext(context)
         self._empty_region = context.createRegion()
+        self._empty_region.setName("Spectrum editor _empty_region")
 
         sm = context.getSpectrummodule()
         si = sm.createSpectrumiterator()
+        self._ui.listWidgetSpectrums.clear()
         s = si.next()
         while s.isValid():
             region = addPrivateSpectrumRegion(context, s)
+            result = region.setName("Spectrum editor private region for spectrum " + s.getName())
             self._ui.listWidgetSpectrums.addItem(createItem(s.getName(), s, True, region))
             s = si.next()
 

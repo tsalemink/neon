@@ -163,8 +163,8 @@ class TimeEditorWidget(QtGui.QWidget):
         self._play_direction = -1
         self._play()
 
-    def setContext(self, context):
-        self._context = context
-        self._timekeeper = context.getTimekeepermodule().getDefaultTimekeeper()
+    def setZincContext(self, zincContext):
+        self._context = zincContext
+        self._timekeeper = zincContext.getTimekeepermodule().getDefaultTimekeeper()
         self._initUi()
         self._updateUi()

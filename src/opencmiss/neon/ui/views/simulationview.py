@@ -49,7 +49,7 @@ class SimulationView(BaseView):
     def setModel(self, model):
         self._setupSimulations(model)
 
-    def setContext(self, context):
+    def setZincContext(self, zincContext):
         pass
 
     def setProblem(self, problem):

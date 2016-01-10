@@ -15,15 +15,42 @@
 '''
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
+from opencmiss.zinc.context import Context
 
 
 class NeonDocument(object):
 
-    def __init__(self, zincContext):
-        self._zincContext = zincContext
-        zincRootRegion = zincContext.createRegion()
+    def __init__(self):
+        self._zincContext = Context("Neon")
+
+        # set up standard materials and glyphs
+        materialmodule = self._zincContext.getMaterialmodule()
+        materialmodule.defineStandardMaterials()
+        glyphmodule = self._zincContext.getGlyphmodule()
+        glyphmodule.defineStandardGlyphs()
+
+        zincRootRegion = self._zincContext.getDefaultRegion()
         self._rootRegion = NeonRegion(name=None, zincRegion=zincRootRegion, parent=None)
+        self._rootRegion.connectRegionChange(self._regionChange)
         self._rootRegion._document = self
+
+    def freeContents(self):
+        """
+        Deletes subobjects of document to help free memory held by Zinc objects earlier.
+        """
+        self._rootRegion.freeContents()
+        del self._rootRegion
+        del self._zincContext
+
+    def _regionChange(self, changedRegion, treeChange):
+        """
+        If root region has changed, set its new Zinc region as Zinc context's default region.
+        :param changedRegion: The top region changed
+        :param treeChange: True if structure of tree, or zinc objects reconstructed
+        """
+        if treeChange and (changedRegion is self._rootRegion):
+            zincRootRegion = changedRegion.getZincRegion()
+            self._zincContext.setDefaultRegion(zincRootRegion)
 
     def deserialize(self, dictInput):
         '''
@@ -53,6 +80,9 @@ class NeonDocument(object):
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
         dictOutput["RootRegion"] = self._rootRegion.serialize()
         return dictOutput
+
+    def getZincContext(self):
+        return self._zincContext
 
     def getRootRegion(self):
         return self._rootRegion
