@@ -72,7 +72,7 @@ class SnapshotDialog(QtGui.QDialog):
     def getWidth(self):
         return self._ui.spinBoxWidth.value()
 
-    def setContext(self, context):
+    def setZincContext(self, context):
         self._ui.widgetPreview.setContext(context)
 
     def setScene(self, scene):

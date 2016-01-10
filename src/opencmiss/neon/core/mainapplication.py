@@ -16,7 +16,6 @@
 import json
 import os
 from opencmiss.neon.core.neondocument import NeonDocument
-from opencmiss.zinc.context import Context
 from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
@@ -32,15 +31,7 @@ class MainApplication(object):
         self._location = None
         self._recents = []
 
-        self._zincContext = Context("Main")
-
-        # set up standard materials and glyphs
-        materialmodule = self._zincContext.getMaterialmodule()
-        materialmodule.defineStandardMaterials()
-        glyphmodule = self._zincContext.getGlyphmodule()
-        glyphmodule.defineStandardGlyphs()
-
-        self._document = NeonDocument(self._zincContext)
+        self._document = NeonDocument()
 
         self._problem_model = ProblemModel()
         self._setupModel()
@@ -54,8 +45,8 @@ class MainApplication(object):
                 index = self._problem_model.index(row)
                 self._problem_model.setData(index, importProblem(name))
 
-    def getContext(self):
-        return self._zincContext
+    def getZincContext(self):
+        return self._document.getZincContext()
 
     def isModified(self):
         return self._saveUndoRedoIndex != self._currentUntoRedoIndex
@@ -74,7 +65,8 @@ class MainApplication(object):
 
     def new(self):
         # create a blank document
-        self._document = NeonDocument(self._zincContext)
+        self._document.freeContents()
+        self._document = NeonDocument()
 
     def save(self):
         dictOutput = self._document.serialize()
@@ -85,20 +77,21 @@ class MainApplication(object):
         self._location = filename
         with open(filename, 'r') as f:
             dictInput = json.loads(f.read())
-            self._document = NeonDocument(self._zincContext)
+            self._document.freeContents()
+            self._document = NeonDocument()
             # set current directory to path from file, to support scripts and fieldml with external resources
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
                 print("Failed to load " + filename)
                 # create a blank document
-                self._document = NeonDocument(self._zincContext)
+                self._document.freeContents()
+                self._document = NeonDocument()
 
     def addRecent(self, recent):
         if recent in self._recents:
             index = self._recents.index(recent)
             del self._recents[index]
-
         self._recents.append(recent)
 
     def getRecents(self):

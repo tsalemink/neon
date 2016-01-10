@@ -172,10 +172,10 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
 
-        context = self._model.getContext()
-        self.dockWidgetContentsSpectrumEditor.setContext(context)
-        self.dockWidgetContentsTessellationEditor.setContext(context)
-        self.dockWidgetContentsTimeEditor.setContext(context)
+        zincContext = self._model.getZincContext()
+        self.dockWidgetContentsSpectrumEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
 
     def _registerEditors(self):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
@@ -210,7 +210,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _createDialogs(self):
         self._snapshot_dialog = SnapshotDialog(self, self._shared_gl_widget)
-        self._snapshot_dialog.setContext(self._model.getContext())
+        self._snapshot_dialog.setZincContext(self._model.getZincContext())
 
         self._preferences_dialog = PreferencesDialog(self)
 
@@ -323,10 +323,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
-        context = self._model.getContext()
+        zincContext = self._model.getZincContext()
         for v in views:
             self._ui.viewStackedWidget.addWidget(v)
-            v.setContext(context)
+            v.setZincContext(zincContext)
 
             action_view = QtGui.QAction(v.getName(), self)
             action_view.setData(v)
@@ -367,17 +367,27 @@ class MainWindow(QtGui.QMainWindow):
             zincRootRegion = changedRegion.getZincRegion()
             self._visualisation_view.setScene(zincRootRegion.getScene())
 
-    def _refreshRootRegion(self):
+    def _onNewDocument(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
         rootRegion.connectRegionChange(self._regionChange)
+
+        # need to pass new Zinc context to dialogs and widgets using global modules
+        zincContext = document.getZincContext()
+        self._visualisation_view.setZincContext(zincContext)
+        self.dockWidgetContentsSpectrumEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
+        self._snapshot_dialog.setZincContext(zincContext)
+
+        # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
         self.dockWidgetContentsModelSourcesEditor.setRegion(rootRegion)
-        if self._visualisation_view_ready:
-            zincRootRegion = rootRegion.getZincRegion()
-            scene = zincRootRegion.getScene()
-            self._visualisation_view.setScene(scene)
-            self.dockWidgetContentsSceneEditor.setScene(scene)
+
+        # need to pass new scene to the following
+        zincRootRegion = rootRegion.getZincRegion()
+        scene = zincRootRegion.getScene()
+        self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _regionSelected(self, region):
         self.dockWidgetContentsModelSourcesEditor.setRegion(region)
@@ -387,7 +397,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
-        self._refreshRootRegion()
+        self._onNewDocument()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -435,13 +445,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def _newTriggered(self):
         self._model.new()
-        self._refreshRootRegion()
+        self._onNewDocument()
 
     def _openModel(self, filename):
         self._location = os.path.dirname(filename)
         self._model.load(filename)
         self._addRecent(filename)
-        self._refreshRootRegion()
+        self._onNewDocument()
 
         self._updateUi()
 

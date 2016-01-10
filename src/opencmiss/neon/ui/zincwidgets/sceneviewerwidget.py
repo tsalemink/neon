@@ -41,22 +41,47 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         QtOpenGL.QGLWidget.__init__(self, parent, shared)
         # Create a Zinc context from which all other objects can be derived either directly or indirectly.
+        self._graphicsInitialized = False
         self._context = None
         self._sceneviewer = None
         # init end
 
     def setContext(self, context):
         '''
-        Sets the context for this ZincWidget.  This should be set before the initializeGL()
-        method is called otherwise the scene viewer cannot be created.
+        Sets the context for this Zinc Scenviewer widget. Prompts creation of a new Zinc
+        Sceneviewer, once graphics are initialised.
         '''
         self._context = context
+        if self._graphicsInitialized:
+            self._createSceneviewer()
 
     def getContext(self):
-        if not self._context is None:
-            return self._context
-        else:
-            raise RuntimeError("Zinc context has not been set in Sceneviewerwidget.")
+        return self._context
+
+    def _createSceneviewer(self):
+        # Get the scene viewer module.
+        self._sceneviewernotifier = None
+
+        # From the scene viewer module we can create a scene viewer, we set up the
+        # scene viewer to have the same OpenGL properties as the QGLWidget.
+        sceneviewermodule = self._context.getSceneviewermodule()
+        self._sceneviewer = sceneviewermodule.createSceneviewer(Sceneviewer.BUFFERING_MODE_DOUBLE, Sceneviewer.STEREO_MODE_DEFAULT)
+        self._sceneviewer.setProjectionMode(Sceneviewer.PROJECTION_MODE_PERSPECTIVE)
+        self._sceneviewer.setViewportSize(self.width(), self.height())
+
+        # Get the default scene filter, which filters by visibility flags
+        scenefiltermodule = self._context.getScenefiltermodule()
+        scenefilter = scenefiltermodule.getDefaultScenefilter()
+        self._sceneviewer.setScenefilter(scenefilter)
+
+        region = self._context.getDefaultRegion()
+        scene = region.getScene()
+        self._sceneviewer.setScene(scene)
+
+        self._sceneviewernotifier = self._sceneviewer.createSceneviewernotifier()
+        self._sceneviewernotifier.setCallback(self._zincSceneviewerEvent)
+
+        self._sceneviewer.viewAll()
 
     def getSceneviewer(self):
         '''
@@ -67,38 +92,13 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
     # initializeGL start
     def initializeGL(self):
         '''
-        Initialise the Zinc scene for drawing the axis glyph at a point.
+        The OpenGL context is ready for use. If Zinc Context has been set, create Zinc Sceneviewer, otherwise
+        inform client who is required to set Context at a later time.
         '''
-        # Following throws exception if you haven't called setContext() yet
-        self.getContext()
-        if self._sceneviewer is None:
-            # Get the scene viewer module.
-            scene_viewer_module = self._context.getSceneviewermodule()
-
-            # From the scene viewer module we can create a scene viewer, we set up the
-            # scene viewer to have the same OpenGL properties as the QGLWidget.
-            self._sceneviewer = scene_viewer_module.createSceneviewer(Sceneviewer.BUFFERING_MODE_DOUBLE, Sceneviewer.STEREO_MODE_DEFAULT)
-            self._sceneviewer.setProjectionMode(Sceneviewer.PROJECTION_MODE_PERSPECTIVE)
-
-            # Create a filter for visibility flags which will allow us to see our graphic.
-            filter_module = self._context.getScenefiltermodule()
-            # By default graphics are created with their visibility flags set to on (or true).
-            graphics_filter = filter_module.createScenefilterVisibilityFlags()
-
-            # Set the graphics filter for the scene viewer otherwise nothing will be visible.
-            self._sceneviewer.setScenefilter(graphics_filter)
-            region = self._context.getDefaultRegion()
-            scene = region.getScene()
-
-            self._sceneviewer.setScene(scene)
-
-            self._sceneviewer.viewAll()
-
-            self._sceneviewernotifier = self._sceneviewer.createSceneviewernotifier()
-            self._sceneviewernotifier.setCallback(self._zincSceneviewerEvent)
-
-            self.graphicsInitialized.emit()
-            # initializeGL end
+        self._graphicsInitialized = True
+        if self._context:
+            self._createSceneviewer()
+        self.graphicsInitialized.emit()
 
     def sizeHint(self):
         return QtCore.QSize(200, 400)

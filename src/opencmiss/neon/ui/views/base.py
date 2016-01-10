@@ -26,7 +26,7 @@ class BaseView(QtGui.QWidget):
     def getName(self):
         return self._name
 
-    def setContext(self, context):
+    def setZincContext(self, zincContext):
         raise NotImplementedError()
 
     def getDependentEditors(self):
