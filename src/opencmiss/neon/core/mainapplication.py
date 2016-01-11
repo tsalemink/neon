@@ -69,7 +69,10 @@ class MainApplication(object):
         self._document = NeonDocument()
 
     def save(self):
-        dictOutput = self._document.serialize()
+        # make model sources relative to current location if possible
+        # note that sources on different windows drives have absolute paths
+        basePath = os.path.dirname(self._location)
+        dictOutput = self._document.serialize(basePath)
         with open(self._location, 'w') as f:
             f.write(json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2))
 

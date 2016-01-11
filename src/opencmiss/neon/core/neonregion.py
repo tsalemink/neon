@@ -43,6 +43,13 @@ class NeonRegion(object):
         for child in self._children:
             child.freeContents()
 
+    def _createBlankCopy(self):
+        zincRegion = self._zincRegion.createRegion()
+        if self._name:
+            zincRegion.setName(self._name)
+        blankRegion = NeonRegion(self._name, zincRegion, self._parent)
+        return blankRegion
+
     def _assign(self, source):
         """
         Replace contents of self with that of source. Fixes up Zinc parent/child region relationships.
@@ -126,13 +133,6 @@ class NeonRegion(object):
             self._assign(tmpRegion)
             self._informRegionChange(True)
 
-    def _createBlankCopy(self):
-        zincRegion = self._zincRegion.createRegion()
-        if self._name:
-            zincRegion.setName(self._name)
-        blankRegion = NeonRegion(self._name, zincRegion, self._parent)
-        return blankRegion
-
     def _discoverNewZincRegions(self):
         """
         Ensure there are Neon regions for every Zinc Region in tree
@@ -204,7 +204,7 @@ class NeonRegion(object):
                 neonChild.deserialize(dictChild)
         self._discoverNewZincRegions()
 
-    def serialize(self):
+    def serialize(self, basePath=None):
         dictOutput = {}
         if self._name:
             dictOutput["Name"] = self._name
@@ -212,7 +212,7 @@ class NeonRegion(object):
         if self._modelSources:
             tmpOutput = []
             for modelSource in self._modelSources:
-                tmpOutput.append(modelSource.serialize())
+                tmpOutput.append(modelSource.serialize(basePath))
             dictOutput["Model"]["Sources"] = tmpOutput
         if not dictOutput["Model"]:
             dictOutput.pop("Model")
@@ -223,7 +223,7 @@ class NeonRegion(object):
         if self._children:
             tmpOutput = []
             for child in self._children:
-                tmpOutput.append(child.serialize())
+                tmpOutput.append(child.serialize(basePath))
             dictOutput["ChildRegions"] = tmpOutput
         return dictOutput
 
