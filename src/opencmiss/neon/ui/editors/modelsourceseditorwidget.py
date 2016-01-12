@@ -189,7 +189,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
         # fileFilter = fileNameTuple[1]
         if not fileName:
             return
-        self._currentModelSource.setFileName(str(fileName))
+        self._currentModelSource.setFileName(fileName)
         self._editedCurrentModelSource()
         # set current directory to path from file, to support scripts and fieldml with external resources
         self._fileNameDisplay()

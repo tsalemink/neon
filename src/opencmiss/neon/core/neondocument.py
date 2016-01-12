@@ -74,11 +74,11 @@ class NeonDocument(object):
             pass
         return result
 
-    def serialize(self):
+    def serialize(self, basePath=None):
         outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
-        dictOutput["RootRegion"] = self._rootRegion.serialize()
+        dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
         return dictOutput
 
     def getZincContext(self):
