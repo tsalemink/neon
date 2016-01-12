@@ -144,7 +144,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
 
     def _spectrumChanged(self, item):
         s = item.data(SPECTRUM_DATA_ROLE)
-        s.setName(item.text())
+        s.setName(str(item.text()))
         r = item.data(REGION_DATA_ROLE)
         scene = r.getScene()
         graphics = scene.getFirstGraphics()

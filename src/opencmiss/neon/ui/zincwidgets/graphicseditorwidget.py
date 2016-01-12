@@ -21,6 +21,8 @@ from opencmiss.zinc.field import Field
 from opencmiss.zinc.element import Element
 from opencmiss.zinc.glyph import Glyph
 from opencmiss.zinc.graphics import Graphics, GraphicsStreamlines, Graphicslineattributes
+from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_LOCAL
+from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
 
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
@@ -91,10 +93,11 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui = Ui_GraphicsEditorWidget()
         self.ui.setupUi(self)
         # base graphics attributes
-        self.ui.data_field_chooser.setNullObjectName('-')
-        self.ui.data_field_chooser.setConditional(FieldIsRealValued)
         self.ui.coordinate_field_chooser.setNullObjectName('-')
         self.ui.coordinate_field_chooser.setConditional(FieldIsCoordinateCapable)
+        self.ui.data_field_chooser.setNullObjectName('-')
+        self.ui.data_field_chooser.setConditional(FieldIsRealValued)
+        self.ui.spectrum_chooser.setNullObjectName('-')
         # contours
         self.ui.isoscalar_field_chooser.setNullObjectName('- choose -')
         self.ui.isoscalar_field_chooser.setConditional(FieldIsScalar)
@@ -115,6 +118,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         coordinateField = None
         material = None
         dataField = None
+        spectrum = None
         isExterior = False
         isWireframe = False
         pointattributes = None
@@ -126,6 +130,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             coordinateField = self._graphics.getCoordinateField()
             material = self._graphics.getMaterial()
             dataField = self._graphics.getDataField()
+            spectrum = self._graphics.getSpectrum()
             isExterior = self._graphics.isExterior()
             isWireframe = self._graphics.getRenderPolygonMode() == Graphics.RENDER_POLYGON_MODE_WIREFRAME
             contours = self._graphics.castContours()
@@ -137,8 +142,10 @@ class GraphicsEditorWidget(QtGui.QWidget):
         else:
             self.ui.general_groupbox.hide()
         self.ui.coordinate_field_chooser.setField(coordinateField)
+        self._scenecoordinatesystemDisplay()
         self.ui.material_chooser.setMaterial(material)
         self.ui.data_field_chooser.setField(dataField)
+        self.ui.spectrum_chooser.setSpectrum(spectrum)
         self.ui.exterior_checkbox.setCheckState(QtCore.Qt.Checked if isExterior else QtCore.Qt.Unchecked)
         self._faceDisplay()
         self.ui.wireframe_checkbox.setCheckState(QtCore.Qt.Checked if isWireframe else QtCore.Qt.Unchecked)
@@ -213,6 +220,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         '''
         self.ui.material_chooser.setMaterialmodule(scene.getMaterialmodule())
         self.ui.glyph_chooser.setGlyphmodule(scene.getGlyphmodule())
+        self.ui.spectrum_chooser.setSpectrummodule(scene.getSpectrummodule())
         region = scene.getRegion()
         self.ui.coordinate_field_chooser.setRegion(region)
         self.ui.data_field_chooser.setRegion(region)
@@ -297,6 +305,21 @@ class GraphicsEditorWidget(QtGui.QWidget):
             else:
                 self._graphics.setCoordinateField(Field())
 
+    def _scenecoordinatesystemDisplay(self):
+        '''
+        Show the current state of the scenecoordinatesystem combo box
+        '''
+        scenecoordinatesystem = SCENECOORDINATESYSTEM_LOCAL
+        if self._graphics:
+            scenecoordinatesystem = self._graphics.getScenecoordinatesystem()
+        self.ui.scenecoordinatesystem_combobox.blockSignals(True)
+        self.ui.scenecoordinatesystem_combobox.setCurrentIndex(scenecoordinatesystem - SCENECOORDINATESYSTEM_LOCAL)
+        self.ui.scenecoordinatesystem_combobox.blockSignals(False)
+
+    def scenecoordinatesystemChanged(self, index):
+        if self._graphics:
+            self._graphics.setScenecoordinatesystem(index + SCENECOORDINATESYSTEM_LOCAL)
+
     def dataFieldChanged(self, index):
         '''
         An item was selected at index in data field chooser widget
@@ -311,10 +334,19 @@ class GraphicsEditorWidget(QtGui.QWidget):
                     spectrummodule = scene.getSpectrummodule()
                     spectrum = spectrummodule.getDefaultSpectrum()
                     self._graphics.setSpectrum(spectrum)
+                    self.ui.spectrum_chooser.setSpectrum(spectrum)
                 self._graphics.setDataField(dataField)
                 scene.endChange()
             else:
                 self._graphics.setDataField(Field())
+
+    def spectrumChanged(self, index):
+        if self._graphics:
+            spectrum = self.ui.spectrum_chooser.getSpectrum()
+            if spectrum:
+                self._graphics.setSpectrum(spectrum)
+            else:
+                self._graphics.setSpectrum(Spectrum())
 
     def exteriorClicked(self, isChecked):
         '''
