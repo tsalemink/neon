@@ -35,7 +35,7 @@ class GlyphChooserWidget(QtGui.QComboBox):
         Callback for change in glyphs; may need to rebuild glyph list
         '''
         changeSummary = glyphmoduleevent.getSummaryGlyphChangeFlags()
-        print("_glyphmoduleCallback changeSummary " + str(changeSummary))
+        #print("_glyphmoduleCallback changeSummary " + str(changeSummary))
         # Can't do this as may be received after new glyph module is set!
         # if changeSummary == Glyph.CHANGE_FLAG_FINAL:
         #    self.setGlyphmodule(None)
