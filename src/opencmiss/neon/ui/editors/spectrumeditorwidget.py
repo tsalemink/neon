@@ -15,15 +15,15 @@
 '''
 from PySide import QtCore, QtGui
 
-from opencmiss.zinc.spectrum import Spectrumcomponent
+from opencmiss.zinc.sceneviewer import Sceneviewer
+from opencmiss.zinc.spectrum import Spectrum, Spectrumcomponent
+from opencmiss.zinc.status import OK as ZINC_OK
 
 from opencmiss.neon.ui.editors.ui_spectrumeditorwidget import Ui_SpectrumEditorWidget
 from opencmiss.neon.settings.mainsettings import FLOAT_STRING_FORMAT
 
 COMPONENT_NAME_FORMAT = '{:d}. '
-SPECTRUM_GLYPH_NAME_FORMAT = 'colour_bar_{0}'
 SPECTRUM_DATA_ROLE = QtCore.Qt.UserRole + 1
-REGION_DATA_ROLE = QtCore.Qt.UserRole + 2
 
 
 class SpectrumEditorWidget(QtGui.QWidget):
@@ -36,9 +36,14 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.comboBoxColourMap.addItems(extractColourMappingEnum())
         self._ui.comboBoxScale.addItems(extractScaleTypeEnum())
 
+        self._spectrums = None
+        self._zincContext = None
         self._selected_spectrum_row = -1
         self._selected_spectrum_components_row = -1
-        self._empty_region = None
+        self._previewZincRegion = None
+        self._previewZincScene = None
+        self._spectrummodulenotifier = None
+        self._currentSpectrumName = None
         self._updateUi()
 
         self._makeConnections()
@@ -53,18 +58,39 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.listWidgetSpectrums.itemChanged.connect(self._spectrumChanged)
         self._ui.checkBoxOverwrite.clicked.connect(self._overwriteClicked)
         self._ui.checkBoxDefault.clicked.connect(self._defaultClicked)
+        self._ui.pushButtonAutorange.clicked.connect(self._autorangeClicked)
 
         self._ui.listWidgetSpectrumComponents.itemClicked.connect(self._spectrumComponentItemClicked)
 
         self._ui.pushButtonMoveDownSpectrumComponent.clicked.connect(self._moveDownSpectrumComponentClicked)
         self._ui.pushButtonMoveUpSpectrumComponent.clicked.connect(self._moveUpSpectrumComponentClicked)
         self._ui.comboBoxColourMap.currentIndexChanged.connect(self._colourMapIndexChanged)
-        self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
         self._ui.checkBoxReverse.clicked.connect(self._reverseClicked)
 
         self._ui.spinBoxDataFieldComponent.valueChanged.connect(self._dataFieldComponentValueChanged)
 
-        self._ui.widget.graphicsInitialized.connect(self._graphicsInitialised)
+        self._ui.lineEditDataRangeMin.editingFinished.connect(self._dataRangeMinEntered)
+        self._ui.lineEditDataRangeMax.editingFinished.connect(self._dataRangeMaxEntered)
+        self._ui.lineEditColourRangeMin.editingFinished.connect(self._colourRangeMinEntered)
+        self._ui.lineEditColourRangeMax.editingFinished.connect(self._colourRangeMaxEntered)
+        self._ui.checkBoxExtendBelow.clicked.connect(self._extendBelowClicked)
+        self._ui.checkBoxExtendAbove.clicked.connect(self._extendAboveClicked)
+
+        self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
+        self._ui.lineEditExaggeration.editingFinished.connect(self._exaggerationEntered)
+
+        self._ui.sceneviewerWidgetPreview.graphicsInitialized.connect(self._graphicsInitialised)
+
+    def _getCurrentSpectrum(self):
+        currentItem = self._ui.listWidgetSpectrums.currentItem()
+        if not currentItem:
+            return None
+        name = str(currentItem.text())
+        sm = self._zincContext.getSpectrummodule()
+        spectrum = sm.findSpectrumByName(name)
+        if spectrum.isValid():
+            return spectrum
+        return None
 
     def _clearSpectrumUi(self):
         self._ui.listWidgetSpectrumComponents.clear()
@@ -76,66 +102,144 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.comboBoxScale.setCurrentIndex(0)
         self._ui.checkBoxReverse.setChecked(False)
 
+    def _spectrummoduleCallback(self, spectrummoduleevent):
+        '''
+        Callback for change in spectrums; may need to rebuild spectrum list
+        '''
+        changeSummary = spectrummoduleevent.getSummarySpectrumChangeFlags()
+        # print("Spectrum Editor: _spectrummoduleCallback changeSummary " + str(changeSummary))
+        if 0 != (changeSummary & (Spectrum.CHANGE_FLAG_IDENTIFIER | Spectrum.CHANGE_FLAG_ADD | Spectrum.CHANGE_FLAG_REMOVE)):
+            self._buildSpectrumList()
+
+    def _buildSpectrumList(self):
+        sm = self._zincContext.getSpectrummodule()
+        si = sm.createSpectrumiterator()
+        lws = self._ui.listWidgetSpectrums
+        lws.clear()
+        s = si.next()
+        selectedItem = None
+        while s.isValid():
+            name = s.getName()
+            item = createSpectrumListItem(name)
+            lws.addItem(item)
+            if name == self._currentSpectrumName:
+                selectedItem = item
+            s = si.next()
+        if not selectedItem:
+            if lws.count() > 0:
+                selectedItem = lws.item(0)
+                self._currentSpectrumName = str(selectedItem.text())
+            else:
+                self._currentSpectrumName = None
+        if selectedItem:
+            lws.setCurrentItem(selectedItem)
+            selectedItem.setSelected(True)
+        self._updateUi()
+
     def _updateUi(self):
         self._clearSpectrumUi()
-        spectrum_items = self._ui.listWidgetSpectrums.selectedItems()
-        spectrum_selected = len(spectrum_items)
+        spectrum = self._getCurrentSpectrum()
+        spectrum_selected = spectrum is not None
 
         self._ui.pushButtonDeleteSpectrum.setEnabled(spectrum_selected)
-        self._ui.groupBoxPreview.setEnabled(spectrum_selected)
+        self._ui.sceneviewerWidgetPreview.setEnabled(spectrum_selected)
         self._ui.groupBoxSpectrumProperties.setEnabled(spectrum_selected)
         self._ui.groupBoxComponents.setEnabled(spectrum_selected)
         self._ui.groupBoxComponentProperties.setEnabled(spectrum_selected)
 
         if spectrum_selected:
             # Only one spectrum can be selected at a time.
-            active_item = spectrum_items[0]
-            s = active_item.data(SPECTRUM_DATA_ROLE)
-            sm = self._ui.widget.getContext().getSpectrummodule()
-            default_spectrum = s == sm.getDefaultSpectrum()
-            self._ui.pushButtonDeleteSpectrum.setEnabled(not default_spectrum)
-            self._ui.checkBoxDefault.setChecked(default_spectrum)
-            self._ui.checkBoxOverwrite.setChecked(s.isMaterialOverwrite())
-            sc = s.getFirstSpectrumcomponent()
+            sm = self._zincContext.getSpectrummodule()
+            is_default_spectrum = (spectrum == sm.getDefaultSpectrum())
+            self._ui.pushButtonDeleteSpectrum.setEnabled(not is_default_spectrum)
+            self._ui.checkBoxDefault.setChecked(is_default_spectrum)
+            self._ui.checkBoxOverwrite.setChecked(spectrum.isMaterialOverwrite())
+            sc = spectrum.getFirstSpectrumcomponent()
             while sc.isValid():
                 count = self._ui.listWidgetSpectrumComponents.count() + 1
                 self._ui.listWidgetSpectrumComponents.addItem(createItem(getComponentString(sc, count), sc))
-                sc = s.getNextSpectrumcomponent(sc)
+                sc = spectrum.getNextSpectrumcomponent(sc)
 
             if self._ui.listWidgetSpectrumComponents.count():
                 self._ui.listWidgetSpectrumComponents.setCurrentRow(0)
 
+        self._previewSpectrum(spectrum)
         self._updateComponentUi()
+
+    def _previewSpectrum(self, spectrum):
+        if self._previewZincScene is None:
+            return
+        if (spectrum is None) or (not spectrum.isValid()):
+            self._previewZincScene.removeAllGraphics()
+            return
+        points = self._previewZincScene.getFirstGraphics()
+        self._previewZincScene.beginChange()
+        if not points.isValid():
+            points = self._previewZincScene.createGraphicsPoints()
+            pointsattr = points.getGraphicspointattributes()
+            pointsattr.setBaseSize(1.0)
+        else:
+            pointsattr = points.getGraphicspointattributes()
+        colourBar = self._spectrums.findOrCreateSpectrumGlyphColourBar(spectrum)
+        pointsattr.setGlyph(colourBar)
+        self._previewZincScene.endChange()
+        sceneviewer = self._ui.sceneviewerWidgetPreview.getSceneviewer()
+        if sceneviewer:
+            sceneviewer.beginChange()
+            sceneviewer.setScene(self._previewZincScene)
+            sceneviewer.setProjectionMode(Sceneviewer.PROJECTION_MODE_PARALLEL)
+            result, centre = colourBar.getCentre(3)
+            eye = [centre[0], centre[1], centre[2] + 5.0]
+            up = [-1.0, 0.0, 0.0]
+            sceneviewer.setLookatParametersNonSkew(eye, centre, up)
+            sceneviewer.setNearClippingPlane(1.0)
+            sceneviewer.setFarClippingPlane(10.0)
+            sceneviewer.setViewAngle(0.25)
+            sceneviewer.endChange()
+
+    def _getCurrentSpectrumcomponent(self):
+        spectrum_component_items = self._ui.listWidgetSpectrumComponents.selectedItems()
+        if len(spectrum_component_items) > 0:
+            active_item = spectrum_component_items[0]
+            return active_item.data(SPECTRUM_DATA_ROLE)
+        return None
 
     def _updateComponentUi(self):
         spectrum_component_items = self._ui.listWidgetSpectrumComponents.selectedItems()
-        spectrum_component_selected = len(spectrum_component_items)
+        spectrum_component_selected = (len(spectrum_component_items) > 0)
 
         self._ui.pushButtonDeleteSpectrumComponent.setEnabled(spectrum_component_selected)
         self._ui.comboBoxColourMap.setEnabled(spectrum_component_selected)
         self._ui.pushButtonAutorange.setEnabled(spectrum_component_selected)
-        self._ui.comboBoxScene.setEnabled(spectrum_component_selected)
         self._ui.comboBoxScale.setEnabled(spectrum_component_selected)
         self._ui.spinBoxDataFieldComponent.setEnabled(spectrum_component_selected)
         self._ui.checkBoxReverse.setEnabled(spectrum_component_selected)
-        self._ui.lineEditRangeMin.setEnabled(spectrum_component_selected)
-        self._ui.lineEditRangeMax.setEnabled(spectrum_component_selected)
-        self._ui.lineEditNormalisedRangeMin.setEnabled(spectrum_component_selected)
-        self._ui.lineEditNormalisedRangeMax.setEnabled(spectrum_component_selected)
+        self._ui.lineEditDataRangeMin.setEnabled(spectrum_component_selected)
+        self._ui.lineEditDataRangeMax.setEnabled(spectrum_component_selected)
+        self._ui.lineEditColourRangeMin.setEnabled(spectrum_component_selected)
+        self._ui.lineEditColourRangeMax.setEnabled(spectrum_component_selected)
+        self._ui.checkBoxExtendBelow.setEnabled(spectrum_component_selected)
+        self._ui.checkBoxExtendAbove.setEnabled(spectrum_component_selected)
         self._ui.pushButtonMoveDownSpectrumComponent.setEnabled(spectrum_component_selected)
         self._ui.pushButtonMoveUpSpectrumComponent.setEnabled(spectrum_component_selected)
 
         if spectrum_component_selected:
             active_spectrum_component = spectrum_component_items[0]
             sc = active_spectrum_component.data(SPECTRUM_DATA_ROLE)
+            self._ui.comboBoxColourMap.blockSignals(True)
             self._ui.comboBoxColourMap.setCurrentIndex(sc.getColourMappingType())
-            self._ui.comboBoxScale.setCurrentIndex(sc.getScaleType())
+            self._ui.comboBoxColourMap.blockSignals(False)
             self._ui.spinBoxDataFieldComponent.setValue(sc.getFieldComponent())
             self._ui.checkBoxReverse.setChecked(sc.isColourReverse())
-            self._ui.lineEditRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
-            self._ui.lineEditRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
-            self._ui.lineEditNormalisedRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
-            self._ui.lineEditNormalisedRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
+            self._ui.lineEditDataRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
+            self._ui.lineEditDataRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
+            self._ui.lineEditColourRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getColourMinimum()))
+            self._ui.lineEditColourRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getColourMaximum()))
+            self._ui.checkBoxExtendBelow.setChecked(sc.isExtendBelow())
+            self._ui.checkBoxExtendAbove.setChecked(sc.isExtendAbove())
+            self._ui.comboBoxScale.setCurrentIndex(sc.getScaleType())
+            self._ui.lineEditExaggeration.setText(FLOAT_STRING_FORMAT.format(sc.getExaggeration()))
+
             row = self._ui.listWidgetSpectrumComponents.row(active_spectrum_component)
             self._ui.pushButtonMoveUpSpectrumComponent.setEnabled(row > 0)
             self._ui.pushButtonMoveDownSpectrumComponent.setEnabled(row < (self._ui.listWidgetSpectrumComponents.count() - 1))
@@ -143,61 +247,63 @@ class SpectrumEditorWidget(QtGui.QWidget):
             active_spectrum_component.setText(getComponentString(sc, row + 1))
 
     def _spectrumChanged(self, item):
-        s = item.data(SPECTRUM_DATA_ROLE)
-        s.setName(item.text())
-        r = item.data(REGION_DATA_ROLE)
-        scene = r.getScene()
-        graphics = scene.getFirstGraphics()
-        graphics.setName(SPECTRUM_GLYPH_NAME_FORMAT.format(s.getName()))
+        sm = self._zincContext.getSpectrummodule()
+        spectrum = sm.findSpectrumByName(self._currentSpectrumName)
+        # spectrum = item.data(SPECTRUM_DATA_ROLE)
+        self._spectrums.renameSpectrum(spectrum, item.text())
 
     def _spectrumItemClicked(self, item):
-        lws = self._ui.listWidgetSpectrums
-        selected_items = lws.selectedItems()
-        if len(selected_items):
-            if self._selected_spectrum_row == lws.row(item):
-                self._ui.listWidgetSpectrums.clearSelection()
-                self._selected_spectrum_row = -1
-                self._ui.widget.getSceneviewer().setScene(self._empty_region.getScene())
-            else:
-                self._selected_spectrum_row = lws.row(item)
-                region = item.data(REGION_DATA_ROLE)
-                self._ui.widget.getSceneviewer().setScene(region.getScene())
-
+        item.setSelected(True)
+        self._selected_spectrum_row = self._ui.listWidgetSpectrums.row(item)
         self._updateUi()
 
     def _spectrumComponentItemClicked(self, item):
         lwsc = self._ui.listWidgetSpectrumComponents
+        item.setSelected(True)
         selected_items = lwsc.selectedItems()
         if len(selected_items):
             if self._selected_spectrum_components_row == lwsc.row(item):
-                self._ui.listWidgetSpectrumComponents.clearSelection()
-                self._selected_spectrum_components_row = -1
-                self._clearSpectrumComponentUi()
+                # self._ui.listWidgetSpectrumComponents.clearSelection()
+                # self._selected_spectrum_components_row = -1
+                # self._clearSpectrumComponentUi()
+                pass
             else:
                 self._selected_spectrum_components_row = lwsc.row(item)
 
         self._updateComponentUi()
 
+    def _selectSpectrumByName(self, name):
+        lws = self._ui.listWidgetSpectrums
+        for row in range(lws.count()):
+            item = lws.item(row)
+            if str(item.text()) == name:
+                item.setSelected(True)
+                self._currentSpectrumName = name
+                self._updateUi()
+                return
+        self._currentSpectrumName = None
+
+    def _selectSpectrum(self, spectrum):
+        if (spectrum is None) or (not spectrum.isValid()):
+            return
+        self._selectSpectrumByName(spectrum.getName())
+
     def _addSpectrumClicked(self):
-        context = self._ui.widget.getContext()
-        sm = context.getSpectrummodule()
-        s = sm.createSpectrum()
-        region = addPrivateSpectrumRegion(self._ui.widget.getContext(), s)
-        self._ui.listWidgetSpectrums.addItem(createItem(s.getName(), s, True, region))
+        sm = self._zincContext.getSpectrummodule()
+        sm.beginChange()
+        spectrum = sm.createSpectrum()
+        spectrum.setManaged(True)
+        self._currentSpectrumName = spectrum.getName()
+        sm.endChange()
+        self._selectSpectrum(spectrum)
         self._updateUi()
 
     def _deleteSpectrumClicked(self):
-        selected_items = self._ui.listWidgetSpectrums.selectedItems()
-        if len(selected_items):
-            active_spectrum = selected_items[0]
-            self._ui.listWidgetSpectrums.takeItem(self._ui.listWidgetSpectrums.row(active_spectrum))
-
-        self._updateUi()
+        spectrum = self._getCurrentSpectrum()
+        self._spectrums.removeSpectrum(spectrum)
 
     def _addSpectrumComponentClicked(self):
-        selected_items = self._ui.listWidgetSpectrums.selectedItems()
-        item = selected_items[0]
-        s = item.data(SPECTRUM_DATA_ROLE)
+        s = self._getCurrentSpectrum()
         sc = s.createSpectrumcomponent()
         count = self._ui.listWidgetSpectrumComponents.count() + 1
         item = createItem(getComponentString(sc, count), sc)
@@ -211,25 +317,75 @@ class SpectrumEditorWidget(QtGui.QWidget):
             row = self._ui.listWidgetSpectrumComponents.row(selected_items[0])
             item = self._ui.listWidgetSpectrumComponents.takeItem(row)
             sc = item.data(SPECTRUM_DATA_ROLE)
-            selected_spectrums = self._ui.listWidgetSpectrums.selectedItems()
-            if len(selected_spectrums):
-                s = selected_spectrums[0].data(SPECTRUM_DATA_ROLE)
+            s = self._getCurrentSpectrum()
+            if s:
                 s.removeSpectrumcomponent(sc)
-
         self._updateComponentUi()
 
     def _defaultClicked(self):
-        active_item = self._ui.listWidgetSpectrums.selectedItems()[0]
-        s = active_item.data(SPECTRUM_DATA_ROLE)
-        sm = self._ui.widget.getContext().getSpectrummodule()
-        sm.setDefaultSpectrum(s)
-
-        self._updateUi()
+        if self._ui.checkBoxDefault.isChecked():
+            s = self._getCurrentSpectrum()
+            sm = self._ui.sceneviewerWidgetPreview.getContext().getSpectrummodule()
+            sm.setDefaultSpectrum(s)
+        else:
+            # Can't un-set default; need to make another one default
+            self._ui.checkBoxDefault.setChecked(True)
 
     def _overwriteClicked(self):
-        active_item = self._ui.listWidgetSpectrums.selectedItems()[0]
-        s = active_item.data(SPECTRUM_DATA_ROLE)
+        s = self._getCurrentSpectrum()
         s.setMaterialOverwrite(self._ui.checkBoxOverwrite.isChecked())
+
+    def _autorangeClicked(self):
+        """
+        Autorange all components of spectrum.
+        Maintains proportions of minimums and miximums for spectrum components
+        Future: support fixing of minimum or maximum data range in spectrum components
+        """
+        s = self._getCurrentSpectrum()
+        maxDataComponent = 0
+        oldComponentMinimums = {}
+        oldComponentMaximums = {}
+        sc = s.getFirstSpectrumcomponent()
+        while sc.isValid():
+            dataComponent = sc.getFieldComponent()
+            if dataComponent > maxDataComponent:
+                maxDataComponent = dataComponent
+            thisMinimum = sc.getRangeMinimum()
+            thisMaximum = sc.getRangeMaximum()
+            if (dataComponent not in oldComponentMinimums) or (thisMinimum < oldComponentMinimums[dataComponent]):
+                oldComponentMinimums[dataComponent] = thisMinimum
+            if (dataComponent not in oldComponentMaximums) or (thisMaximum < oldComponentMaximums[dataComponent]):
+                oldComponentMaximums[dataComponent] = thisMaximum
+            sc = s.getNextSpectrumcomponent(sc)
+        region = self._zincContext.getDefaultRegion()
+        scene = region.getScene()
+        scenefiltermodule = self._zincContext.getScenefiltermodule()
+        scenefilter = scenefiltermodule.getDefaultScenefilter()
+        foundMaxDataComponent, minimumValues, maximumValues = scene.getSpectrumDataRange(scenefilter, s, maxDataComponent)
+        # print("Data range: " + str(foundMaxDataComponent) + " values, minimum = " + str(minimumValues) + ", maximum = " + str(maximumValues))
+        if foundMaxDataComponent > 0:
+            # work around Zinc SWIG bindings returning scalars if 1 value
+            if not type(minimumValues) is list:
+                minimumValues = [minimumValues]
+                maximumValues = [maximumValues]
+            sc = s.getFirstSpectrumcomponent()
+            while sc.isValid():
+                dataComponent = sc.getFieldComponent()
+                if (0 < dataComponent) and (dataComponent <= foundMaxDataComponent):
+                    oldComponentRange =  oldComponentMaximums[dataComponent] - oldComponentMinimums[dataComponent]
+                    thisMinimum = sc.getRangeMinimum()
+                    thisMaximum = sc.getRangeMaximum()
+                    minimumRatio = (thisMinimum - oldComponentMinimums[dataComponent]) / oldComponentRange
+                    maximumRatio = (thisMaximum - oldComponentMinimums[dataComponent]) / oldComponentRange
+                    dataMinimum = minimumValues[dataComponent - 1]
+                    dataMaximum = maximumValues[dataComponent - 1]
+                    newComponentRange = dataMaximum - dataMinimum
+                    newComponentMinimum = dataMinimum + minimumRatio*newComponentRange
+                    newComponentMaximum = dataMinimum + maximumRatio*newComponentRange
+                    sc.setRangeMinimum(newComponentMinimum)
+                    sc.setRangeMaximum(newComponentMaximum)
+                sc = s.getNextSpectrumcomponent(sc)
+        self._updateComponentUi()
 
     def _reverseClicked(self):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
@@ -258,6 +414,62 @@ class SpectrumEditorWidget(QtGui.QWidget):
 
             self._updateComponentUi()
 
+    def _dataRangeMinEntered(self):
+        sc = self._getCurrentSpectrumcomponent()
+        try:
+            valueText = self._ui.lineEditDataRangeMin.text()
+            value = float(valueText)
+            result = sc.setRangeMinimum(value)
+            if result != ZINC_OK:
+                raise ValueError("")
+        except ValueError:
+            print("Error setting spectrum component data range minimum")
+        self._ui.lineEditDataRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
+
+    def _dataRangeMaxEntered(self):
+        sc = self._getCurrentSpectrumcomponent()
+        try:
+            valueText = self._ui.lineEditDataRangeMax.text()
+            value = float(valueText)
+            result = sc.setRangeMaximum(value)
+            if result != ZINC_OK:
+                raise ValueError("")
+        except ValueError:
+            print("Error setting spectrum component data range maximum")
+        self._ui.lineEditDataRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
+
+    def _colourRangeMinEntered(self):
+        sc = self._getCurrentSpectrumcomponent()
+        try:
+            valueText = self._ui.lineEditColourRangeMin.text()
+            value = float(valueText)
+            result = sc.setColourMinimum(value)
+            if result != ZINC_OK:
+                raise ValueError("")
+        except ValueError:
+            print("Error setting spectrum component colour range minimum")
+        self._ui.lineEditColourRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getColourMinimum()))
+
+    def _colourRangeMaxEntered(self):
+        sc = self._getCurrentSpectrumcomponent()
+        try:
+            valueText = self._ui.lineEditColourRangeMax.text()
+            value = float(valueText)
+            result = sc.setColourMaximum(value)
+            if result != ZINC_OK:
+                raise ValueError("")
+        except ValueError:
+            print("Error setting spectrum component colour range maximum")
+        self._ui.lineEditColourRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getColourMaximum()))
+
+    def _extendBelowClicked(self):
+        sc = self._getCurrentSpectrumcomponent()
+        sc.setExtendBelow(self._ui.checkBoxExtendBelow.isChecked())
+
+    def _extendAboveClicked(self):
+        sc = self._getCurrentSpectrumcomponent()
+        sc.setExtendAbove(self._ui.checkBoxExtendAbove.isChecked())
+
     def _scaleIndexChanged(self, index):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
         if len(selected_items):
@@ -266,6 +478,18 @@ class SpectrumEditorWidget(QtGui.QWidget):
             sc.setScaleType(index)
 
             self._updateComponentUi()
+
+    def _exaggerationEntered(self):
+        sc = self._getCurrentSpectrumcomponent()
+        try:
+            valueText = self._ui.lineEditExaggeration.text()
+            value = float(valueText)
+            result = sc.setExaggeration(value)
+            if result != ZINC_OK:
+                raise ValueError("")
+        except ValueError:
+            print("Error setting log scale exaggeration")
+        self._ui.lineEditExaggeration.setText(FLOAT_STRING_FORMAT.format(sc.getExaggeration()))
 
     def _moveDownSpectrumComponentClicked(self):
         self._moveSpectrumComponent(1)
@@ -295,20 +519,26 @@ class SpectrumEditorWidget(QtGui.QWidget):
             first_item = self._ui.listWidgetSpectrums.item(0)
             self._spectrumItemClicked(first_item)
 
-    def setZincContext(self, context):
-        self._ui.widget.setContext(context)
-        self._empty_region = context.createRegion()
-        self._empty_region.setName("Spectrum editor _empty_region")
-
-        sm = context.getSpectrummodule()
-        si = sm.createSpectrumiterator()
-        self._ui.listWidgetSpectrums.clear()
-        s = si.next()
-        while s.isValid():
-            region = addPrivateSpectrumRegion(context, s)
-            result = region.setName("Spectrum editor private region for spectrum " + s.getName())
-            self._ui.listWidgetSpectrums.addItem(createItem(s.getName(), s, True, region))
-            s = si.next()
+    def setSpectrums(self, spectrums):
+        """
+        Sets the Neon spectrums object which supplies the zinc context and has utilities for
+        managing spectrums.
+        :param spectrums: NeonSpectrums object
+        """
+        self._spectrums = spectrums
+        self._currentSpectrumName = None
+        self._zincContext = spectrums.getZincContext()
+        self._ui.sceneviewerWidgetPreview.setContext(self._zincContext)
+        self._previewZincRegion = self._zincContext.createRegion()
+        self._previewZincRegion.setName("Spectrum editor preview region")
+        self._previewZincScene = self._previewZincRegion.getScene()
+        sceneviewer = self._ui.sceneviewerWidgetPreview.getSceneviewer()
+        if sceneviewer:
+            sceneviewer.setScene(self._previewZincScene)
+        spectrummodule = self._zincContext.getSpectrummodule()
+        self._spectrummodulenotifier = spectrummodule.createSpectrummodulenotifier()
+        self._spectrummodulenotifier.setCallback(self._spectrummoduleCallback)
+        self._buildSpectrumList()
 
 
 INVALID_POSTFIX = '_INVALID'
@@ -318,36 +548,16 @@ PRIVATE_SPECTRUM_FORMAT = 'spectrum_{0}'
 
 from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_NORMALISED_WINDOW_FILL as NORMALISED_WINDOW_FILL
 
+def createSpectrumListItem(name):
+    i = QtGui.QListWidgetItem(name)
+    i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
+    return i
 
-def addPrivateSpectrumRegion(c, s):
-    r = c.createRegion()
-    scene = r.getScene()
-    scene.beginChange()
-
-    glyphmodule = scene.getGlyphmodule()
-
-    graphics = scene.createGraphicsPoints()
-    graphics.setScenecoordinatesystem(NORMALISED_WINDOW_FILL)
-    attributes = graphics.getGraphicspointattributes()
-    colour_bar = glyphmodule.createGlyphColourBar(s)
-    colour_bar.setAxis([1, 0, 0])
-    colour_bar.setSideAxis([0, 1, 0])
-    colour_bar.setNumberFormat('%.2f')
-    colour_bar.setName(SPECTRUM_GLYPH_NAME_FORMAT.format(s.getName()))
-    attributes.setGlyph(colour_bar)
-    attributes.setBaseSize(1.0)
-
-    scene.endChange()
-    return r
-
-
-def createItem(name, data, editable=False, region=None):
+def createItem(name, data, editable=False):
     i = QtGui.QListWidgetItem(name)
     i.setData(SPECTRUM_DATA_ROLE, data)
     if editable:
         i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
-    if region is not None:
-        i.setData(REGION_DATA_ROLE, region)
 
     return i
 

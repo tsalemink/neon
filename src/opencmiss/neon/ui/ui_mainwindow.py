@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'res/designer/mainwindow.ui'
+# Form implementation generated from reading ui file 'res\designer\mainwindow.ui'
 #
-# Created: Wed Dec 16 15:27:54 2015
-#      by: pyside-uic 0.2.15 running on PySide 1.2.4
+# Created: Thu Jan 14 10:15:09 2016
+#      by: pyside-uic 0.2.15 running on PySide 1.2.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -20,6 +19,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.viewStackedWidget = QtGui.QStackedWidget(self.centralwidget)
         self.viewStackedWidget.setObjectName("viewStackedWidget")
@@ -40,6 +40,8 @@ class Ui_MainWindow(object):
         self.menu_View.setObjectName("menu_View")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setEnabled(False)
+        self.statusbar.setMaximumSize(QtCore.QSize(16777215, 0))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.toolBar = QtGui.QToolBar(MainWindow)

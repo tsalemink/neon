@@ -15,6 +15,8 @@
 '''
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
+from opencmiss.neon.core.neonspectrums import NeonSpectrums
+from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
 
 
@@ -33,6 +35,9 @@ class NeonDocument(object):
         self._rootRegion = NeonRegion(name=None, zincRegion=zincRootRegion, parent=None)
         self._rootRegion.connectRegionChange(self._regionChange)
         self._rootRegion._document = self
+
+        self._spectrums = NeonSpectrums(self._zincContext)
+        self._tessellations = NeonTessellations(self._zincContext)
 
     def freeContents(self):
         """
@@ -65,6 +70,10 @@ class NeonDocument(object):
         # zincRegion.beginHierarchicalChange()
         result = True
         try:
+            if "Tessellations" in dictInput:
+                self._tessellations.deserialize(dictInput["Tessellations"])
+            if "Spectrums" in dictInput:
+                self._spectrums.deserialize(dictInput["Spectrums"])
             self._rootRegion.deserialize(dictInput["RootRegion"])
         except:
             print("Exception in NeonDocument.deserialize")
@@ -78,6 +87,8 @@ class NeonDocument(object):
         outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
+        dictOutput["Spectrums"] = self._spectrums.serialize()
+        dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
         return dictOutput
 
@@ -86,3 +97,9 @@ class NeonDocument(object):
 
     def getRootRegion(self):
         return self._rootRegion
+
+    def getSpectrums(self):
+        return self._spectrums
+
+    def getTessellations(self):
+        return self._tessellations

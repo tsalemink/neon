@@ -15,6 +15,8 @@
 '''
 from PySide import QtGui
 
+from opencmiss.zinc.glyph import Glyph
+
 
 class GlyphChooserWidget(QtGui.QComboBox):
 
@@ -25,7 +27,20 @@ class GlyphChooserWidget(QtGui.QComboBox):
         QtGui.QComboBox.__init__(self, parent)
         self._nullObjectName = None
         self._glyphmodule = None
+        self._glyphmodulenotifier = None
         self._glyph = None
+
+    def _glyphmoduleCallback(self, glyphmoduleevent):
+        '''
+        Callback for change in glyphs; may need to rebuild glyph list
+        '''
+        changeSummary = glyphmoduleevent.getSummaryGlyphChangeFlags()
+        #print("_glyphmoduleCallback changeSummary " + str(changeSummary))
+        # Can't do this as may be received after new glyph module is set!
+        # if changeSummary == Glyph.CHANGE_FLAG_FINAL:
+        #    self.setGlyphmodule(None)
+        if 0 != (changeSummary & (Glyph.CHANGE_FLAG_IDENTIFIER | Glyph.CHANGE_FLAG_ADD | Glyph.CHANGE_FLAG_REMOVE)):
+            self._buildGlyphList()
 
     def _buildGlyphList(self):
         '''
@@ -68,9 +83,15 @@ class GlyphChooserWidget(QtGui.QComboBox):
 
     def setGlyphmodule(self, glyphmodule):
         '''
-        Sets the region that this widget chooses glyphs from
+        Sets the glyph module that this widget chooses glyphs from
         '''
-        self._glyphmodule = glyphmodule
+        if glyphmodule and glyphmodule.isValid():
+            self._glyphmodule = glyphmodule
+            self._glyphmodulenotifier = glyphmodule.createGlyphmodulenotifier()
+            self._glyphmodulenotifier.setCallback(self._glyphmoduleCallback)
+        else:
+            self._glyphmodule = None
+            self._glyphmodulenotifier = None
         self._buildGlyphList()
 
     def getGlyph(self):
