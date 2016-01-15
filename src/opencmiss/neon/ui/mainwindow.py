@@ -172,8 +172,9 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
 
-        zincContext = self._model.getZincContext()
-        self.dockWidgetContentsSpectrumEditor.setZincContext(zincContext)
+        document = self._model.getDocument()
+        self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
+        zincContext = document.getZincContext()
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
 
@@ -375,7 +376,7 @@ class MainWindow(QtGui.QMainWindow):
         # need to pass new Zinc context to dialogs and widgets using global modules
         zincContext = document.getZincContext()
         self._visualisation_view.setZincContext(zincContext)
-        self.dockWidgetContentsSpectrumEditor.setZincContext(zincContext)
+        self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
         self._snapshot_dialog.setZincContext(zincContext)

@@ -97,3 +97,9 @@ class NeonDocument(object):
 
     def getRootRegion(self):
         return self._rootRegion
+
+    def getSpectrums(self):
+        return self._spectrums
+
+    def getTessellations(self):
+        return self._tessellations
