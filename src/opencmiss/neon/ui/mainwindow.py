@@ -23,6 +23,7 @@ from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.dialogs.logsdialog import LogsDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
@@ -164,6 +165,14 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
+        
+        self.dockWidgetLogsDialog = QtGui.QDockWidget(self)
+        self.dockWidgetLogsDialog.setWindowTitle('Logs Dialog')
+        self.dockWidgetLogsDialog.setObjectName("dockWidgetLogsDialog")
+        self.dockWidgetContentsLogsDialog = LogsDialog()
+        self.dockWidgetContentsLogsDialog.setObjectName("dockWidgetContentsLogsDialog")
+        self.dockWidgetLogsDialog.setWidget(self.dockWidgetContentsLogsDialog)
+        self.dockWidgetLogsDialog.setHidden(True)
 
         self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
@@ -171,12 +180,14 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
+        self.tabifyDockWidget(self.dockWidgetTimeEditor, self.dockWidgetLogsDialog)
 
         document = self._model.getDocument()
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
         zincContext = document.getZincContext()
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
+        self.dockWidgetContentsLogsDialog.setZincContext(zincContext)
 
     def _registerEditors(self):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
@@ -185,6 +196,7 @@ class MainWindow(QtGui.QMainWindow):
         self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTimeEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetLogsDialog)
 
         self._ui.menu_View.addSeparator()
 
@@ -380,6 +392,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
         self._snapshot_dialog.setZincContext(zincContext)
+        self.dockWidgetContentsLogsDialog.setZincContext(zincContext)
 
         # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
