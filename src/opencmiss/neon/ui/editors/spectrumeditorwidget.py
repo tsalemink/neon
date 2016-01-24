@@ -188,7 +188,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             sceneviewer.beginChange()
             sceneviewer.setScene(self._previewZincScene)
             sceneviewer.setProjectionMode(Sceneviewer.PROJECTION_MODE_PARALLEL)
-            result, centre = colourBar.getCentre(3)
+            _, centre = colourBar.getCentre(3)
             eye = [centre[0], centre[1], centre[2] + 5.0]
             up = [-1.0, 0.0, 0.0]
             sceneviewer.setLookatParametersNonSkew(eye, centre, up)
@@ -338,7 +338,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _autorangeClicked(self):
         """
         Autorange all components of spectrum.
-        Maintains proportions of minimums and miximums for spectrum components
+        Maintains proportions of minimums and maximums for spectrum components
         Future: support fixing of minimum or maximum data range in spectrum components
         """
         s = self._getCurrentSpectrum()
@@ -372,19 +372,24 @@ class SpectrumEditorWidget(QtGui.QWidget):
             while sc.isValid():
                 dataComponent = sc.getFieldComponent()
                 if (0 < dataComponent) and (dataComponent <= foundMaxDataComponent):
-                    oldComponentRange =  oldComponentMaximums[dataComponent] - oldComponentMinimums[dataComponent]
+                    oldComponentRange = oldComponentMaximums[dataComponent] - oldComponentMinimums[dataComponent]
                     thisMinimum = sc.getRangeMinimum()
                     thisMaximum = sc.getRangeMaximum()
-                    minimumRatio = (thisMinimum - oldComponentMinimums[dataComponent]) / oldComponentRange
-                    maximumRatio = (thisMaximum - oldComponentMinimums[dataComponent]) / oldComponentRange
+                    if oldComponentRange == 0.0:
+                        minimumRatio = 0.0
+                        maximumRatio = 0.0
+                    else:
+                        minimumRatio = (thisMinimum - oldComponentMinimums[dataComponent]) / oldComponentRange
+                        maximumRatio = (thisMaximum - oldComponentMaximums[dataComponent]) / oldComponentRange
                     dataMinimum = minimumValues[dataComponent - 1]
                     dataMaximum = maximumValues[dataComponent - 1]
                     newComponentRange = dataMaximum - dataMinimum
-                    newComponentMinimum = dataMinimum + minimumRatio*newComponentRange
-                    newComponentMaximum = dataMinimum + maximumRatio*newComponentRange
+                    newComponentMinimum = dataMinimum + minimumRatio * newComponentRange
+                    newComponentMaximum = dataMaximum + maximumRatio * newComponentRange
                     sc.setRangeMinimum(newComponentMinimum)
                     sc.setRangeMaximum(newComponentMaximum)
                 sc = s.getNextSpectrumcomponent(sc)
+
         self._updateComponentUi()
 
     def _reverseClicked(self):
@@ -546,12 +551,13 @@ COLOUR_MAPPING_PREFIX = 'COLOUR_MAPPING_TYPE_'
 SCALE_TYPE_PREFIX = 'SCALE_TYPE_'
 PRIVATE_SPECTRUM_FORMAT = 'spectrum_{0}'
 
-from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_NORMALISED_WINDOW_FILL as NORMALISED_WINDOW_FILL
 
 def createSpectrumListItem(name):
     i = QtGui.QListWidgetItem(name)
     i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
+
     return i
+
 
 def createItem(name, data, editable=False):
     i = QtGui.QListWidgetItem(name)
