@@ -28,6 +28,14 @@ class LogsDialog(QtGui.QWidget):
         self._logger = None
         self._loggerNotifier = None
         
+        self._makeConnections()
+        
+    def _makeConnections(self):
+        self._ui.clearAllButton.clicked.connect(self.clearAll)
+        
+    def clearAll(self):
+        self._ui.logText.clear()
+        
     def writeErrorMessage(self, string):
         self._ui.logText.setTextColor(QtGui.QColor(255, 0, 0))
         self._ui.logText.append('Error: ' + string)
