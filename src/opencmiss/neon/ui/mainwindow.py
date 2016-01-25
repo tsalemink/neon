@@ -108,7 +108,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self._problem_view.runClicked.connect(self._runSimulationClicked)
         self._problem_view.selectionChanged.connect(self._simulation_view.selectionChanged)
-        self._simulation_view.runClicked.connect(self._runSimulationClicked)
+#         self._simulation_view.runClicked.connect(self._runSimulationClicked)
+        self._simulation_view.visualiseClicked.connect(self._visualiseSimulationClicked)
+
+        self._model.documentChanged.connect(self._onDocumentChanged)
 
     def _updateUi(self):
         modified = self._model.isModified()
@@ -351,6 +354,19 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print('pop up error box')
 
+    def _visualiseSimulationClicked(self):
+        sender = self.sender()
+        if sender == self._simulation_view:
+            actions = self._ui.menu_View.actions()
+            visualise_action = [a for a in actions if a.text() == self._visualisation_view.getName()][0]
+            visualise_action.activate(QtGui.QAction.ActionEvent.Trigger)
+
+        simulation = self._simulation_view.getSimulation()
+        if simulation.validate():
+            self._model.visualiseSimulation(simulation)
+        else:
+            print('pop up error box')
+
     def _viewTriggered(self):
         v = self.sender().data()
         self._preChangeView()
@@ -368,7 +384,7 @@ class MainWindow(QtGui.QMainWindow):
             zincRootRegion = changedRegion.getZincRegion()
             self._visualisation_view.setScene(zincRootRegion.getScene())
 
-    def _onNewDocument(self):
+    def _onDocumentChanged(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
         rootRegion.connectRegionChange(self._regionChange)
@@ -398,7 +414,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
-        self._onNewDocument()
+        self._onDocumentChanged()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -446,13 +462,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def _newTriggered(self):
         self._model.new()
-        self._onNewDocument()
+#         self._onNewDocument()
 
     def _openModel(self, filename):
         self._location = os.path.dirname(filename)
         self._model.load(filename)
         self._addRecent(filename)
-        self._onNewDocument()
+#         self._onNewDocument()
 
         self._updateUi()
 

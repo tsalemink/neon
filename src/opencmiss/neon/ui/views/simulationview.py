@@ -23,7 +23,7 @@ from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
 class SimulationView(BaseView):
 
-    runClicked = QtCore.Signal()
+    visualiseClicked = QtCore.Signal()
 
     def __init__(self, parent=None):
         super(SimulationView, self).__init__(parent)
@@ -35,7 +35,7 @@ class SimulationView(BaseView):
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.pushButtonRun.clicked.connect(self.runClicked)
+        self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)
 
     def _setupSimulations(self, model):
         classes = generateRelatedClasses(model, 'simulations')
@@ -63,3 +63,7 @@ class SimulationView(BaseView):
     def run(self):
         simulation = self._ui.stackedWidgetSimulationView.currentWidget()
         simulation.run()
+
+    def getSimulation(self):
+        simulation_widget = self._ui.stackedWidgetSimulationView.currentWidget()
+        return simulation_widget.getSimulation()

@@ -22,12 +22,16 @@ class BaseSimulationView(QtGui.QWidget):
         super(BaseSimulationView, self).__init__(parent)
         self._problem = None
         self._preferences = None
+        self._simulation = None
 
     def setProblem(self, problem):
         self._problem = problem
 
     def setPreferences(self, preferences):
         self._preferences = preferences
+
+    def getSimulation(self):
+        return self._simulation
 
     def run(self):
         self.setup()

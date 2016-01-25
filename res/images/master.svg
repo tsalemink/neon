@@ -546,15 +546,21 @@
        d="m 1449.4746,1714.7155 c 16.1625,-31.3148 46.467,-110.1067 43.4366,-129.2996 -3.0305,-19.1928 -6.061,-55.5583 0,-72.7309 6.0609,-17.1726 14.5137,-57.2789 38.3858,-83.8427 19.9873,-22.241 95.628,-100.8136 96.9746,-114.1473"
        id="path4189"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="csssc" />
+       sodipodi:nodetypes="csssc"
+       inkscape:export-filename="/home/hsorby/work/opencmiss-software/neon/res/images/icons/neon-icon-v2.png"
+       inkscape:export-xdpi="90.135101"
+       inkscape:export-ydpi="90.135101" />
     <rect
-       ry="16.771582"
+       ry="91.05732"
        y="1228.0725"
        x="1263.4244"
        height="510.00818"
        width="510.00818"
        id="rect4194"
-       style="fill:#ffffff;stroke:#000000;stroke-width:1.99182069;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;fill-opacity:1" />
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:6.292;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/hsorby/work/opencmiss-software/neon/res/images/icons/neon-icon-v2.png"
+       inkscape:export-xdpi="90.135101"
+       inkscape:export-ydpi="90.135101" />
     <image
        y="873.12659"
        x="-310.61572"
@@ -563,7 +569,10 @@
        height="443"
        width="443"
        clip-path="url(#clipPath3904)"
-       transform="translate(1570.6383,426.80581)" />
+       transform="translate(1570.6383,426.80581)"
+       inkscape:export-filename="/home/hsorby/work/opencmiss-software/neon/res/images/icons/neon-icon-v2.png"
+       inkscape:export-xdpi="90.135101"
+       inkscape:export-ydpi="90.135101" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:192.51145935px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none"
@@ -713,7 +722,10 @@
    id="tspan4017-04">Neon</tspan></textPath></text>
     <g
        id="g5140"
-       transform="translate(1528.5714,74.285714)">
+       transform="translate(1528.5714,74.285714)"
+       inkscape:export-filename="/home/hsorby/work/opencmiss-software/neon/res/images/icons/neon-icon-v2.png"
+       inkscape:export-xdpi="90.135101"
+       inkscape:export-ydpi="90.135101">
       <text
          transform="translate(-1536.2885,-57.241359)"
          y="-1209.0564"

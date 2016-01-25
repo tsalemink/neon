@@ -40,6 +40,7 @@ def enqueue_output(out, queue):
 class Ventilation(LocalSimulation):
 
     def __init__(self):
+        super(Ventilation, self).__init__()
         self.setName('Ventilation Simulation')
         self.setSerialiser(IdentifierValue())
         self._file_handles = {}
@@ -125,3 +126,6 @@ class Ventilation(LocalSimulation):
         os.remove(self._file_handles['par_flow'])
         os.rmdir(self._dir_handles['para'])
         os.rmdir(self._dir_handles['root'])
+
+    def validate(self):
+        return True

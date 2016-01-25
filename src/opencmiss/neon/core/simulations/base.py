@@ -38,3 +38,6 @@ class BaseSimulation(object):
 
     def cleanup(self):
         raise NotImplementedError()
+
+    def validate(self):
+        return False

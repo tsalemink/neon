@@ -13,21 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-import importlib
 
 
-def importProblem(name):
-    module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.core.problems')
-    class_ = getattr(module_name, name)
+class BaseVisualisation(object):
 
-    return class_()
+    def __init__(self):
+        self._name = 'Base'
+        self._parameters = {}
+        self._simulation = None
 
+    def getName(self):
+        return self._name
 
-def getMatchingVisualisationClass(simulation):
-    module_string = simulation.__class__.__module__
-    class_name = simulation.__class__.__name__
-    visualisation_module = module_string.replace('simulations', 'visualisations')
-    module_name = importlib.import_module(visualisation_module)
-    class_ = getattr(module_name, class_name)
+    def setName(self, name):
+        self._name = name
 
-    return class_()
+    def setSimulation(self, simulation):
+        self._simulation = simulation
+
+    def setParameters(self, parameters):
+        self._parameters = parameters
+
+    def visualise(self, document):
+        raise NotImplementedError()

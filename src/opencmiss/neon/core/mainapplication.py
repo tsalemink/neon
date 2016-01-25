@@ -15,16 +15,23 @@
 '''
 import json
 import os
+
+from PySide import QtCore
+
 from opencmiss.neon.core.neondocument import NeonDocument
 from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
-from opencmiss.neon.core.misc.utils import importProblem
+from opencmiss.neon.core.misc.utils import importProblem, \
+    getMatchingVisualisationClass
 
 
-class MainApplication(object):
+class MainApplication(QtCore.QObject):
+
+    documentChanged = QtCore.Signal()
 
     def __init__(self):
+        super(MainApplication, self).__init__()
         self._saveUndoRedoIndex = 0
         self._currentUntoRedoIndex = 0
 
@@ -68,6 +75,8 @@ class MainApplication(object):
         self._document.freeContents()
         self._document = NeonDocument()
 
+        self.documentChanged.emit()
+
     def save(self):
         # make model sources relative to current location if possible
         # note that sources on different windows drives have absolute paths
@@ -91,6 +100,8 @@ class MainApplication(object):
                 self._document.freeContents()
                 self._document = NeonDocument()
 
+            self.documentChanged.emit()
+
     def addRecent(self, recent):
         if recent in self._recents:
             index = self._recents.index(recent)
@@ -111,3 +122,12 @@ class MainApplication(object):
 
     def getPreferences(self):
         return self._preferences
+
+    def visualiseSimulation(self, simulation):
+        self._document.freeContents()
+        self._document = NeonDocument()
+        visualisation = getMatchingVisualisationClass(simulation)
+        visualisation.setSimulation(simulation)
+        visualisation.visualise(self._document)
+
+        self.documentChanged.emit()

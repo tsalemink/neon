@@ -18,6 +18,7 @@ import json
 from opencmiss.neon.core.neonmodelsources import deserializeNeonModelSource
 from opencmiss.zinc.status import OK as ZINC_OK
 
+
 class NeonRegion(object):
 
     def __init__(self, name, zincRegion, parent=None):
@@ -32,7 +33,7 @@ class NeonRegion(object):
         if not parent:
             self._regionChangeCallbacks = []
 
-    #def __del__(self):
+    # def __del__(self):
     #    print("NeonRegion.__del__ " + self.getDisplayName())
 
     def freeContents(self):
