@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_VentilationWidget(object):
     def setupUi(self, VentilationWidget):
         VentilationWidget.setObjectName("VentilationWidget")
