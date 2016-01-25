@@ -17,10 +17,7 @@ import json
 
 from PySide import QtCore, QtGui
 
-from opencmiss.neon.settings.mainsettings import PYTHON3
-
 from opencmiss.neon.ui.views.base import BaseView
-
 from opencmiss.neon.ui.views.ui_visualisationview import Ui_VisualisationView
 
 
@@ -54,6 +51,16 @@ class VisualisationView(BaseView):
             width = self._ui.widget.width()
             height = self._ui.widget.height()
         sv.writeImageToFile(filename, wysiwyg, width, height, 8, 0)
+
+    def contextMenuEvent(self, event):
+        if event.modifiers() & QtCore.Qt.CTRL:
+            menu = QtGui.QMenu()
+            menu.addAction("View All")
+            action = menu.exec_(self.mapToGlobal(event.pos()))
+            if action:
+                self._ui.widget.getSceneviewer().viewAll()
+        else:
+            event.ignore()
 
     def getShareGLWidget(self):
         return self._ui.widget
