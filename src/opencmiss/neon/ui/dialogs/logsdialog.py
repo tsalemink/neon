@@ -1,5 +1,5 @@
 '''
-   Copyright 2015 University of Auckland
+   Copyright 2016 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.dialogs.ui_logsdialog import Ui_LogsDialog
 from opencmiss.zinc.logger import Logger
-
+    
 class LogsDialog(QtGui.QWidget):
 
     def __init__(self, parent=None):
@@ -27,7 +27,6 @@ class LogsDialog(QtGui.QWidget):
         
         self._logger = None
         self._loggerNotifier = None
-        
         self._makeConnections()
         
     def _makeConnections(self):
@@ -52,6 +51,8 @@ class LogsDialog(QtGui.QWidget):
         if event.getChangeFlags() == Logger.CHANGE_FLAG_NEW_MESSAGE:
             if event.getMessageType() == Logger.MESSAGE_TYPE_ERROR:
                 self.writeErrorMessage(event.getMessageText())
+            elif event.getMessageType() == Logger.MESSAGE_TYPE_WARNING:
+                self.writeWarningMessage(event.getMessageText())
 
     def setZincContext(self, zincContext):
         self._logger = zincContext.getLogger()

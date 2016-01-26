@@ -33,7 +33,7 @@ from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
-
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class MainWindow(QtGui.QMainWindow):
 
@@ -173,6 +173,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsLogsDialog.setObjectName("dockWidgetContentsLogsDialog")
         self.dockWidgetLogsDialog.setWidget(self.dockWidgetContentsLogsDialog)
         self.dockWidgetLogsDialog.setHidden(True)
+        opencmiss.neon.ui.dialogs.shared_logs.setGlobalLogsMessage(self.dockWidgetContentsLogsDialog)
 
         self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)

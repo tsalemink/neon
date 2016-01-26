@@ -18,7 +18,7 @@ from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
 from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
-
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class NeonDocument(object):
 
@@ -63,7 +63,7 @@ class NeonDocument(object):
         :return: True on success, False on failure
         '''
         if not (("OpenCMISS-Neon Version" in dictInput) and ("RootRegion" in dictInput)):
-            print("Invalid format for Neon")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid format for Neon")
             return False
         _ = dictInput["OpenCMISS-Neon Version"]
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
@@ -76,7 +76,7 @@ class NeonDocument(object):
                 self._spectrums.deserialize(dictInput["Spectrums"])
             self._rootRegion.deserialize(dictInput["RootRegion"])
         except:
-            print("Exception in NeonDocument.deserialize")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Exception in NeonDocument.deserialize")
             result = False
         finally:
             # zincRegion.endChange() see zincRegion.beginHierarchicalChange()

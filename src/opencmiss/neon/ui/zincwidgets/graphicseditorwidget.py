@@ -24,6 +24,7 @@ from opencmiss.zinc.graphics import Graphics, GraphicsStreamlines, Graphicslinea
 from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_LOCAL
 from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
+import opencmiss.neon.ui.dialogs.shared_logs
 
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
 
@@ -436,7 +437,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
                 if contours.setListIsovalues(isovalues) != ZINC_OK:
                     raise
         except:
-            print("Invalid isovalues")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid isovalues")
         self._isovaluesDisplay()
 
     def streamVectorFieldChanged(self, index):
@@ -472,7 +473,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
                 if streamlines.setTrackLength(trackLength) != ZINC_OK:
                     raise
         except:
-            print("Invalid streamlines track length", streamlinesLengthText)
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid streamlines track length", streamlinesLengthText)
         self._streamlinesTrackLengthDisplay()
 
     def _streamlinesTrackDirectionDisplay(self):
@@ -571,7 +572,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             if lineattributes.setBaseSize(baseSize) != ZINC_OK:
                 raise
         except:
-            print("Invalid line base size")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid line base size")
         self._lineBaseSizeDisplay()
 
     def lineOrientationScaleFieldChanged(self, index):
@@ -605,7 +606,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             if lineattributes.setScaleFactors(scaleFactors) != ZINC_OK:
                 raise
         except:
-            print("Invalid line scale factors")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid line scale factors")
         self._lineScaleFactorsDisplay()
 
     def _pointBaseSizeDisplay(self):
@@ -630,7 +631,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             if pointattributes.setBaseSize(baseSize) != ZINC_OK:
                 raise
         except:
-            print("Invalid point base size")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid point base size")
         self._pointBaseSizeDisplay()
 
     def pointOrientationScaleFieldChanged(self, index):
@@ -664,7 +665,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             if pointattributes.setScaleFactors(scaleFactors) != ZINC_OK:
                 raise
         except:
-            print("Invalid point scale factors")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid point scale factors")
         self._pointScaleFactorsDisplay()
 
     def labelFieldChanged(self, index):
@@ -734,5 +735,5 @@ class GraphicsEditorWidget(QtGui.QWidget):
                     self._graphics.setTessellation(tessellation)
                     break
         except:
-            print("Invalid sampling divisions")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Invalid sampling divisions")
         self._samplingDivisionsDisplay()

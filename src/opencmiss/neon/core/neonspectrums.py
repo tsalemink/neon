@@ -17,6 +17,7 @@ import json
 
 from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
+import opencmiss.neon.ui.dialogs.shared_logs
 
 SPECTRUM_GLYPH_NAME_FORMAT = 'colour_bar_{0}'
 
@@ -38,7 +39,7 @@ class NeonSpectrums(object):
         spectrumsDescription = json.dumps(dictInput)
         result = self._spectrummodule.readDescription(spectrumsDescription)
         if result != ZINC_OK:
-            print("Failed to read spectrums")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Failed to read spectrums")
         self._findOrCreateAllSpectrumGlyphColourBars()
 
     def serialize(self):

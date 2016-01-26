@@ -23,7 +23,7 @@ from PySide import QtCore, QtGui
 
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.ui.editors.ui_regioneditorwidget import Ui_RegionEditorWidget
-
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class RegionTreeItem(object):
 
@@ -75,7 +75,7 @@ class RegionTreeItem(object):
         if item:
             item._buildChildItems()
         else:
-            print("Missing item for region ", region.getDisplayName())
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Missing item for region ", region.getDisplayName())
 
 class RegionTreeModel(QtCore.QAbstractItemModel):
 

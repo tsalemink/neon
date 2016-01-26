@@ -20,7 +20,7 @@ from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
 from opencmiss.neon.core.misc.utils import importProblem
-
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class MainApplication(object):
 
@@ -86,7 +86,7 @@ class MainApplication(object):
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                print("Failed to load " + filename)
+                opencmiss.neon.ui.dialogs.shared_logs.logsDialogErrorMessage("Failed to load " + filename)
                 # create a blank document
                 self._document.freeContents()
                 self._document = NeonDocument()

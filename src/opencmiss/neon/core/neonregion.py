@@ -17,6 +17,7 @@ import json
 
 from opencmiss.neon.core.neonmodelsources import deserializeNeonModelSource
 from opencmiss.zinc.status import OK as ZINC_OK
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class NeonRegion(object):
 
@@ -105,7 +106,7 @@ class NeonRegion(object):
         modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
-            print("Failed to read model source")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Failed to read model source")
         else:
             newRegionCount = self._discoverNewZincRegions()
             self._informRegionChange(newRegionCount > 0)
@@ -116,7 +117,7 @@ class NeonRegion(object):
             modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
-            print("Failed to read model sources")
+            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Failed to read model sources")
 
     def _reload(self):
         """
@@ -180,7 +181,7 @@ class NeonRegion(object):
             sceneDescription = json.dumps(dictInput["Scene"])
             result = scene.readDescription(sceneDescription, True)
             if result != ZINC_OK:
-                print("Failed to read scene")
+                opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Failed to read scene")
         # following assumes no neon child regions exist, i.e. we are deserializing into a blank region
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
         zincChildRef = self._zincRegion.getFirstChild()

@@ -30,7 +30,7 @@ from PySide import QtCore, QtGui
 from opencmiss.neon.core.neonmodelsources import NeonModelSourceFile
 
 from opencmiss.neon.ui.editors.ui_modelsourceseditorwidget import Ui_ModelSourcesEditorWidget
-
+import opencmiss.neon.ui.dialogs.shared_logs
 
 class ModelSourcesEditorWidget(QtGui.QWidget):
 
@@ -210,6 +210,6 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
             self._currentModelSource.setTime(time)
             self._editedCurrentModelSource()
         except:
-            print("Invalid time", timeText)
+            opencmiss.neon.ui.dialogs.shared_logs.logWarningMessage("Invalid time", timeText)
         self._fileTimeDisplay()
         pass
