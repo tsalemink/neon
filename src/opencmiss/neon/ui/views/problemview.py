@@ -16,7 +16,7 @@
 from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import generateRelatedClasses
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
 import json
@@ -50,7 +50,7 @@ class ProblemView(BaseView):
         self.selectionChanged.emit(current_index, previous_index)
 
     def _setupProblems(self, model):
-        classes = generateRelatedClasses(model, 'problems')
+        classes = instantiateRelatedClasses(model, 'problems')
         for c in classes:
             c.setParent(self._ui.stackedWidgetProblemView)
             problem = model.getProblem(self._ui.stackedWidgetProblemView.count())

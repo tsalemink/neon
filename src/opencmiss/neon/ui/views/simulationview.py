@@ -16,7 +16,7 @@
 from PySide import QtCore
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import generateRelatedClasses
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
@@ -38,13 +38,13 @@ class SimulationView(BaseView):
         self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)
 
     def _setupSimulations(self, model):
-        classes = generateRelatedClasses(model, 'simulations')
+        classes = instantiateRelatedClasses(model, 'simulations')
         for c in classes:
             c.setParent(self._ui.stackedWidgetSimulationView)
             self._ui.stackedWidgetSimulationView.addWidget(c)
 
     def selectionChanged(self, current_index, previous_index):
-        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index)
+        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index.row())
 
     def setModel(self, model):
         self._setupSimulations(model)

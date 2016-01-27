@@ -229,7 +229,7 @@
             <item>
              <widget class="QLabel" name="label_25">
               <property name="text">
-               <string>Executable:</string>
+               <string>Flow file::</string>
               </property>
              </widget>
             </item>

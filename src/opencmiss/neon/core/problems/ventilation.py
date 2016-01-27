@@ -26,6 +26,7 @@ def getExecutableForPlatform():
 class Ventilation(ExternalProblem):
 
     def __init__(self):
+        super(Ventilation, self).__init__()
         self.setName('Ventilation')
         self.setInBuiltExecutable(getExecutableForPlatform())
 

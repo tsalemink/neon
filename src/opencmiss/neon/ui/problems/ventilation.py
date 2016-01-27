@@ -56,10 +56,7 @@ class Ventilation(BaseProblem):
         self._map_ui_to_keys = {}
         self._map_chooser_to_line_edit = {}
 
-        # Executable
-        self._map_keys_to_ui['executable'] = self._ui.lineEditExecutable
-        self._map_ui_to_keys[self._ui.lineEditExecutable] = 'executable'
-
+        # The executable ui is not added to the map, it is dealt with separately
         # File input outputs
         self._map_keys_to_ui['tree_inbuilt'] = self._ui.checkBoxInBuiltTree
         self._map_ui_to_keys[self._ui.checkBoxInBuiltTree] = 'tree_inbuilt'
@@ -131,7 +128,8 @@ class Ventilation(BaseProblem):
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseOutExNode] = self._ui.lineEditOutExNode
 
     def _makeConnections(self):
-        self._ui.pushButtonChooseExecutable.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseExecutable.clicked.connect(self._executableChooserClicked)
+
         self._ui.pushButtonChooseExElem.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseExNode.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseFlow.clicked.connect(self._chooserClicked)
@@ -246,6 +244,18 @@ class Ventilation(BaseProblem):
     def _executableLocationChanged(self):
         self._problem.setExecutable(self._ui.lineEditExecutable.text())
 
+    def _executableChooserClicked(self):
+        sender = self.sender()
+        line_edit = self._map_chooser_to_line_edit[sender]
+        text = line_edit.text()
+        location = os.path.dirname(text) if text else self._location if self._location is not None else os.path.expanduser("~")
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose executable ...', dir=location,
+                                                        filter="Executable (*.exe *);;All (*.* *)")
+        if filename:
+            self._location = os.path.dirname(filename)
+            self._problem.setExecutable(filename)
+            line_edit.setText(filename)
+
     def _chooserClicked(self):
         sender = self.sender()
         line_edit = self._map_chooser_to_line_edit[sender]
@@ -254,10 +264,10 @@ class Ventilation(BaseProblem):
         location = os.path.dirname(text) if text else self._location if self._location is not None else os.path.expanduser("~")
         if self._isOutputFile(key):
             filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=location,
-                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.*)")
+                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.* *)")
         else:
             filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=location,
-                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.*)")
+                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.* *)")
         if filename:
             self._location = os.path.dirname(filename)
             self._problem.updateFileInputOutputs({key: filename})
@@ -299,6 +309,3 @@ class Ventilation(BaseProblem):
         self._updateFileInputOutputs()
         self._updateMainParameters()
         self._updateFlowParameters()
-
-    def validate(self):
-        return self._problems.validate()
