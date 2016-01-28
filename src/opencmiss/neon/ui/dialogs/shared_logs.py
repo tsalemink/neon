@@ -19,29 +19,29 @@ logErrorMessage = 0
 logWarningMessage = 0
 logInformationMessage = 0
     
-def logsDialogErrorMessage(logsDialog, message):
-    if logsDialog:
-        logsDialog.writeErrorMessage(message)
+def logsWindowErrorMessage(logsWindow, message):
+    if logsWindow:
+        logsWindow.writeErrorMessage(message)
     else:
         print "Error: " +  message
     
-def logsDialogWarningMessage(logsDialog, message):
-    if logsDialog:
-        logsDialog.writeWarningMessage(message)
+def logsWindowWarningMessage(logsWindow, message):
+    if logsWindow:
+        logsWindow.writeWarningMessage(message)
     else:
         print "Warning: " +  message
     
-def logsDialogInformationMessage(logsDialog, message):
-    if logsDialog:
-        logsDialog.writeInformationMessage(message)
+def logsWindowInformationMessage(logsWindow, message):
+    if logsWindow:
+        logsWindow.writeInformationMessage(message)
     else:
         print "Information: " +  message
 
-def setGlobalLogsMessage(logsDialog):
+def setGlobalLogsMessage(logsWindow):
     global logErrorMessage
     global logWarningMessage
     global logInformationMessage
-    if logsDialog:
-        logErrorMessage = partial(logsDialogErrorMessage, logsDialog)
-        logWarningMessage = partial(logsDialogWarningMessage, logsDialog)
-        logInformationMessage = partial(logsDialogInformationMessage, logsDialog)
+    if logsWindow:
+        logErrorMessage = partial(logsWindowErrorMessage, logsWindow)
+        logWarningMessage = partial(logsWindowWarningMessage, logsWindow)
+        logInformationMessage = partial(logsWindowInformationMessage, logsWindow)

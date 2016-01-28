@@ -15,14 +15,14 @@
 '''
 from PySide import QtCore, QtGui
 
-from opencmiss.neon.ui.dialogs.ui_logsdialog import Ui_LogsDialog
+from opencmiss.neon.ui.dialogs.ui_logswindow import Ui_LogsWindow
 from opencmiss.zinc.logger import Logger
     
-class LogsDialog(QtGui.QWidget):
+class LogsWindow(QtGui.QWidget):
 
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self._ui = Ui_LogsDialog()
+        self._ui = Ui_LogsWindow()
         self._ui.setupUi(self)
         
         self._logger = None

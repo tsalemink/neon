@@ -86,7 +86,7 @@ class MainApplication(object):
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                opencmiss.neon.ui.dialogs.shared_logs.logsDialogErrorMessage("Failed to load " + filename)
+                opencmiss.neon.ui.dialogs.shared_logs.LogsWindowErrorMessage("Failed to load " + filename)
                 # create a blank document
                 self._document.freeContents()
                 self._document = NeonDocument()
