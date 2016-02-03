@@ -41,7 +41,7 @@ class Logger(QtGui.QWidget):
         
     def _makeConnections(self):
         CustomStream.stdout().messageWritten.connect( self.writeMessage )
-        #CustomStream.stderr().messageWritten.connect( self.writeMessage )
+        CustomStream.stderr().messageWritten.connect( self.writeMessage )
         
     def copyToClipboard(self):
         QtGui.QApplication.clipboard().setText( self._ui.logText.toPlainText() )

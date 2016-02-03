@@ -30,7 +30,7 @@ class CustomStream(QtCore.QObject):
     def fileno( self ):
         return -1
     
-    def write( self, msg, level ):
+    def write( self, msg, level = "INFORMATION"):
         if ( not self.signalsBlocked() ):
             self.messageWritten.emit(msg, level)
     
