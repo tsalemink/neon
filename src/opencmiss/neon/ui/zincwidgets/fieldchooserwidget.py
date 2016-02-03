@@ -16,7 +16,6 @@
 from PySide import QtGui
 
 from opencmiss.zinc.field import Field
-import opencmiss.neon.ui.dialogs.shared_logs
 
 class FieldChooserWidget(QtGui.QComboBox):
 
@@ -125,10 +124,10 @@ class FieldChooserWidget(QtGui.QComboBox):
         if not field or not field.isValid():
             self._field = None
         elif not field.isManaged():
-            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Field chooser cannot set unmanaged field")
+            print("Field chooser cannot set unmanaged field")
             self._field = None
         elif self._conditional and not self._conditional(field):
-            opencmiss.neon.ui.dialogs.shared_logs.logErrorMessage("Field chooser cannot set field not satisfying conditional function")
+            print("Field chooser cannot set field not satisfying conditional function")
             self._field = None
         else:
             self._field = field

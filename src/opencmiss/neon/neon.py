@@ -20,13 +20,10 @@ from PySide import QtGui
 from opencmiss.neon.core.mainapplication import MainApplication
 from opencmiss.neon.ui.mainwindow import MainWindow
 from opencmiss.neon.settings.mainsettings import setApplicationSettings
-import opencmiss.neon.ui.dialogs.shared_logs 
 
 def main():
     argv = sys.argv[:]
     
-    opencmiss.neon.ui.dialogs.shared_logs.setGlobalLogsMessage(None)
-
     app = QtGui.QApplication(argv)
 
     setApplicationSettings(app)

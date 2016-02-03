@@ -23,7 +23,7 @@ from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.dialogs.logswindow import LogsWindow
+from opencmiss.neon.ui.dialogs.logger import Logger
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
@@ -33,7 +33,6 @@ from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
-import opencmiss.neon.ui.dialogs.shared_logs
 
 class MainWindow(QtGui.QMainWindow):
 
@@ -129,8 +128,8 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLogsWindow)
-        self.tabifyDockWidget(self.dockWidgetLogsWindow, self.dockWidgetTimeEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLogger)
+        self.tabifyDockWidget(self.dockWidgetLogger, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
         self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
@@ -332,19 +331,16 @@ class MainWindow(QtGui.QMainWindow):
             menu.setEnabled(True)
             
     def _setupOtherWindows(self):
-        self.dockWidgetLogsWindow = QtGui.QDockWidget(self)
-        self.dockWidgetLogsWindow.setWindowTitle('Logs Window')
-        self.dockWidgetLogsWindow.setObjectName("dockWidgetLogsWindow")
-        self.dockWidgetContentsLogsWindow = LogsWindow()
-        self.dockWidgetContentsLogsWindow.setObjectName("dockWidgetContentsLogsWindow")
-        self.dockWidgetLogsWindow.setWidget(self.dockWidgetContentsLogsWindow)
-        self.dockWidgetLogsWindow.setHidden(True)
-        opencmiss.neon.ui.dialogs.shared_logs.setGlobalLogsMessage(self.dockWidgetContentsLogsWindow)
-        zincContext = self._model.getDocument().getZincContext()
-        self.dockWidgetContentsLogsWindow.setZincContext(zincContext)
+        self.dockWidgetLogger = QtGui.QDockWidget(self)
+        self.dockWidgetLogger.setWindowTitle('Logger')
+        self.dockWidgetLogger.setObjectName("dockWidgetLogger")
+        self.dockWidgetContentsLogger = Logger()
+        self.dockWidgetContentsLogger.setObjectName("dockWidgetContentsLogger")
+        self.dockWidgetLogger.setWidget(self.dockWidgetContentsLogger)
+        self.dockWidgetLogger.setHidden(True)
         
     def _registerOtherWindows(self):
-        self._registerOtherWindow(self.dockWidgetLogsWindow)
+        self._registerOtherWindow(self.dockWidgetLogger)
     
     def _registerOtherWindow(self, editor):
         action = self._getEditorAction("Other Windows")
@@ -416,7 +412,6 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
         self._snapshot_dialog.setZincContext(zincContext)
-        self.dockWidgetContentsLogsWindow.setZincContext(zincContext)
 
         # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
