@@ -87,7 +87,7 @@ class MainApplication(object):
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                NeonLogger.getLogger.error("Failed to load " + filename)
+                NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
                 self._document.freeContents()
                 self._document = NeonDocument()
