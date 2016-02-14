@@ -28,5 +28,14 @@ class Biomeng321Lab1(BaseSimulationView):
 
         self._simulation = Biomeng321Lab1Simulation()
 
+    def setup(self):
+        pass
+
+    def execute(self):
+        pass
+
+    def cleanup(self):
+        pass
+
     def validate(self):
         return True
