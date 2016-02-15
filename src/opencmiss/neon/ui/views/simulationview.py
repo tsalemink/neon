@@ -32,10 +32,15 @@ class SimulationView(BaseView):
         self._ui = Ui_SimulationView()
         self._ui.setupUi(self)
 
+        self._run_delay_timer = QtCore.QTimer()
+        self._run_delay_timer.setSingleShot(True)
+        self._run_delay_timer.setInterval(10)
+
         self._makeConnections()
 
     def _makeConnections(self):
         self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)
+        self._run_delay_timer.timeout.connect(self._run)
 
     def _setupSimulations(self, model):
         classes = instantiateRelatedClasses(model, 'simulations')
@@ -61,6 +66,9 @@ class SimulationView(BaseView):
         simulation.setPreferences(preferences)
 
     def run(self):
+        self._run_delay_timer.start()
+
+    def _run(self):
         simulation = self._ui.stackedWidgetSimulationView.currentWidget()
         simulation.run()
 

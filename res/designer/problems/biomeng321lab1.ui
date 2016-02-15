@@ -21,7 +21,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxExpirationType">
+       <widget class="QComboBox" name="comboBoxBoundaryConditions">
         <item>
          <property name="text">
           <string>Type 1</string>

@@ -78,6 +78,7 @@ class ProblemView(BaseView):
         for index in range(self._ui.stackedWidgetProblemView.count()):
             w = self._ui.stackedWidgetProblemView.widget(index)
             state[w.getName()] = w.serialise()
+
         return json.dumps(state)
 
     def deserialise(self, string):
@@ -90,6 +91,7 @@ class ProblemView(BaseView):
             saved_current_index = d['current_index'] if 'current_index' in d else 0
             current_index = self._ui.stackedWidgetProblemView.currentIndex()
             if saved_current_index != current_index:
+                self._selection_model.clear()
                 self._selection_model.setCurrentIndex(self._proxy_model.index(saved_current_index, 0), QtGui.QItemSelectionModel.Select)
         except Exception:
             pass
