@@ -24,6 +24,7 @@ from opencmiss.zinc.graphics import Graphics, GraphicsStreamlines, Graphicslinea
 from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_LOCAL
 from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
 
@@ -436,7 +437,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
                 if contours.setListIsovalues(isovalues) != ZINC_OK:
                     raise
         except:
-            print("Invalid isovalues")
+            NeonLogger.getLogger().error("Invalid isovalues")
         self._isovaluesDisplay()
 
     def streamVectorFieldChanged(self, index):

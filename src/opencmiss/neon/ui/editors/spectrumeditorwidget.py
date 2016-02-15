@@ -21,6 +21,7 @@ from opencmiss.zinc.status import OK as ZINC_OK
 
 from opencmiss.neon.ui.editors.ui_spectrumeditorwidget import Ui_SpectrumEditorWidget
 from opencmiss.neon.settings.mainsettings import FLOAT_STRING_FORMAT
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 COMPONENT_NAME_FORMAT = '{:d}. '
 SPECTRUM_DATA_ROLE = QtCore.Qt.UserRole + 1
@@ -423,7 +424,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-            print("Error setting spectrum component data range minimum")
+             NeonLogger.getLogger().error("Error setting spectrum component data range minimum")
         self._ui.lineEditDataRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
 
     def _dataRangeMaxEntered(self):
@@ -435,7 +436,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-            print("Error setting spectrum component data range maximum")
+             NeonLogger.getLogger().error("Error setting spectrum component data range maximum")
         self._ui.lineEditDataRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
 
     def _colourRangeMinEntered(self):
@@ -447,7 +448,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-            print("Error setting spectrum component colour range minimum")
+             NeonLogger.getLogger().error("Error setting spectrum component colour range minimum")
         self._ui.lineEditColourRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getColourMinimum()))
 
     def _colourRangeMaxEntered(self):
@@ -459,7 +460,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-            print("Error setting spectrum component colour range maximum")
+             NeonLogger.getLogger().error("Error setting spectrum component colour range maximum")
         self._ui.lineEditColourRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getColourMaximum()))
 
     def _extendBelowClicked(self):
@@ -488,7 +489,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-            print("Error setting log scale exaggeration")
+             NeonLogger.getLogger().error("Error setting log scale exaggeration")
         self._ui.lineEditExaggeration.setText(FLOAT_STRING_FORMAT.format(sc.getExaggeration()))
 
     def _moveDownSpectrumComponentClicked(self):

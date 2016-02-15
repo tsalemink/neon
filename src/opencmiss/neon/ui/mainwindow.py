@@ -23,6 +23,7 @@ from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.dialogs.logger import Logger
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
@@ -32,7 +33,6 @@ from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
-
 
 class MainWindow(QtGui.QMainWindow):
 
@@ -73,6 +73,12 @@ class MainWindow(QtGui.QMainWindow):
         self._registerEditors()
 
         self._setupViews(view_list)
+        
+        self._setupOtherWindows()
+
+        self._registerOtherWindows()
+        
+        self._addDockWidgets()
 
         self._makeConnections()
 
@@ -115,6 +121,15 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Save.setEnabled(modified)
         recents = self._model.getRecents()
         self._ui.action_Clear.setEnabled(len(recents))
+        
+    def _addDockWidgets(self):
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
+        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
+        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
+        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLogger)
+        self.tabifyDockWidget(self.dockWidgetLogger, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
         self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
@@ -164,13 +179,6 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
-
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
-        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
-        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
-        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
-        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
 
         document = self._model.getDocument()
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
@@ -321,6 +329,28 @@ class MainWindow(QtGui.QMainWindow):
         if action is not None:
             menu = action.menu()
             menu.setEnabled(True)
+            
+    def _setupOtherWindows(self):
+        self.dockWidgetLogger = QtGui.QDockWidget(self)
+        self.dockWidgetLogger.setWindowTitle('Logger')
+        self.dockWidgetLogger.setObjectName("dockWidgetLogger")
+        self.dockWidgetContentsLogger = Logger()
+        self.dockWidgetContentsLogger.setObjectName("dockWidgetContentsLogger")
+        self.dockWidgetLogger.setWidget(self.dockWidgetContentsLogger)
+        self.dockWidgetLogger.setHidden(True)
+        
+    def _registerOtherWindows(self):
+        self._registerOtherWindow(self.dockWidgetLogger)
+    
+    def _registerOtherWindow(self, editor):
+        action = self._getEditorAction("Other Windows")
+        if action is None:
+            menu = self._ui.menu_View.addMenu("Other Windows")
+            menu.setEnabled(True)
+        else:
+            menu = action.menu()
+        
+        menu.addAction(editor.toggleViewAction()) 
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
@@ -335,6 +365,8 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setActionGroup(action_group)
             action_view.triggered.connect(self._viewTriggered)
             self._ui.menu_View.addAction(action_view)
+            
+        self._ui.menu_View.addSeparator()
 
     def _runSimulationClicked(self):
         sender = self.sender()

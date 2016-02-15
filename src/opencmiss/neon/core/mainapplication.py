@@ -20,7 +20,8 @@ from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
 from opencmiss.neon.core.misc.utils import importProblem
-
+from opencmiss.neon.core.neonlogger import NeonLogger
+import logging
 
 class MainApplication(object):
 
@@ -86,7 +87,7 @@ class MainApplication(object):
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                print("Failed to load " + filename)
+                NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
                 self._document.freeContents()
                 self._document = NeonDocument()
