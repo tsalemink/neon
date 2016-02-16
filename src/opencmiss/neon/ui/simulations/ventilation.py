@@ -42,8 +42,6 @@ class Ventilation(BaseSimulationView):
         parameters['file_input_outputs'] = self._problem.getFileInputOutputs()
         parameters['main_parameters'] = self._problem.getMainParameters()
         parameters['flow_parameters'] = self._problem.getFlowParameters()
-        # Convert index into lower case
-        parameters['flow_parameters']['expiration_type'] = 'passive'
 
         self._simulation.setParameters(parameters)
         self._simulation.setExecutable(self._problem.getExecutable())
@@ -64,5 +62,8 @@ class Ventilation(BaseSimulationView):
 
     def cleanup(self):
         self._ui.plainTextEdit.appendPlainText('')
-        self._ui.plainTextEdit.appendPlainText('Output written to: "{0}"'.format(self._simulation.getOutputFilename()))
+        filenames = self._simulation.getOutputFilenames()
+        for key in filenames:
+            if filenames[key]:
+                self._ui.plainTextEdit.appendPlainText('Output written to: "{0}"'.format(filenames[key]))
         self._simulation.cleanup()

@@ -45,22 +45,27 @@ class Ventilation(LocalSimulation):
         self.setSerialiser(IdentifierValue())
         self._file_handles = {}
         self._dir_handles = {}
-        self._output_filename = ''
+        self._output_filenames = {}
 
-    def getOutputFilename(self):
-        return self._output_filename
+    def getOutputFilenames(self):
+        return self._output_filenames
 
     def setup(self):
         file_input_outputs = self._parameters['file_input_outputs']
 
-        out_file = file_input_outputs['out_exnode']
-        if not out_file:
-            out_file_handle = NamedTemporaryFile(prefix='ventilation_out_', suffix='.exnode', delete=False)
-            out_file = out_file_handle.name
-            out_file_handle.close()
+        output_file_keys = ['terminal_exnode', 'tree_exnode', 'tree_exelem', 'ventilation_exelem', 'radius_exelem']
+        output_filenames = {}
 
-        inbuilt_flow_exelem = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'FlowLarge.exelem')
-        flow_exelem = inbuilt_flow_exelem if file_input_outputs['flow_inbuilt'] or not file_input_outputs['flow_exelem'] else file_input_outputs['flow_exelem']
+        for key in output_file_keys:
+            filename = file_input_outputs[key]
+            if filename:
+                output_filenames[key] = filename
+            else:
+                out_file_handle = NamedTemporaryFile(prefix='ventilation_{0}_'.format(key), delete=False)
+                output_filenames[key] = out_file_handle.name
+                out_file_handle.close()
+
+        terminal_file = output_filenames['terminal_exnode']
 
         self._dir_handles['root'] = mkdtemp(prefix='neon_')
         param_dir = os.path.join(self._dir_handles['root'], 'Parameters')
@@ -68,14 +73,15 @@ class Ventilation(LocalSimulation):
         os.mkdir(param_dir)
 
         geometry_flow = {}
-        geometry_flow['exnode'] = "'{0}'".format(out_file)
-        geometry_flow['exelem'] = "'{0}'".format(flow_exelem)
+        geometry_flow['exnode'] = "'{0}'".format(terminal_file)
+        geometry_flow['flowexelem'] = "'{0}'".format(output_filenames['ventilation_exelem'])
+        geometry_flow['flowradiusexelem'] = "'{0}'".format(output_filenames['radius_exelem'])
         self._file_handles['geo_main'] = os.path.join(self._dir_handles['para'], 'geometry_evaluate_flow.txt')
         with open(self._file_handles['geo_main'], 'w') as f:
             string = self._serialiser.serialise(geometry_flow)
             f.write(string)
 
-        self._output_filename = out_file
+        self._output_filenames = output_filenames
 
         inbuilt_tree_ipelem = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'tree.ipelem')
         tree_ipelem = inbuilt_tree_ipelem if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_ipelem'] else file_input_outputs['tree_ipelem']
@@ -83,24 +89,23 @@ class Ventilation(LocalSimulation):
         tree_ipnode = inbuilt_tree_ipnode if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_ipnode'] else file_input_outputs['tree_ipnode']
         inbuilt_tree_ipfiel = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'tree.ipfiel')
         tree_ipfiel = inbuilt_tree_ipfiel if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_ipfield'] else file_input_outputs['tree_ipfield']
-        inbuilt_tree_exnode = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'tree.exnode')
-        tree_exnode = inbuilt_tree_exnode if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_exnode'] else file_input_outputs['tree_exnode']
-        inbuilt_tree_exelem = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'tree.exelem')
-        tree_exelem = inbuilt_tree_exelem if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_exelem'] else file_input_outputs['tree_exelem']
+        inbuilt_tree_ipmesh = os.path.join(EXTERNAL_DATA_DIR, self._parameters['name'], 'Geom', 'tree.ipmesh')
+        tree_ipmesh = inbuilt_tree_ipmesh if file_input_outputs['tree_inbuilt'] or not file_input_outputs['tree_ipmesh'] else file_input_outputs['tree_ipmesh']
 
         geometry_main = {}
         geometry_main['ipelem'] = "'{0}'".format(tree_ipelem)
         geometry_main['ipnode'] = "'{0}'".format(tree_ipnode)
         geometry_main['ipfiel'] = "'{0}'".format(tree_ipfiel)
-        geometry_main['exnode'] = "'{0}'".format(tree_exnode)
-        geometry_main['exelem'] = "'{0}'".format(tree_exelem)
+        geometry_main['ipmesh'] = "'{0}'".format(tree_ipmesh)
+        geometry_main['exnode'] = "'{0}'".format(output_filenames['tree_exnode'])
+        geometry_main['exelem'] = "'{0}'".format(output_filenames['tree_exelem'])
 
         self._file_handles['geo_flow'] = os.path.join(self._dir_handles['para'], 'geometry_main.txt')
         with open(self._file_handles['geo_flow'], 'w') as f:
             string = self._serialiser.serialise(geometry_main)
             f.write(string)
 
-        self._file_handles['par_main'] = os.path.join(self._dir_handles['para'], 'control_params_main.txt')
+        self._file_handles['par_main'] = os.path.join(self._dir_handles['para'], 'params_main.txt')
         with open(self._file_handles['par_main'], 'w') as f:
             string = self._serialiser.serialise(self._parameters['main_parameters'])
             f.write(string)
