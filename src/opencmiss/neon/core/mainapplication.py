@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-import json
 import os
+import json
 
 from PySide import QtCore
 
@@ -22,8 +22,9 @@ from opencmiss.neon.core.neondocument import NeonDocument
 from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
-from opencmiss.neon.core.misc.utils import importProblem, \
-    getMatchingVisualisationClass
+from opencmiss.neon.core.misc.utils import getMatchingVisualisationClass, \
+    importProblem
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 
 class MainApplication(QtCore.QObject):
@@ -95,7 +96,7 @@ class MainApplication(QtCore.QObject):
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                print("Failed to load " + filename)
+                NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
                 self._document.freeContents()
                 self._document = NeonDocument()

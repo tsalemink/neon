@@ -15,7 +15,7 @@
 '''
 import os
 from opencmiss.zinc.streamregion import StreaminformationRegion
-
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 def fileNameToRelativePath(fileName, basePath):
     if (basePath is None) or (not os.path.isabs(fileName)) or (os.path.commonprefix([fileName, basePath]) == ""):
@@ -107,12 +107,12 @@ def deserializeNeonModelSource(dictInput):
     Factory method for creating the appropriate neon model source type from the dict serialization
     '''
     if "Type" not in dictInput:
-        print("Model source is missing Type")
+        NeonLogger.getLogger().error("Model source is missing Type")
         return None
     modelSource = None
     typeString = dictInput["Type"].upper()  # wasn't originally uppercase
     if typeString == "FILE":
         modelSource = NeonModelSourceFile(dictInput=dictInput)
     else:
-        print("Model source has unrecognised Type \"" + typeString + "\"")
+        NeonLogger.getLogger().error("Model source has unrecognised Type \"" + typeString + "\"")
     return modelSource
