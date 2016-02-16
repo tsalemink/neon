@@ -17,7 +17,7 @@ import json
 
 from opencmiss.neon.core.problems.base import BaseProblem
 
-BOUNDARY_CONDITIONS = ['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']
+BOUNDARY_CONDITIONS = ['Model 1', 'Model 2', 'Model 3', 'Model 4', 'Model 5']
 
 
 class Biomeng321Lab1(BaseProblem):
