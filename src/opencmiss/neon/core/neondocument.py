@@ -20,6 +20,7 @@ from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
 from opencmiss.neon.core.neonlogger import NeonLogger
 
+
 class NeonDocument(object):
 
     def __init__(self):

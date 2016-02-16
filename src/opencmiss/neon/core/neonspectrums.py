@@ -15,11 +15,11 @@
 '''
 import json
 
-from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.neon.core.neonlogger import NeonLogger
 
 SPECTRUM_GLYPH_NAME_FORMAT = 'colour_bar_{0}'
+
 
 class NeonSpectrums(object):
     """
@@ -39,7 +39,7 @@ class NeonSpectrums(object):
         spectrumsDescription = json.dumps(dictInput)
         result = self._spectrummodule.readDescription(spectrumsDescription)
         if result != ZINC_OK:
-             NeonLogger.getLogger().error("Failed to read spectrums")
+            NeonLogger.getLogger().error("Failed to read spectrums")
         self._findOrCreateAllSpectrumGlyphColourBars()
 
     def serialize(self):
@@ -51,11 +51,11 @@ class NeonSpectrums(object):
         """
         Ensures there exists a colour bar for each spectrum.
         """
-        iter = self._spectrummodule.createSpectrumiterator()
-        spectrum = iter.next()
+        iterater = self._spectrummodule.createSpectrumiterator()
+        spectrum = iterater.next()
         while spectrum.isValid():
             self.findOrCreateSpectrumGlyphColourBar(spectrum)
-            spectrum = iter.next()
+            spectrum = iterater.next()
 
     def findOrCreateSpectrumGlyphColourBar(self, spectrum):
         """

@@ -34,6 +34,7 @@ from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEdito
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
+
 class MainWindow(QtGui.QMainWindow):
 
     def __init__(self, model):
@@ -73,11 +74,11 @@ class MainWindow(QtGui.QMainWindow):
         self._registerEditors()
 
         self._setupViews(view_list)
-        
+
         self._setupOtherWindows()
 
         self._registerOtherWindows()
-        
+
         self._addDockWidgets()
 
         self._makeConnections()
@@ -124,7 +125,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Save.setEnabled(modified)
         recents = self._model.getRecents()
         self._ui.action_Clear.setEnabled(len(recents))
-        
+
     def _addDockWidgets(self):
         self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
@@ -332,7 +333,7 @@ class MainWindow(QtGui.QMainWindow):
         if action is not None:
             menu = action.menu()
             menu.setEnabled(True)
-            
+
     def _setupOtherWindows(self):
         self.dockWidgetLogger = QtGui.QDockWidget(self)
         self.dockWidgetLogger.setWindowTitle('Logger')
@@ -341,10 +342,10 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsLogger.setObjectName("dockWidgetContentsLogger")
         self.dockWidgetLogger.setWidget(self.dockWidgetContentsLogger)
         self.dockWidgetLogger.setHidden(True)
-        
+
     def _registerOtherWindows(self):
         self._registerOtherWindow(self.dockWidgetLogger)
-    
+
     def _registerOtherWindow(self, editor):
         action = self._getEditorAction("Other Windows")
         if action is None:
@@ -352,8 +353,8 @@ class MainWindow(QtGui.QMainWindow):
             menu.setEnabled(True)
         else:
             menu = action.menu()
-        
-        menu.addAction(editor.toggleViewAction()) 
+
+        menu.addAction(editor.toggleViewAction())
 
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
@@ -368,7 +369,7 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setActionGroup(action_group)
             action_view.triggered.connect(self._viewTriggered)
             self._ui.menu_View.addAction(action_view)
-            
+
         self._ui.menu_View.addSeparator()
 
     def _runSimulationClicked(self):

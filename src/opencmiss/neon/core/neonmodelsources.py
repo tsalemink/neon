@@ -14,13 +14,16 @@
    limitations under the License.
 '''
 import os
+
 from opencmiss.zinc.streamregion import StreaminformationRegion
 from opencmiss.neon.core.neonlogger import NeonLogger
+
 
 def fileNameToRelativePath(fileName, basePath):
     if (basePath is None) or (not os.path.isabs(fileName)) or (os.path.commonprefix([fileName, basePath]) == ""):
         return fileName
     return os.path.relpath(fileName, basePath)
+
 
 class NeonModelSourceFile(object):
 
@@ -101,6 +104,7 @@ class NeonModelSourceFile(object):
         if self._edit:
             dictOutput["Edit"] = True
         return dictOutput
+
 
 def deserializeNeonModelSource(dictInput):
     '''
