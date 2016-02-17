@@ -22,6 +22,7 @@ from opencmiss.neon.settings.mainsettings import EXTERNAL_BINARIES_DIR
 class ExternalProblem(BaseProblem):
 
     def __init__(self):
+        super(ExternalProblem, self).__init__()
         self._executable = ''
 
     def getExecutable(self):

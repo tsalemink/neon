@@ -13,34 +13,33 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-import json
 import os
+import json
+
+from PySide import QtCore
+
 from opencmiss.neon.core.neondocument import NeonDocument
-from opencmiss.zinc.context import Context
 from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.neonproblems import names
-from opencmiss.neon.core.misc.utils import importProblem
+from opencmiss.neon.core.misc.utils import getMatchingVisualisationClass, \
+    importProblem
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 
-class MainApplication(object):
+class MainApplication(QtCore.QObject):
+
+    documentChanged = QtCore.Signal()
 
     def __init__(self):
+        super(MainApplication, self).__init__()
         self._saveUndoRedoIndex = 0
         self._currentUntoRedoIndex = 0
 
         self._location = None
         self._recents = []
 
-        self._zincContext = Context("Main")
-
-        # set up standard materials and glyphs
-        materialmodule = self._zincContext.getMaterialmodule()
-        materialmodule.defineStandardMaterials()
-        glyphmodule = self._zincContext.getGlyphmodule()
-        glyphmodule.defineStandardGlyphs()
-
-        self._document = NeonDocument(self._zincContext)
+        self._document = NeonDocument()
 
         self._problem_model = ProblemModel()
         self._setupModel()
@@ -54,8 +53,8 @@ class MainApplication(object):
                 index = self._problem_model.index(row)
                 self._problem_model.setData(index, importProblem(name))
 
-    def getContext(self):
-        return self._zincContext
+    def getZincContext(self):
+        return self._document.getZincContext()
 
     def isModified(self):
         return self._saveUndoRedoIndex != self._currentUntoRedoIndex
@@ -74,10 +73,16 @@ class MainApplication(object):
 
     def new(self):
         # create a blank document
-        self._document = NeonDocument(self._zincContext)
+        self._document.freeContents()
+        self._document = NeonDocument()
+
+        self.documentChanged.emit()
 
     def save(self):
-        dictOutput = self._document.serialize()
+        # make model sources relative to current location if possible
+        # note that sources on different windows drives have absolute paths
+        basePath = os.path.dirname(self._location)
+        dictOutput = self._document.serialize(basePath)
         with open(self._location, 'w') as f:
             f.write(json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2))
 
@@ -85,20 +90,23 @@ class MainApplication(object):
         self._location = filename
         with open(filename, 'r') as f:
             dictInput = json.loads(f.read())
-            self._document = NeonDocument(self._zincContext)
+            self._document.freeContents()
+            self._document = NeonDocument()
             # set current directory to path from file, to support scripts and fieldml with external resources
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
-                print("Failed to load " + filename)
+                NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
-                self._document = NeonDocument(self._zincContext)
+                self._document.freeContents()
+                self._document = NeonDocument()
+
+            self.documentChanged.emit()
 
     def addRecent(self, recent):
         if recent in self._recents:
             index = self._recents.index(recent)
             del self._recents[index]
-
         self._recents.append(recent)
 
     def getRecents(self):
@@ -115,3 +123,12 @@ class MainApplication(object):
 
     def getPreferences(self):
         return self._preferences
+
+    def visualiseSimulation(self, simulation):
+        self._document.freeContents()
+        self._document = NeonDocument()
+        visualisation = getMatchingVisualisationClass(simulation)
+        visualisation.setSimulation(simulation)
+        visualisation.visualise(self._document)
+
+        self.documentChanged.emit()

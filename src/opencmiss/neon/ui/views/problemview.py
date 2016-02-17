@@ -16,7 +16,7 @@
 from PySide import QtCore, QtGui
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import generateRelatedClasses
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
 import json
@@ -50,14 +50,14 @@ class ProblemView(BaseView):
         self.selectionChanged.emit(current_index, previous_index)
 
     def _setupProblems(self, model):
-        classes = generateRelatedClasses(model, 'problems')
+        classes = instantiateRelatedClasses(model, 'problems')
         for c in classes:
             c.setParent(self._ui.stackedWidgetProblemView)
             problem = model.getProblem(self._ui.stackedWidgetProblemView.count())
             c.setProblem(problem)
             self._ui.stackedWidgetProblemView.addWidget(c)
 
-    def setContext(self, context):
+    def setZincContext(self, zincContext):
         pass
 
     def setModel(self, model):
@@ -78,6 +78,7 @@ class ProblemView(BaseView):
         for index in range(self._ui.stackedWidgetProblemView.count()):
             w = self._ui.stackedWidgetProblemView.widget(index)
             state[w.getName()] = w.serialise()
+
         return json.dumps(state)
 
     def deserialise(self, string):
@@ -90,6 +91,7 @@ class ProblemView(BaseView):
             saved_current_index = d['current_index'] if 'current_index' in d else 0
             current_index = self._ui.stackedWidgetProblemView.currentIndex()
             if saved_current_index != current_index:
+                self._selection_model.clear()
                 self._selection_model.setCurrentIndex(self._proxy_model.index(saved_current_index, 0), QtGui.QItemSelectionModel.Select)
         except Exception:
             pass

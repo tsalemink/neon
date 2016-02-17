@@ -166,12 +166,13 @@ class TessellationEditorWidget(QtGui.QWidget):
 
         self._updateUi()
 
-    def setContext(self, context):
-        self._context = context
-        tm = context.getTessellationmodule()
+    def setZincContext(self, zincContext):
+        self._context = zincContext
+        tm = zincContext.getTessellationmodule()
         ti = tm.createTessellationiterator()
         t = ti.next()
         self._ui.tableWidgetTessellations.blockSignals(True)
+        self._ui.tableWidgetTessellations.setRowCount(0)
         while t.isValid():
             min_value_count, _ = t.getMinimumDivisions(0)
             ref_value_count, _ = t.getRefinementFactors(0)

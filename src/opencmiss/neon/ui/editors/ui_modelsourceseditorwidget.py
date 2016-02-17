@@ -9,6 +9,7 @@
 
 from PySide import QtCore, QtGui
 
+
 class Ui_ModelSourcesEditorWidget(object):
     def setupUi(self, ModelSourcesEditorWidget):
         ModelSourcesEditorWidget.setObjectName("ModelSourcesEditorWidget")
@@ -95,4 +96,3 @@ class Ui_ModelSourcesEditorWidget(object):
         self.labelFileName.setText(QtGui.QApplication.translate("ModelSourcesEditorWidget", "File name:", None, QtGui.QApplication.UnicodeUTF8))
         self.labelTime.setText(QtGui.QApplication.translate("ModelSourcesEditorWidget", "Time:", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButtonBrowseFileName.setText(QtGui.QApplication.translate("ModelSourcesEditorWidget", "Browse...", None, QtGui.QApplication.UnicodeUTF8))
-

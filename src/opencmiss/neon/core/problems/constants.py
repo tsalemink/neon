@@ -20,3 +20,4 @@ class RespirationConstants(object):
     class ExpirationType(object):
 
         PASSIVE = 0
+        ACTIVE = 1

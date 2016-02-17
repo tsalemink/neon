@@ -14,7 +14,15 @@
    limitations under the License.
 '''
 import os
+
 from opencmiss.zinc.streamregion import StreaminformationRegion
+from opencmiss.neon.core.neonlogger import NeonLogger
+
+
+def fileNameToRelativePath(fileName, basePath):
+    if (basePath is None) or (not os.path.isabs(fileName)) or (os.path.commonprefix([fileName, basePath]) == ""):
+        return fileName
+    return os.path.relpath(fileName, basePath)
 
 
 class NeonModelSourceFile(object):
@@ -38,7 +46,7 @@ class NeonModelSourceFile(object):
         if not self._fileName:
             self._edit = True
             return
-        resource = streamInfo.createStreamresourceFile(self._fileName)
+        resource = streamInfo.createStreamresourceFile(str(self._fileName))
         self._loaded = True
         if self._time is not None:
             streamInfo.setResourceAttributeReal(resource, StreaminformationRegion.ATTRIBUTE_TIME, self._time)
@@ -78,7 +86,8 @@ class NeonModelSourceFile(object):
         self._edit = edit
 
     def _deserialize(self, dictInput):
-        self._fileName = str(dictInput["FileName"])
+        # convert to absolute file path so can save Neon file to new location and get correct relative path
+        self._fileName = os.path.abspath(dictInput["FileName"])
         if "Time" in dictInput:
             self._time = dictInput["Time"]
         if "Format" in dictInput:
@@ -86,27 +95,28 @@ class NeonModelSourceFile(object):
         if "Edit" in dictInput:
             self._edit = dictInput["Edit"]
 
-    def serialize(self):
+    def serialize(self, basePath=None):
         dictOutput = {}
         dictOutput["Type"] = self.getType()
-        dictOutput["FileName"] = self._fileName
+        dictOutput["FileName"] = fileNameToRelativePath(self._fileName, basePath)
         if self._time is not None:
             dictOutput["Time"] = self._time
         if self._edit:
             dictOutput["Edit"] = True
         return dictOutput
 
+
 def deserializeNeonModelSource(dictInput):
     '''
     Factory method for creating the appropriate neon model source type from the dict serialization
     '''
     if "Type" not in dictInput:
-        print("Model source is missing Type")
+        NeonLogger.getLogger().error("Model source is missing Type")
         return None
     modelSource = None
     typeString = dictInput["Type"].upper()  # wasn't originally uppercase
     if typeString == "FILE":
         modelSource = NeonModelSourceFile(dictInput=dictInput)
     else:
-        print("Model source has unrecognised Type \"" + typeString + "\"")
+        NeonLogger.getLogger().error("Model source has unrecognised Type \"" + typeString + "\"")
     return modelSource

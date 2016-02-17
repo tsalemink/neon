@@ -11,14 +11,26 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>OpenCMISS-Neon</string>
+   <string>Neon</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../icons.qrc">
-    <normaloff>:/neon/images/icons/neon-icon.png</normaloff>:/neon/images/icons/neon-icon.png</iconset>
+    <normaloff>:/neon/images/icons/neon-icon-v2.png</normaloff>:/neon/images/icons/neon-icon-v2.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QStackedWidget" name="viewStackedWidget"/>
     </item>
@@ -30,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>855</width>
-     <height>19</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -80,7 +92,17 @@
    <addaction name="menu_View"/>
    <addaction name="menu_Help"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>0</height>
+    </size>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
@@ -256,7 +278,7 @@
      <normaloff>:/neon/images/icons/applications-system-icon.png</normaloff>:/neon/images/icons/applications-system-icon.png</iconset>
    </property>
    <property name="text">
-    <string>Preferences</string>
+    <string>Pr&amp;eferences</string>
    </property>
   </action>
  </widget>

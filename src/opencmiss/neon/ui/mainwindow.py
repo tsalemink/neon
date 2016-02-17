@@ -23,6 +23,7 @@ from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.dialogs.logger import Logger
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
@@ -74,6 +75,12 @@ class MainWindow(QtGui.QMainWindow):
 
         self._setupViews(view_list)
 
+        self._setupOtherWindows()
+
+        self._registerOtherWindows()
+
+        self._addDockWidgets()
+
         self._makeConnections()
 
         # Set the undo redo stack state
@@ -108,13 +115,25 @@ class MainWindow(QtGui.QMainWindow):
 
         self._problem_view.runClicked.connect(self._runSimulationClicked)
         self._problem_view.selectionChanged.connect(self._simulation_view.selectionChanged)
-        self._simulation_view.runClicked.connect(self._runSimulationClicked)
+#         self._simulation_view.runClicked.connect(self._runSimulationClicked)
+        self._simulation_view.visualiseClicked.connect(self._visualiseSimulationClicked)
+
+        self._model.documentChanged.connect(self._onDocumentChanged)
 
     def _updateUi(self):
         modified = self._model.isModified()
         self._ui.action_Save.setEnabled(modified)
         recents = self._model.getRecents()
         self._ui.action_Clear.setEnabled(len(recents))
+
+    def _addDockWidgets(self):
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
+        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
+        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
+        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLogger)
+        self.tabifyDockWidget(self.dockWidgetLogger, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
         self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
@@ -165,17 +184,11 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
 
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetTessellationEditor)
-        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
-        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
-        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
-        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetTimeEditor)
-
-        context = self._model.getContext()
-        self.dockWidgetContentsSpectrumEditor.setContext(context)
-        self.dockWidgetContentsTessellationEditor.setContext(context)
-        self.dockWidgetContentsTimeEditor.setContext(context)
+        document = self._model.getDocument()
+        self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
+        zincContext = document.getZincContext()
+        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
 
     def _registerEditors(self):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
@@ -210,7 +223,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _createDialogs(self):
         self._snapshot_dialog = SnapshotDialog(self, self._shared_gl_widget)
-        self._snapshot_dialog.setContext(self._model.getContext())
+        self._snapshot_dialog.setZincContext(self._model.getZincContext())
 
         self._preferences_dialog = PreferencesDialog(self)
 
@@ -321,12 +334,34 @@ class MainWindow(QtGui.QMainWindow):
             menu = action.menu()
             menu.setEnabled(True)
 
+    def _setupOtherWindows(self):
+        self.dockWidgetLogger = QtGui.QDockWidget(self)
+        self.dockWidgetLogger.setWindowTitle('Logger')
+        self.dockWidgetLogger.setObjectName("dockWidgetLogger")
+        self.dockWidgetContentsLogger = Logger()
+        self.dockWidgetContentsLogger.setObjectName("dockWidgetContentsLogger")
+        self.dockWidgetLogger.setWidget(self.dockWidgetContentsLogger)
+        self.dockWidgetLogger.setHidden(True)
+
+    def _registerOtherWindows(self):
+        self._registerOtherWindow(self.dockWidgetLogger)
+
+    def _registerOtherWindow(self, editor):
+        action = self._getEditorAction("Other Windows")
+        if action is None:
+            menu = self._ui.menu_View.addMenu("Other Windows")
+            menu.setEnabled(True)
+        else:
+            menu = action.menu()
+
+        menu.addAction(editor.toggleViewAction())
+
     def _setupViews(self, views):
         action_group = QtGui.QActionGroup(self)
-        context = self._model.getContext()
+        zincContext = self._model.getZincContext()
         for v in views:
             self._ui.viewStackedWidget.addWidget(v)
-            v.setContext(context)
+            v.setZincContext(zincContext)
 
             action_view = QtGui.QAction(v.getName(), self)
             action_view.setData(v)
@@ -334,6 +369,8 @@ class MainWindow(QtGui.QMainWindow):
             action_view.setActionGroup(action_group)
             action_view.triggered.connect(self._viewTriggered)
             self._ui.menu_View.addAction(action_view)
+
+        self._ui.menu_View.addSeparator()
 
     def _runSimulationClicked(self):
         sender = self.sender()
@@ -347,6 +384,19 @@ class MainWindow(QtGui.QMainWindow):
             self._simulation_view.setProblem(problem)
             self._simulation_view.setPreferences(self._model.getPreferences())
             self._simulation_view.run()
+        else:
+            print('pop up error box')
+
+    def _visualiseSimulationClicked(self):
+        sender = self.sender()
+        if sender == self._simulation_view:
+            actions = self._ui.menu_View.actions()
+            visualise_action = [a for a in actions if a.text() == self._visualisation_view.getName()][0]
+            visualise_action.activate(QtGui.QAction.ActionEvent.Trigger)
+
+        simulation = self._simulation_view.getSimulation()
+        if simulation.validate():
+            self._model.visualiseSimulation(simulation)
         else:
             print('pop up error box')
 
@@ -367,17 +417,27 @@ class MainWindow(QtGui.QMainWindow):
             zincRootRegion = changedRegion.getZincRegion()
             self._visualisation_view.setScene(zincRootRegion.getScene())
 
-    def _refreshRootRegion(self):
+    def _onDocumentChanged(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
         rootRegion.connectRegionChange(self._regionChange)
+
+        # need to pass new Zinc context to dialogs and widgets using global modules
+        zincContext = document.getZincContext()
+        self._visualisation_view.setZincContext(zincContext)
+        self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
+        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
+        self._snapshot_dialog.setZincContext(zincContext)
+
+        # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
         self.dockWidgetContentsModelSourcesEditor.setRegion(rootRegion)
-        if self._visualisation_view_ready:
-            zincRootRegion = rootRegion.getZincRegion()
-            scene = zincRootRegion.getScene()
-            self._visualisation_view.setScene(scene)
-            self.dockWidgetContentsSceneEditor.setScene(scene)
+
+        # need to pass new scene to the following
+        zincRootRegion = rootRegion.getZincRegion()
+        scene = zincRootRegion.getScene()
+        self.dockWidgetContentsSceneEditor.setScene(scene)
 
     def _regionSelected(self, region):
         self.dockWidgetContentsModelSourcesEditor.setRegion(region)
@@ -387,7 +447,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
-        self._refreshRootRegion()
+        self._onDocumentChanged()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -435,13 +495,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def _newTriggered(self):
         self._model.new()
-        self._refreshRootRegion()
+#         self._onNewDocument()
 
     def _openModel(self, filename):
         self._location = os.path.dirname(filename)
         self._model.load(filename)
         self._addRecent(filename)
-        self._refreshRootRegion()
+#         self._onNewDocument()
 
         self._updateUi()
 

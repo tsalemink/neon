@@ -23,6 +23,7 @@ from PySide import QtCore, QtGui
 
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.ui.editors.ui_regioneditorwidget import Ui_RegionEditorWidget
+from opencmiss.neon.core.neonlogger import NeonLogger
 
 
 class RegionTreeItem(object):
@@ -75,7 +76,8 @@ class RegionTreeItem(object):
         if item:
             item._buildChildItems()
         else:
-            print("Missing item for region ", region.getDisplayName())
+            NeonLogger.getLogger().error("Missing item for region ", region.getDisplayName())
+
 
 class RegionTreeModel(QtCore.QAbstractItemModel):
 
@@ -98,7 +100,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         if not parentRegion:
             self.setRootRegion(region)
         else:
-            item = self._invisibleRootItem.rebuildRegionTreeItems(region)
+            self._invisibleRootItem.rebuildRegionTreeItems(region)
 
     def columnCount(self, parentIndex):
         return 1
@@ -169,6 +171,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
             return self.createIndex(item.getRow(), 0, item)
         return QtCore.QModelIndex()
 
+
 class RegionEditorWidget(QtGui.QWidget):
 
     regionSelected = QtCore.Signal(object)
@@ -202,7 +205,7 @@ class RegionEditorWidget(QtGui.QWidget):
 
     def _addChildRegion(self):
         region = self.getCurrentRegion()
-        newChild = region.createChild()
+        _ = region.createChild()
 
     def _clearRegion(self):
         region = self.getCurrentRegion()

@@ -26,6 +26,9 @@ class BaseProblem(QtGui.QWidget):
         self._problem = problem
         self.updateUi()
 
+    def updateUi(self):
+        pass
+
     def getName(self):
         return self._problem.getName()
 
@@ -34,6 +37,3 @@ class BaseProblem(QtGui.QWidget):
 
     def deserialise(self, string):
         pass
-
-    def validate(self):
-        return False

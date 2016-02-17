@@ -16,14 +16,14 @@
 from PySide import QtCore
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import generateRelatedClasses
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
 
 class SimulationView(BaseView):
 
-    runClicked = QtCore.Signal()
+    visualiseClicked = QtCore.Signal()
 
     def __init__(self, parent=None):
         super(SimulationView, self).__init__(parent)
@@ -32,24 +32,29 @@ class SimulationView(BaseView):
         self._ui = Ui_SimulationView()
         self._ui.setupUi(self)
 
+        self._run_delay_timer = QtCore.QTimer()
+        self._run_delay_timer.setSingleShot(True)
+        self._run_delay_timer.setInterval(10)
+
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.pushButtonRun.clicked.connect(self.runClicked)
+        self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)
+        self._run_delay_timer.timeout.connect(self._run)
 
     def _setupSimulations(self, model):
-        classes = generateRelatedClasses(model, 'simulations')
+        classes = instantiateRelatedClasses(model, 'simulations')
         for c in classes:
             c.setParent(self._ui.stackedWidgetSimulationView)
             self._ui.stackedWidgetSimulationView.addWidget(c)
 
     def selectionChanged(self, current_index, previous_index):
-        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index)
+        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index.row())
 
     def setModel(self, model):
         self._setupSimulations(model)
 
-    def setContext(self, context):
+    def setZincContext(self, zincContext):
         pass
 
     def setProblem(self, problem):
@@ -61,5 +66,12 @@ class SimulationView(BaseView):
         simulation.setPreferences(preferences)
 
     def run(self):
+        self._run_delay_timer.start()
+
+    def _run(self):
         simulation = self._ui.stackedWidgetSimulationView.currentWidget()
         simulation.run()
+
+    def getSimulation(self):
+        simulation_widget = self._ui.stackedWidgetSimulationView.currentWidget()
+        return simulation_widget.getSimulation()

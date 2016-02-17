@@ -17,6 +17,8 @@ import json
 
 from opencmiss.neon.core.neonmodelsources import deserializeNeonModelSource
 from opencmiss.zinc.status import OK as ZINC_OK
+from opencmiss.neon.core.neonlogger import NeonLogger
+
 
 class NeonRegion(object):
 
@@ -32,9 +34,27 @@ class NeonRegion(object):
         if not parent:
             self._regionChangeCallbacks = []
 
+    # def __del__(self):
+    #    print("NeonRegion.__del__ " + self.getDisplayName())
+
+    def freeContents(self):
+        """
+        Deletes subobjects of region to help free memory held by Zinc objects earlier.
+        """
+        del self._zincRegion
+        for child in self._children:
+            child.freeContents()
+
+    def _createBlankCopy(self):
+        zincRegion = self._zincRegion.createRegion()
+        if self._name:
+            zincRegion.setName(self._name)
+        blankRegion = NeonRegion(self._name, zincRegion, self._parent)
+        return blankRegion
+
     def _assign(self, source):
         """
-        Replace contents of self with that of source. Fixes up Zinc parent/child region relationships
+        Replace contents of self with that of source. Fixes up Zinc parent/child region relationships.
         """
         if self._parent:
             oldZincRegion = self._zincRegion
@@ -42,6 +62,7 @@ class NeonRegion(object):
         else:
             oldZincRegion = None
             zincSiblingAfter = None
+        self.freeContents()
         self._name = source._name
         # self._parent = source._parent should not be changed
         self._children = source._children
@@ -86,7 +107,7 @@ class NeonRegion(object):
         modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
-            print("Failed to read model source")
+            NeonLogger.getLogger().error("Failed to read model source")
         else:
             newRegionCount = self._discoverNewZincRegions()
             self._informRegionChange(newRegionCount > 0)
@@ -97,7 +118,7 @@ class NeonRegion(object):
             modelSource.addToZincStreaminformationRegion(streamInfo)
         result = self._loadModelSourceStreams(streamInfo)
         if result != ZINC_OK:
-            print("Failed to read model sources")
+            NeonLogger.getLogger().error("Failed to read model sources")
 
     def _reload(self):
         """
@@ -109,17 +130,10 @@ class NeonRegion(object):
         else:
             # beware this breaks parent/child links such as current selection / hierarchical groups
             dictSave = self.serialize()
-            tmpRegion = self._createBlank()
+            tmpRegion = self._createBlankCopy()
             tmpRegion.deserialize(dictSave)
             self._assign(tmpRegion)
             self._informRegionChange(True)
-
-    def _createBlank(self):
-        zincRegion = self._zincRegion.createRegion()
-        if self._name:
-            zincRegion.setName(self._name)
-        blankRegion = NeonRegion(self._name, zincRegion, self._parent)
-        return blankRegion
 
     def _discoverNewZincRegions(self):
         """
@@ -168,7 +182,8 @@ class NeonRegion(object):
             sceneDescription = json.dumps(dictInput["Scene"])
             result = scene.readDescription(sceneDescription, True)
             if result != ZINC_OK:
-                print("Failed to read scene")
+                NeonLogger.getLogger().error("Failed to read scene")
+
         # following assumes no neon child regions exist, i.e. we are deserializing into a blank region
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
         zincChildRef = self._zincRegion.getFirstChild()
@@ -192,7 +207,7 @@ class NeonRegion(object):
                 neonChild.deserialize(dictChild)
         self._discoverNewZincRegions()
 
-    def serialize(self):
+    def serialize(self, basePath=None):
         dictOutput = {}
         if self._name:
             dictOutput["Name"] = self._name
@@ -200,7 +215,7 @@ class NeonRegion(object):
         if self._modelSources:
             tmpOutput = []
             for modelSource in self._modelSources:
-                tmpOutput.append(modelSource.serialize())
+                tmpOutput.append(modelSource.serialize(basePath))
             dictOutput["Model"]["Sources"] = tmpOutput
         if not dictOutput["Model"]:
             dictOutput.pop("Model")
@@ -211,7 +226,7 @@ class NeonRegion(object):
         if self._children:
             tmpOutput = []
             for child in self._children:
-                tmpOutput.append(child.serialize())
+                tmpOutput.append(child.serialize(basePath))
             dictOutput["ChildRegions"] = tmpOutput
         return dictOutput
 
@@ -246,7 +261,7 @@ class NeonRegion(object):
         """
         Clear all contents of region. Can be called for root region
         """
-        tmpRegion = self._createBlank()
+        tmpRegion = self._createBlankCopy()
         self._assign(tmpRegion)
         if self._ancestorModelSourceCreated:
             self._reload()
@@ -268,9 +283,13 @@ class NeonRegion(object):
         return None
 
     def removeChild(self, childRegion):
+        """
+        Remove child region and destroy
+        """
         self._children.remove(childRegion)
         self._zincRegion.removeChild(childRegion._zincRegion)
         childRegion._parent = None
+        childRegion.freeContents()
         if childRegion._ancestorModelSourceCreated:
             self._reload()
         else:
@@ -278,7 +297,7 @@ class NeonRegion(object):
 
     def remove(self):
         """
-        Remove self from region tree; replace with blank region if root
+        Remove self from region tree and destroy; replace with blank region if root
         """
         if self._parent:
             self._parent.removeChild(self)
