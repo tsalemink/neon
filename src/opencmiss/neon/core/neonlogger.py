@@ -89,15 +89,18 @@ class NeonLogger():
     
     @staticmethod
     def writeInformationMessage(string):
-        NeonLogger.getLogger().information(string)
+        NeonLogger.getLogger().info(string)
     
     @staticmethod
     def loggerCallback(event):
         if event.getChangeFlags() == Logger.CHANGE_FLAG_NEW_MESSAGE:
+            text = event.getMessageText()
             if event.getMessageType() == Logger.MESSAGE_TYPE_ERROR:
-                NeonLogger.writeErrorMessage(event.getMessageText())
+                NeonLogger.writeErrorMessage(text)
             elif event.getMessageType() == Logger.MESSAGE_TYPE_WARNING:
-                NeonLogger.writeWarningMessage(event.getMessageText())
+                NeonLogger.writeWarningMessage(text)
+            elif event.getMessageType() == Logger.MESSAGE_TYPE_INFORMATION:
+                NeonLogger.writeInformationMessage(text)
     
     @staticmethod
     def setZincContext(zincContext):
