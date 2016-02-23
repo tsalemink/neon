@@ -248,13 +248,18 @@ class SpectrumEditorWidget(QtGui.QWidget):
             active_spectrum_component.setText(getComponentString(sc, row + 1))
 
     def _spectrumChanged(self, item):
+        newName = str(item.text())
         sm = self._zincContext.getSpectrummodule()
         spectrum = sm.findSpectrumByName(self._currentSpectrumName)
         # spectrum = item.data(SPECTRUM_DATA_ROLE)
-        self._spectrums.renameSpectrum(spectrum, item.text())
+        if self._spectrums.renameSpectrum(spectrum, newName):
+            self._currentSpectrumName = newName
+        else:
+            item.setText(spectrum.getName())
 
     def _spectrumItemClicked(self, item):
         item.setSelected(True)
+        self._currentSpectrumName = str(item.text())
         self._selected_spectrum_row = self._ui.listWidgetSpectrums.row(item)
         self._updateUi()
 
@@ -300,8 +305,10 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._updateUi()
 
     def _deleteSpectrumClicked(self):
-        spectrum = self._getCurrentSpectrum()
-        self._spectrums.removeSpectrum(spectrum)
+        self._previewSpectrum(None)  # preview graphics references spectrum
+        if not self._spectrums.removeSpectrumByName(self._currentSpectrumName):
+            NeonLogger.getLogger().error("Can't delete spectrum " + self._currentSpectrumName + " as it is in use")
+            self._updateUi()
 
     def _addSpectrumComponentClicked(self):
         s = self._getCurrentSpectrum()
