@@ -21,6 +21,7 @@ from PySide import QtGui
 from opencmiss.neon.ui.problems.base import BaseProblem
 from opencmiss.neon.core.problems.constants import RespirationConstants
 from opencmiss.neon.ui.problems.ui_ventilationwidget import Ui_VentilationWidget
+from opencmiss.neon.core.problems.ventilation import getExecutableForPlatform
 
 
 class Ventilation(BaseProblem):
@@ -181,6 +182,9 @@ class Ventilation(BaseProblem):
         state = self._ui.checkBoxInBuiltExecutable.isChecked()
         self._ui.lineEditExecutable.setEnabled(not state)
         self._ui.pushButtonChooseExecutable.setEnabled(not state)
+        if state:
+            self._ui.lineEditExecutable.clear()
+            self._problem.setInBuiltExecutable(getExecutableForPlatform())
 
     def _inBuiltFlowClicked(self):
         state = self._ui.checkBoxInBuiltFlow.isChecked()
