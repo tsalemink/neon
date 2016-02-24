@@ -83,6 +83,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self._makeConnections()
 
+        self._problem_view.setCurrentModel(0)
+
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
         self._undoRedoStack.clear()
