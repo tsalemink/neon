@@ -23,7 +23,7 @@ from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.dialogs.logger import Logger
+from opencmiss.neon.ui.dialogs.loggerdialog import LoggerDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
@@ -92,7 +92,8 @@ class MainWindow(QtGui.QMainWindow):
         self._updateUi()
 
         self._readSettings()
-#         QtCore.QTimer.singleShot(0, self._readSettings)
+
+        # QtCore.QTimer.singleShot(0, self._newTriggered)
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.close)
@@ -134,8 +135,8 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLogger)
-        self.tabifyDockWidget(self.dockWidgetLogger, self.dockWidgetTimeEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.dockWidgetLoggerDialog)
+        self.tabifyDockWidget(self.dockWidgetLoggerDialog, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
         self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
@@ -337,16 +338,16 @@ class MainWindow(QtGui.QMainWindow):
             menu.setEnabled(True)
 
     def _setupOtherWindows(self):
-        self.dockWidgetLogger = QtGui.QDockWidget(self)
-        self.dockWidgetLogger.setWindowTitle('Logger')
-        self.dockWidgetLogger.setObjectName("dockWidgetLogger")
-        self.dockWidgetContentsLogger = Logger()
-        self.dockWidgetContentsLogger.setObjectName("dockWidgetContentsLogger")
-        self.dockWidgetLogger.setWidget(self.dockWidgetContentsLogger)
-        self.dockWidgetLogger.setHidden(True)
+        self.dockWidgetLoggerDialog = QtGui.QDockWidget(self)
+        self.dockWidgetLoggerDialog.setWindowTitle('Logger')
+        self.dockWidgetLoggerDialog.setObjectName("dockWidgetLoggerDialog")
+        self.dockWidgetContentsLoggerDialog = LoggerDialog()
+        self.dockWidgetContentsLoggerDialog.setObjectName("dockWidgetContentsLoggerDialog")
+        self.dockWidgetLoggerDialog.setWidget(self.dockWidgetContentsLoggerDialog)
+        self.dockWidgetLoggerDialog.setHidden(True)
 
     def _registerOtherWindows(self):
-        self._registerOtherWindow(self.dockWidgetLogger)
+        self._registerOtherWindow(self.dockWidgetLoggerDialog)
 
     def _registerOtherWindow(self, editor):
         action = self._getEditorAction("Other Windows")

@@ -15,15 +15,15 @@
 '''
 from PySide import QtGui
 
-from opencmiss.neon.ui.dialogs.ui_logger import Ui_Logger
+from opencmiss.neon.ui.dialogs.ui_loggerdialog import Ui_LoggerDialog
 from opencmiss.neon.core.neonlogger import CustomStream
 
 
-class Logger(QtGui.QWidget):
+class LoggerDialog(QtGui.QWidget):
 
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self._ui = Ui_Logger()
+        self._ui = Ui_LoggerDialog()
         self._ui.setupUi(self)
 
         self._logger = None
