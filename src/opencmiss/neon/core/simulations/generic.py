@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,15 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
+from opencmiss.neon.core.simulations.local import LocalSimulation
 
 
-names = [
-    'Generic',
-    'Ventilation',
-    'Biomeng321Lab1',
-]
+class Generic(LocalSimulation):
+
+    def __init__(self):
+        super(Generic, self).__init__()
+        self.setName('Generic Simulation')
+
+    def validate(self):
+        return True

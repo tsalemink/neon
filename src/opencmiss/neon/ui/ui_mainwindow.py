@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.viewStackedWidget.setObjectName("viewStackedWidget")
         self.horizontalLayout.addWidget(self.viewStackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.menubar = QtGui.QMenuBar()
         self.menubar.setGeometry(QtCore.QRect(0, 0, 855, 30))
         self.menubar.setObjectName("menubar")
         self.menu_File = QtGui.QMenu(self.menubar)

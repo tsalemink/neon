@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
+from opencmiss.neon.ui.problems.base import BaseProblem
+from opencmiss.neon.ui.problems.ui_generic import Ui_Generic
 
 
-names = [
-    'Generic',
-    'Ventilation',
-    'Biomeng321Lab1',
-]
+class Generic(BaseProblem):
+
+    def __init__(self, parent=None):
+        super(Generic, self).__init__(parent)
+        self._ui = Ui_Generic()
+        self._ui.setupUi(self)
