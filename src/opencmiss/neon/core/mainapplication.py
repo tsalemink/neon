@@ -132,3 +132,6 @@ class MainApplication(QtCore.QObject):
         visualisation.visualise(self._document)
 
         self.documentChanged.emit()
+
+    def setProblem(self, name):
+        pass

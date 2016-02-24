@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from opencmiss.neon.core.neonproblem import NeonProblem
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
@@ -37,6 +38,7 @@ class NeonDocument(object):
         self._rootRegion.connectRegionChange(self._regionChange)
         self._rootRegion._document = self
 
+        self._problem = NeonProblem()
         self._spectrums = NeonSpectrums(self._zincContext)
         self._tessellations = NeonTessellations(self._zincContext)
         NeonLogger.setZincContext(self._zincContext)
@@ -67,16 +69,20 @@ class NeonDocument(object):
         if not (("OpenCMISS-Neon Version" in dictInput) and ("RootRegion" in dictInput)):
             NeonLogger.getLogger().error("Invalid format for Neon")
             return False
-        _ = dictInput["OpenCMISS-Neon Version"]
+        neon_version = dictInput["OpenCMISS-Neon Version"]
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
         # zincRegion.beginHierarchicalChange()
         result = True
         try:
+            if "Problem" in dictInput:
+                self._problem.deserialise(dictInput["Problem"])
             if "Tessellations" in dictInput:
                 self._tessellations.deserialize(dictInput["Tessellations"])
             if "Spectrums" in dictInput:
                 self._spectrums.deserialize(dictInput["Spectrums"])
             self._rootRegion.deserialize(dictInput["RootRegion"])
+            if neon_version == '0.1.0':
+                self._problem.setName('Generic')
         except:
             NeonLogger.getLogger().error("Exception in NeonDocument.deserialize")
             result = False
@@ -89,6 +95,7 @@ class NeonDocument(object):
         outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
+        dictOutput["Problem"] = self._problem.serialize()
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
@@ -105,3 +112,6 @@ class NeonDocument(object):
 
     def getTessellations(self):
         return self._tessellations
+
+    def getName(self):
+        return self._problem.getName()

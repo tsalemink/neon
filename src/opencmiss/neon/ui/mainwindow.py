@@ -16,6 +16,7 @@
 import os.path
 
 from PySide import QtCore, QtGui
+from opencmiss.neon.ui.dialogs.newproblemdialog import NewProblemDialog
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
@@ -83,7 +84,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self._makeConnections()
 
-        self._problem_view.setCurrentModel(0)
+        # self._problem_view.setCurrentModel(0)
 
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
@@ -93,7 +94,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self._readSettings()
 
-        # QtCore.QTimer.singleShot(0, self._newTriggered)
+        QtCore.QTimer.singleShot(0, self._doProblemCheck)
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.close)
@@ -496,8 +497,22 @@ class MainWindow(QtGui.QMainWindow):
         if self._preferences_dialog.exec_():
             pass  # Save the state
 
+    def _doProblemCheck(self):
+        problem = self._model.getCurrentProblem()
+
     def _newTriggered(self):
-        self._model.new()
+        dlg = NewProblemDialog(self._model, parent=self)
+        dlg.setModal(True)
+        dlg.setRecentActions(self._ui.menu_Open_recent.actions())
+        dlg.openClicked.connect(self._openTriggered)
+        dlg.recentClicked.connect(self._open)
+
+        if dlg.exec_():
+            problem = dlg.getProblem()
+            print(problem)
+            self._model.new()
+        else:
+            print('Not accepted')
 #         self._onNewDocument()
 
     def _openModel(self, filename):
@@ -514,11 +529,14 @@ class MainWindow(QtGui.QMainWindow):
         if filename:
             self._openModel(filename)
 
-    def _open(self):
+    def _open(self, filename=None):
         '''
         Open a model from a recent file
         '''
-        filename = self.sender().text()
+        if filename is None:
+            filename = self.sender().text()
+        else:
+            print('find sender with text', filename)
         self._ui.menu_Open_recent.removeAction(self.sender())
         self._openModel(filename)
 
