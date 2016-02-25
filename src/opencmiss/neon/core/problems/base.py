@@ -18,7 +18,11 @@
 class BaseProblem(object):
 
     def __init__(self):
-        self._name = 'Base'
+        self._name = 'Base Problem'
+        self._id = self.__class__.__name__
+
+    def getIdentifier(self):
+        return self._id
 
     def getName(self):
         return self._name

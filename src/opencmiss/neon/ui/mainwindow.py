@@ -16,13 +16,13 @@
 import os.path
 
 from PySide import QtCore, QtGui
-from opencmiss.neon.ui.dialogs.newproblemdialog import NewProblemDialog
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.views.problemview import ProblemView
 from opencmiss.neon.ui.views.simulationview import SimulationView
+from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.dialogs.loggerdialog import LoggerDialog
 from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
@@ -41,7 +41,6 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self, model):
         super(MainWindow, self).__init__()
         self._model = model
-        problem_model = self._model.getProblemModel()
 
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
@@ -50,9 +49,9 @@ class MainWindow(QtGui.QMainWindow):
         self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
         self._problem_view = ProblemView(self)
-        self._problem_view.setModel(problem_model)
+        self._problem_view.setupProblems(model.getProjectModel())
         self._simulation_view = SimulationView(self)
-        self._simulation_view.setModel(problem_model)
+        self._simulation_view.setupSimulations(model.getProjectModel())
 
         self._view_states = {}
         self._view_states[self._visualisation_view] = ''
@@ -84,8 +83,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self._makeConnections()
 
-        # self._problem_view.setCurrentModel(0)
-
         # Set the undo redo stack state
         self._undoRedoStack.push(CommandEmpty())
         self._undoRedoStack.clear()
@@ -94,7 +91,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self._readSettings()
 
-        QtCore.QTimer.singleShot(0, self._doProblemCheck)
+#         self._doProjectCheck()
+
+        QtCore.QTimer.singleShot(0, self._doProjectCheck)
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.close)
@@ -118,8 +117,6 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
 
         self._problem_view.runClicked.connect(self._runSimulationClicked)
-        self._problem_view.selectionChanged.connect(self._simulation_view.selectionChanged)
-#         self._simulation_view.runClicked.connect(self._runSimulationClicked)
         self._simulation_view.visualiseClicked.connect(self._visualiseSimulationClicked)
 
         self._model.documentChanged.connect(self._onDocumentChanged)
@@ -188,11 +185,11 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
 
-        document = self._model.getDocument()
-        self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
-        zincContext = document.getZincContext()
-        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
-        self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
+#         document = self._model.getDocument()
+#         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
+#         zincContext = document.getZincContext()
+#         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+#         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
 
     def _registerEditors(self):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
@@ -276,7 +273,8 @@ class MainWindow(QtGui.QMainWindow):
             settings.setArrayIndex(i)
             self._addRecent(settings.value('item'))
         settings.endArray()
-        self._setCurrentView(settings.value('current_view', '0'))
+        # Always want to initialise with the problem view to stop Zinc from initialising to early.
+        self._setCurrentView('0')  # settings.value('current_view', '0'))
         settings.endGroup()
 
         settings.beginGroup('views')
@@ -343,6 +341,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetLoggerDialog.setWindowTitle('Logger')
         self.dockWidgetLoggerDialog.setObjectName("dockWidgetLoggerDialog")
         self.dockWidgetContentsLoggerDialog = LoggerDialog()
+        self.dockWidgetContentsLoggerDialog.setObjectName('bob')
         self.dockWidgetContentsLoggerDialog.setObjectName("dockWidgetContentsLoggerDialog")
         self.dockWidgetLoggerDialog.setWidget(self.dockWidgetContentsLoggerDialog)
         self.dockWidgetLoggerDialog.setHidden(True)
@@ -451,7 +450,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
-        self._onDocumentChanged()
+#         self._onDocumentChanged()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
@@ -497,20 +496,30 @@ class MainWindow(QtGui.QMainWindow):
         if self._preferences_dialog.exec_():
             pass  # Save the state
 
-    def _doProblemCheck(self):
-        problem = self._model.getCurrentProblem()
+    def _doProjectCheck(self):
+        document = self._model.getDocument()
+        if document is None:
+            self._newTriggered()
+        else:
+            project = document.getProject()
+            if project is None:
+                self._newTriggered()
 
     def _newTriggered(self):
-        dlg = NewProblemDialog(self._model, parent=self)
+        project_model = self._model.getProjectModel()
+        dlg = NewProjectDialog(project_model, parent=self)
         dlg.setModal(True)
         dlg.setRecentActions(self._ui.menu_Open_recent.actions())
         dlg.openClicked.connect(self._openTriggered)
         dlg.recentClicked.connect(self._open)
 
         if dlg.exec_():
-            problem = dlg.getProblem()
-            print(problem)
-            self._model.new()
+            index = dlg.getSelectedIndex()
+            project = project_model.getProject(index)
+            if project:
+                self._problem_view.setCurrentIndex(index.row())
+                self._simulation_view.setCurrentIndex(index.row())
+                self._model.new(project)
         else:
             print('Not accepted')
 #         self._onNewDocument()
@@ -558,6 +567,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _quitApplication(self):
         self.confirmClose()
+        self._setCurrentView('0')
         self._writeSettings()
 
     def closeEvent(self, event):

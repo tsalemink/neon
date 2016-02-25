@@ -32,46 +32,26 @@ class SimulationView(BaseView):
         self._ui = Ui_SimulationView()
         self._ui.setupUi(self)
 
-        self._run_delay_timer = QtCore.QTimer()
-        self._run_delay_timer.setSingleShot(True)
-        self._run_delay_timer.setInterval(10)
-
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)
-        self._run_delay_timer.timeout.connect(self._run)
+        pass
 
-    def _setupSimulations(self, model):
+    def setCurrentIndex(self, index):
+        self._ui.stackedWidgetSimulationView.setCurrentIndex(index)
+
+    def setupSimulations(self, model):
+        swsv = self._ui.stackedWidgetSimulationView
         classes = instantiateRelatedClasses(model, 'simulations')
         for c in classes:
-            c.setParent(self._ui.stackedWidgetSimulationView)
-            self._ui.stackedWidgetSimulationView.addWidget(c)
-
-    def selectionChanged(self, current_index, previous_index):
-        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index.row())
-
-    def setModel(self, model):
-        self._setupSimulations(model)
+            c.setParent(swsv)
+            project = model.getProject(model.index(swsv.count(), 0))
+            c.setProblem(project.getProblem())
+            swsv.addWidget(c)
 
     def setZincContext(self, zincContext):
         pass
 
-    def setProblem(self, problem):
-        simulation = self._ui.stackedWidgetSimulationView.currentWidget()
-        simulation.setProblem(problem)
-
-    def setPreferences(self, preferences):
-        simulation = self._ui.stackedWidgetSimulationView.currentWidget()
-        simulation.setPreferences(preferences)
-
     def run(self):
-        self._run_delay_timer.start()
-
-    def _run(self):
         simulation = self._ui.stackedWidgetSimulationView.currentWidget()
         simulation.run()
-
-    def getSimulation(self):
-        simulation_widget = self._ui.stackedWidgetSimulationView.currentWidget()
-        return simulation_widget.getSimulation()

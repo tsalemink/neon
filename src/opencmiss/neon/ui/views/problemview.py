@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtGui
+import json
+
+from PySide import QtCore
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
-
 from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
-import json
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 
 BIOMENG321 = False
@@ -28,57 +28,36 @@ BIOMENG321 = False
 class ProblemView(BaseView):
 
     runClicked = QtCore.Signal()
-    selectionChanged = QtCore.Signal(object, object)
 
     def __init__(self, parent=None):
         super(ProblemView, self).__init__(parent)
-        self._name = 'Problem'
+        self._name = 'Problem View'
 
         self._ui = Ui_ProblemView()
         self._ui.setupUi(self)
 
-        self._selection_model = None
-        self._proxy_model = QtGui.QSortFilterProxyModel()
-        self._proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
-
         self._makeConnections()
 
     def _makeConnections(self):
-        if BIOMENG321:
-            self._proxy_model.setFilterFixedString('Biomeng')
-        else:
-            self._ui.lineEditFilter.textChanged.connect(self._proxy_model.setFilterFixedString)
-        self._ui.pushButtonRun.clicked.connect(self.runClicked)
+        pass
 
-    def _selectionChanged(self, current_index, previous_index):
-        current_index = self._proxy_model.mapToSource(current_index)
-        self._ui.stackedWidgetProblemView.setCurrentIndex(current_index.row())
-        self.selectionChanged.emit(current_index, previous_index)
+    def setZincContext(self, zinc_context):
+        pass
 
-    def _setupProblems(self, model):
+    def setupProblems(self, model):
         classes = instantiateRelatedClasses(model, 'problems')
         for c in classes:
             c.setParent(self._ui.stackedWidgetProblemView)
-            problem = model.getProblem(self._ui.stackedWidgetProblemView.count())
-            c.setProblem(problem)
+            project = model.getProject(model.index(self._ui.stackedWidgetProblemView.count(), 0))
+            c.setProblem(project.getProblem())
             self._ui.stackedWidgetProblemView.addWidget(c)
 
-    def setZincContext(self, zincContext):
-        pass
-
-    def setCurrentModel(self, index):
-        self._selection_model.setCurrentIndex(self._proxy_model.index(index, 0), QtGui.QItemSelectionModel.Select)
-
-    def setModel(self, model):
-        self._proxy_model.setSourceModel(model)
-        self._ui.listViewProblems.setModel(self._proxy_model)
-        self._setupProblems(model)
-        self._selection_model = self._ui.listViewProblems.selectionModel()
-        self._selection_model.currentChanged.connect(self._selectionChanged)
+    def setCurrentIndex(self, index):
+        self._ui.stackedWidgetProblemView.setCurrentIndex(index)
 
     def getProblem(self):
-        index = self._ui.stackedWidgetProblemView.currentIndex()
-        return self._proxy_model.sourceModel().getProblem(index)
+        widget = self._ui.stackedWidgetProblemView.currentWidget()
+        return widget.getProblem()
 
     def serialise(self):
         state = {}
@@ -95,10 +74,5 @@ class ProblemView(BaseView):
                 w = self._ui.stackedWidgetProblemView.widget(index)
                 w.deserialise(d[w.getName()])
 
-            # saved_current_index = d['current_index'] if 'current_index' in d else 0
-            # current_index = self._ui.stackedWidgetProblemView.currentIndex()
-            # if saved_current_index != current_index:
-            #     self._selection_model.clear()
-            #     self._selection_model.setCurrentIndex(self._proxy_model.index(saved_current_index, 0), QtGui.QItemSelectionModel.Select)
         except Exception:
             pass

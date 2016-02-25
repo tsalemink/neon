@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from opencmiss.neon.core.neonproblem import NeonProblem
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
@@ -25,6 +24,13 @@ from opencmiss.neon.core.neonlogger import NeonLogger
 class NeonDocument(object):
 
     def __init__(self):
+        self._project = None
+        self._zincContext = None
+        self._rootRegion = None
+        self._spectrums = None
+        self._tessellations = None
+
+    def initialiseVisualisationContents(self):
         self._zincContext = Context("Neon")
 
         # set up standard materials and glyphs
@@ -38,18 +44,20 @@ class NeonDocument(object):
         self._rootRegion.connectRegionChange(self._regionChange)
         self._rootRegion._document = self
 
-        self._problem = NeonProblem()
         self._spectrums = NeonSpectrums(self._zincContext)
         self._tessellations = NeonTessellations(self._zincContext)
         NeonLogger.setZincContext(self._zincContext)
 
-    def freeContents(self):
+    def freeVisualisationContents(self):
         """
         Deletes subobjects of document to help free memory held by Zinc objects earlier.
         """
         self._rootRegion.freeContents()
         del self._rootRegion
         del self._zincContext
+
+    def freeProject(self):
+        self._project = None
 
     def _regionChange(self, changedRegion, treeChange):
         """
@@ -74,8 +82,8 @@ class NeonDocument(object):
         # zincRegion.beginHierarchicalChange()
         result = True
         try:
-            if "Problem" in dictInput:
-                self._problem.deserialise(dictInput["Problem"])
+            if "Project" in dictInput:
+                self._project.deserialise(dictInput["Project"])
             if "Tessellations" in dictInput:
                 self._tessellations.deserialize(dictInput["Tessellations"])
             if "Spectrums" in dictInput:
@@ -95,7 +103,7 @@ class NeonDocument(object):
         outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
-        dictOutput["Problem"] = self._problem.serialize()
+        dictOutput["Project"] = self._project.serialize()
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
@@ -113,5 +121,8 @@ class NeonDocument(object):
     def getTessellations(self):
         return self._tessellations
 
-    def getName(self):
-        return self._problem.getName()
+    def setProject(self, project):
+        self._project = project
+
+    def getProject(self):
+        return self._project

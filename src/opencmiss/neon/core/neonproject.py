@@ -15,20 +15,35 @@
 """
 import json
 
-class NeonProblem(object):
+
+class NeonProject(object):
     """
     Manages and serialises Zinc Spectrums within Neon.
     Generates colour bar glyphs for spectrums, which is automatically done if if not found on loading.
     """
 
     def __init__(self):
-       self._name = None
-
-    def setName(self, name):
-        self._name
+#         self._name = None
+        self._problem = None
+        self._simulation = None
 
     def getName(self):
-        return self._name
+        return self._problem.getName()
+
+    def getIdentifier(self):
+        return self._problem.getIdentifier()
+
+    def setProblem(self, problem):
+        self._problem = problem
+
+    def getProblem(self):
+        return self._problem
+
+    def setSimulation(self, simulation):
+        self._simulation = simulation
+
+    def getSimulation(self):
+        return self._simulation
 
     def deserialize(self, dictInput):
         description = json.dumps(dictInput)
@@ -38,4 +53,3 @@ class NeonProblem(object):
         description = {'name': self._name}
         dictOutput = json.loads(description)
         return dictOutput
-

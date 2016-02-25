@@ -19,12 +19,13 @@ import importlib
 def instantiateRelatedClasses(model, view):
     classes = []
     for row in range(model.rowCount()):
-        problem = model.getProblem(row)
-        module = problem.__module__.replace('core.problems', 'ui.' + view)
-        name = problem.__class__.__name__
+        index = model.index(row, 0)
+        project = model.getProject(index)
+        module = project.__module__.replace('core.neonproject', 'ui.' + view)
+        identifier = project.getIdentifier()
 
-        module_name = importlib.import_module(module)
-        class_ = getattr(module_name, name)
+        module_name = importlib.import_module(module + '.' + identifier.lower())
+        class_ = getattr(module_name, identifier)
         classes.append(class_())
 
     return classes

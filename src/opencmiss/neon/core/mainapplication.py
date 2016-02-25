@@ -19,12 +19,12 @@ import json
 from PySide import QtCore
 
 from opencmiss.neon.core.neondocument import NeonDocument
-from opencmiss.neon.core.problemmodel import ProblemModel
 from opencmiss.neon.core.preferences import Preferences
-from opencmiss.neon.core.neonproblems import names
 from opencmiss.neon.core.misc.utils import getMatchingVisualisationClass, \
     importProblem
 from opencmiss.neon.core.neonlogger import NeonLogger
+from opencmiss.neon.core.projectmodel import ProjectModel
+from opencmiss.neon.core.neonproject import NeonProject
 
 
 class MainApplication(QtCore.QObject):
@@ -39,22 +39,29 @@ class MainApplication(QtCore.QObject):
         self._location = None
         self._recents = []
 
-        self._document = NeonDocument()
+        self._document = None  # NeonDocument()
 
-        self._problem_model = ProblemModel()
+        self._project_model = ProjectModel()
         self._setupModel()
 
-        self._preferences = Preferences(self._problem_model)
+        self._preferences = Preferences(self._project_model)
 
     def _setupModel(self):
-        for name in names:
-            row = self._problem_model.rowCount()
-            if self._problem_model.insertRow(row):
-                index = self._problem_model.index(row)
-                self._problem_model.setData(index, importProblem(name))
+        from opencmiss.neon.settings.projects import active_project_names
+
+        for name in active_project_names:
+            row = self._project_model.rowCount()
+            if self._project_model.insertRow(row):
+                index = self._project_model.index(row)
+                project = NeonProject()
+                project.setProblem(importProblem(name))
+                self._project_model.setData(index, project)
 
     def getZincContext(self):
-        return self._document.getZincContext()
+        if self._document:
+            return self._document.getZincContext()
+
+        return None
 
     def isModified(self):
         return self._saveUndoRedoIndex != self._currentUntoRedoIndex
@@ -71,10 +78,14 @@ class MainApplication(QtCore.QObject):
     def getLocation(self):
         return self._location
 
-    def new(self):
+    def new(self, project):
         # create a blank document
-        self._document.freeContents()
+        if self._document is not None:
+            self._document.freeVisualisationContents()
+
         self._document = NeonDocument()
+        self._document.setProject(project)
+        self._document.initialiseVisualisationContents()
 
         self.documentChanged.emit()
 
@@ -90,16 +101,18 @@ class MainApplication(QtCore.QObject):
         self._location = filename
         with open(filename, 'r') as f:
             dictInput = json.loads(f.read())
-            self._document.freeContents()
-            self._document = NeonDocument()
+            self._document.freeVisualisationContents()
+            self._document.initialiseVisualisationContents()
+            self._document.freeProblem()
             # set current directory to path from file, to support scripts and fieldml with external resources
             path = os.path.dirname(filename)
             os.chdir(path)
             if not self._document.deserialize(dictInput):
                 NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
-                self._document.freeContents()
-                self._document = NeonDocument()
+                self._document.freeVisualisationContents()
+                self._document.initialiseVisualisationContents()
+                self._document.freeProblem()
 
             self.documentChanged.emit()
 
@@ -118,20 +131,17 @@ class MainApplication(QtCore.QObject):
     def getDocument(self):
         return self._document
 
-    def getProblemModel(self):
-        return self._problem_model
+    def getProjectModel(self):
+        return self._project_model
 
     def getPreferences(self):
         return self._preferences
 
     def visualiseSimulation(self, simulation):
-        self._document.freeContents()
-        self._document = NeonDocument()
+        self._document.freeVisualisationContents()
+        self._document.initialiseVisualisationContents()
         visualisation = getMatchingVisualisationClass(simulation)
         visualisation.setSimulation(simulation)
         visualisation.visualise(self._document)
 
         self.documentChanged.emit()
-
-    def setProblem(self, name):
-        pass
