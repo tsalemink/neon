@@ -299,20 +299,20 @@ class Ventilation(BaseProblem):
         else:
             self._problem.updateFlowParameters({key: sender.value()})
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         d['location'] = self._location
         d['active_tab'] = self._ui.tabWidget.currentIndex()
-        d['problem'] = self._problem.serialise()
+        d['problem'] = self._problem.serialize()
 
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
         self._location = d['location'] if 'location' in d else None
         self._ui.tabWidget.setCurrentIndex(d['active_tab'] if 'active_tab' in d else 2)
         if 'problem' in d:
-            self._problem.deserialise(d['problem'])
+            self._problem.deserialize(d['problem'])
 
         self.updateUi()
 

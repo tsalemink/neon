@@ -14,11 +14,12 @@
    limitations under the License.
 """
 import json
+from opencmiss.neon.core.misc.utils import importProblem
 
 
 class NeonProject(object):
     """
-    Manages and serialises Zinc Spectrums within Neon.
+    Manages and serializes Zinc Spectrums within Neon.
     Generates colour bar glyphs for spectrums, which is automatically done if if not found on loading.
     """
 
@@ -45,11 +46,19 @@ class NeonProject(object):
     def getSimulation(self):
         return self._simulation
 
-    def deserialize(self, dictInput):
-        description = json.dumps(dictInput)
-        self._name = description['name'] if 'name' in description else None
+    def deserialize(self, description):
+        state = json.loads(description)
+        if 'identifier' in state:
+            self._problem = importProblem(state['identifier'])
+        if 'problem' in state:
+            self._problem.deserialize(state['problem'])
+        if 'simulation' in state:
+            self._simulation.deserialize(state['simulation'])
 
     def serialize(self):
-        description = {'name': self._name}
-        dictOutput = json.loads(description)
-        return dictOutput
+        state = {'identifier': self._problem.getIdentifier(),
+            'problem': self._problem.serialize(),
+#             'simulation': self._simulation.serialize(),
+        }
+        description = json.dumps(state)
+        return description

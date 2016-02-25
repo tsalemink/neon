@@ -65,9 +65,9 @@ class VisualisationView(BaseView):
     def getShareGLWidget(self):
         return self._ui.widget
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         pass

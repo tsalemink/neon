@@ -21,7 +21,7 @@ from opencmiss.neon.core.neonlogger import NeonLogger
 
 class NeonTessellations(object):
     """
-    Manages and serialises Zinc Tessellations within Neon.
+    Manages and serializes Zinc Tessellations within Neon.
     """
 
     def __init__(self, zincContext):

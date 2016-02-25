@@ -14,7 +14,6 @@
    limitations under the License.
 '''
 import os
-import json
 
 from PySide import QtCore
 
@@ -93,26 +92,28 @@ class MainApplication(QtCore.QObject):
         # make model sources relative to current location if possible
         # note that sources on different windows drives have absolute paths
         basePath = os.path.dirname(self._location)
-        dictOutput = self._document.serialize(basePath)
+        state = self._document.serialize(basePath)
         with open(self._location, 'w') as f:
-            f.write(json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2))
+            f.write(state)
 
     def load(self, filename):
         self._location = filename
         with open(filename, 'r') as f:
-            dictInput = json.loads(f.read())
-            self._document.freeVisualisationContents()
+            if self._document is not None:
+                self._document.freeVisualisationContents()
+                self._document.freeProject()
+
+            self._document = NeonDocument()
             self._document.initialiseVisualisationContents()
-            self._document.freeProblem()
+            self._document.initialiseProject()
             # set current directory to path from file, to support scripts and fieldml with external resources
             path = os.path.dirname(filename)
             os.chdir(path)
-            if not self._document.deserialize(dictInput):
+            if not self._document.deserialize(f.read()):
                 NeonLogger.getLogger().error("Failed to load " + filename)
                 # create a blank document
                 self._document.freeVisualisationContents()
-                self._document.initialiseVisualisationContents()
-                self._document.freeProblem()
+                self._document.freeProject()
 
             self.documentChanged.emit()
 

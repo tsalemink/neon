@@ -13,10 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from opencmiss.neon.core.serialisers.base import BaseSerialiser
 
 
-class JSON(BaseSerialiser):
+class BaseSerialiser(object):
 
     def __init__(self):
         pass
+
+    def serialize(self, parameters):
+        '''
+        Takes a dictionary of parameters and serializers them.
+        '''
+        raise NotImplementedError()

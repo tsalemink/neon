@@ -99,7 +99,7 @@ class Ventilation(ExternalProblem):
     def updateFileInputOutputs(self, values):
         self._file_input_outputs.update(values)
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         d['executable_inbuilt'] = self.isInBuiltExecutable()
         d['executable'] = self.getExecutable() if not self.isInBuiltExecutable() else ''
@@ -109,7 +109,7 @@ class Ventilation(ExternalProblem):
 
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
         executable_inbuilt = d['executable_inbuilt'] if 'executable_inbuilt' in d else True
         if executable_inbuilt:

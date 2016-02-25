@@ -62,6 +62,9 @@ class Biomeng321Lab1(BaseSimulationView):
             ui.resizeColumnsToContents()
             ui.resizeRowsToContents()
 
+    def setZincContext(self, context):
+        self._ui.widgetSceneviewer.setContext(context)
+
     def setup(self):
         parameters = {}
         parameters['name'] = self._problem.getName()

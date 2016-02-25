@@ -33,13 +33,13 @@ class Biomeng321Lab1(BaseProblem):
     def getBoundaryCondition(self):
         return self._boundary_condition
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         d['boundary_condition'] = self._boundary_condition
 
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
         self._boundary_condition = d['boundary_condition'] if 'boundary_condition' in d else None
 

@@ -19,11 +19,11 @@ from opencmiss.neon.core.simulations.base import BaseSimulation
 class LocalSimulation(BaseSimulation):
 
     def __init__(self):
-        self._serialiser = None
+        self._serializer = None
         self._executable = None
 
-    def setSerialiser(self, serialiser):
-        self._serialiser = serialiser
+    def setSerializer(self, serialize):
+        self._serializer = serialize
 
     def setExecutable(self, executable):
         self._executable = executable

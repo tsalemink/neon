@@ -32,8 +32,8 @@ class BaseProblem(QtGui.QWidget):
     def getName(self):
         return self._problem.getName()
 
-    def serialise(self):
+    def serialize(self):
         return ''
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         pass

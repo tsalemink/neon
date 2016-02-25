@@ -13,17 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from opencmiss.neon.core.serialisers.base import BaseSerialiser
+from PySide import QtCore, QtGui
+
+from opencmiss.neon.ui.editors.ui_simulationeditorwidget import Ui_SimulationEditorWidget
 
 
-class IdentifierValue(BaseSerialiser):
+class SimulationEditorWidget(QtGui.QWidget):
 
-    def __init__(self):
-        pass
+    visualiseClicked = QtCore.Signal()
 
-    def serialise(self, parameters):
-        string = ''
-        for k in parameters:
-            string += '{0} {1}\n'.format(k, parameters[k])
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self._ui = Ui_SimulationEditorWidget()
+        self._ui.setupUi(self)
 
-        return string
+        self._makeConnections()
+
+    def _makeConnections(self):
+        self._ui.pushButtonVisualise.clicked.connect(self.visualiseClicked)

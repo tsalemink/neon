@@ -23,7 +23,7 @@ SPECTRUM_GLYPH_NAME_FORMAT = 'colour_bar_{0}'
 
 class NeonSpectrums(object):
     """
-    Manages and serialises Zinc Spectrums within Neon.
+    Manages and serializes Zinc Spectrums within Neon.
     Generates colour bar glyphs for spectrums, which is automatically done if if not found on loading.
     """
 

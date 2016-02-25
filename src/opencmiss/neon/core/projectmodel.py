@@ -66,3 +66,12 @@ class ProjectModel(QtCore.QAbstractListModel):
             return None
 
         return self._projects[index.row()].getIdentifier()
+
+    def getIndex(self, project):
+        for r in range(self.rowCount()):
+            index = self.index(r, 0)
+            if project.getIdentifier() == self.getProjectIdentifier(index):
+                return index
+
+        index = self.index(-1, 0)
+        return index

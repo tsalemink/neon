@@ -13,28 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from opencmiss.neon.core.serializers.base import BaseSerialiser
 
 
-class BaseProblem(object):
+class JSON(BaseSerialiser):
 
     def __init__(self):
-        self._name = 'Base Problem'
-        self._id = self.__class__.__name__
-
-    def getIdentifier(self):
-        return self._id
-
-    def getName(self):
-        return self._name
-
-    def setName(self, name):
-        self._name = name
-
-    def serialize(self):
-        return ''
-
-    def deserialize(self, string):
         pass
-
-    def validate(self):
-        return False

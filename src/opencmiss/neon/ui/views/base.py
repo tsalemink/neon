@@ -39,8 +39,8 @@ class BaseView(QtGui.QWidget):
         '''
         self._dock_widgets.append(editor)
 
-    def serialise(self):
+    def serialize(self):
         return ''
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         pass

@@ -44,15 +44,17 @@ class Biomeng321Lab1(BaseProblem):
             index = BOUNDARY_CONDITIONS.index(boundary_condition)
             self._ui.comboBoxBoundaryConditions.setCurrentIndex(index)
 
-    def serialise(self):
+    def serialize(self):
         d = {}
-        d['problem'] = self._problem.serialise()
+        d['problem'] = self._problem.serialize()
 
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
+        print(d)
         if 'problem' in d:
-            self._problem.deserialise(d['problem'])
+            print(d['problem'])
+            self._problem.deserialize(d['problem'])
 
         self.updateUi()

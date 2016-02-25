@@ -55,24 +55,28 @@ class ProblemView(BaseView):
     def setCurrentIndex(self, index):
         self._ui.stackedWidgetProblemView.setCurrentIndex(index)
 
+    def setProblem(self, problem):
+        widget = self._ui.stackedWidgetProblemView.currentWidget()
+        widget.setProblem(problem)
+
     def getProblem(self):
         widget = self._ui.stackedWidgetProblemView.currentWidget()
         return widget.getProblem()
 
-    def serialise(self):
+    def serialize(self):
         state = {}
         for index in range(self._ui.stackedWidgetProblemView.count()):
             w = self._ui.stackedWidgetProblemView.widget(index)
-            state[w.getName()] = w.serialise()
+            state[w.getName()] = w.serialize()
 
         return json.dumps(state)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         try:
             d = json.loads(string)
             for index in range(self._ui.stackedWidgetProblemView.count()):
                 w = self._ui.stackedWidgetProblemView.widget(index)
-                w.deserialise(d[w.getName()])
+                w.deserialize(d[w.getName()])
 
         except Exception:
             pass

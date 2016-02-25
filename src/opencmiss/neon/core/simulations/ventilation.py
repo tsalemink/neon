@@ -20,7 +20,7 @@ from threading  import Thread
 from tempfile import NamedTemporaryFile, mkdtemp
 
 from opencmiss.neon.core.simulations.local import LocalSimulation
-from opencmiss.neon.core.serialisers.identifiervalue import IdentifierValue
+from opencmiss.neon.core.serializers.identifiervalue import IdentifierValue
 from opencmiss.neon.settings.mainsettings import EXTERNAL_DATA_DIR
 
 try:
@@ -42,7 +42,7 @@ class Ventilation(LocalSimulation):
     def __init__(self):
         super(Ventilation, self).__init__()
         self.setName('Ventilation Simulation')
-        self.setSerialiser(IdentifierValue())
+        self.setSerializer(IdentifierValue())
         self._file_handles = {}
         self._dir_handles = {}
         self._output_filenames = {}
@@ -78,7 +78,7 @@ class Ventilation(LocalSimulation):
         geometry_flow['flowradiusexelem'] = "'{0}'".format(output_filenames['radius_exelem'])
         self._file_handles['geo_main'] = os.path.join(self._dir_handles['para'], 'geometry_evaluate_flow.txt')
         with open(self._file_handles['geo_main'], 'w') as f:
-            string = self._serialiser.serialise(geometry_flow)
+            string = self._serializer.serialize(geometry_flow)
             f.write(string)
 
         self._output_filenames = output_filenames
@@ -102,17 +102,17 @@ class Ventilation(LocalSimulation):
 
         self._file_handles['geo_flow'] = os.path.join(self._dir_handles['para'], 'geometry_main.txt')
         with open(self._file_handles['geo_flow'], 'w') as f:
-            string = self._serialiser.serialise(geometry_main)
+            string = self._serializer.serialize(geometry_main)
             f.write(string)
 
         self._file_handles['par_main'] = os.path.join(self._dir_handles['para'], 'params_main.txt')
         with open(self._file_handles['par_main'], 'w') as f:
-            string = self._serialiser.serialise(self._parameters['main_parameters'])
+            string = self._serializer.serialize(self._parameters['main_parameters'])
             f.write(string)
 
         self._file_handles['par_flow'] = os.path.join(self._dir_handles['para'], 'params_evaluate_flow.txt')
         with open(self._file_handles['par_flow'], 'w') as f:
-            string = self._serialiser.serialise(self._parameters['flow_parameters'])
+            string = self._serializer.serialize(self._parameters['flow_parameters'])
             f.write(string)
 
     def execute(self):

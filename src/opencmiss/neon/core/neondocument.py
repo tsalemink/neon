@@ -13,12 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import json
+
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
 from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
 from opencmiss.neon.core.neonlogger import NeonLogger
+from opencmiss.neon.core.neonproject import NeonProject
 
 
 class NeonDocument(object):
@@ -56,6 +59,9 @@ class NeonDocument(object):
         del self._rootRegion
         del self._zincContext
 
+    def initialiseProject(self):
+        self._project = NeonProject()
+
     def freeProject(self):
         self._project = None
 
@@ -69,34 +75,28 @@ class NeonDocument(object):
             zincRootRegion = changedRegion.getZincRegion()
             self._zincContext.setDefaultRegion(zincRootRegion)
 
-    def deserialize(self, dictInput):
+    def deserialize(self, state):
         '''
         :param dictInput: Python dict of Neon serialization
         :return: True on success, False on failure
         '''
-        if not (("OpenCMISS-Neon Version" in dictInput) and ("RootRegion" in dictInput)):
+        d = json.loads(state)
+        if not (("OpenCMISS-Neon Version" in d) and ("RootRegion" in d)):
             NeonLogger.getLogger().error("Invalid format for Neon")
             return False
-        neon_version = dictInput["OpenCMISS-Neon Version"]
+        neon_version = d["OpenCMISS-Neon Version"]
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
         # zincRegion.beginHierarchicalChange()
         result = True
-        try:
-            if "Project" in dictInput:
-                self._project.deserialise(dictInput["Project"])
-            if "Tessellations" in dictInput:
-                self._tessellations.deserialize(dictInput["Tessellations"])
-            if "Spectrums" in dictInput:
-                self._spectrums.deserialize(dictInput["Spectrums"])
-            self._rootRegion.deserialize(dictInput["RootRegion"])
-            if neon_version == '0.1.0':
-                self._problem.setName('Generic')
-        except:
-            NeonLogger.getLogger().error("Exception in NeonDocument.deserialize")
-            result = False
-        finally:
-            # zincRegion.endChange() see zincRegion.beginHierarchicalChange()
-            pass
+        if "Project" in d:
+            self._project.deserialize(d["Project"])
+        if "Tessellations" in d:
+            self._tessellations.deserialize(d["Tessellations"])
+        if "Spectrums" in d:
+            self._spectrums.deserialize(d["Spectrums"])
+        self._rootRegion.deserialize(d["RootRegion"])
+        if neon_version == '0.1.0':
+            self._problem.setName('Generic')
         return result
 
     def serialize(self, basePath=None):
@@ -107,7 +107,7 @@ class NeonDocument(object):
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
-        return dictOutput
+        return json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2)
 
     def getZincContext(self):
         return self._zincContext

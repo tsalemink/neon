@@ -13,28 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from PySide import QtCore, QtGui
+
+from opencmiss.neon.ui.editors.ui_problemeditorwidget import Ui_ProblemEditorWidget
 
 
-class BaseProblem(object):
+class ProblemEditorWidget(QtGui.QWidget):
 
-    def __init__(self):
-        self._name = 'Base Problem'
-        self._id = self.__class__.__name__
+    runClicked = QtCore.Signal()
 
-    def getIdentifier(self):
-        return self._id
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self._ui = Ui_ProblemEditorWidget()
+        self._ui.setupUi(self)
 
-    def getName(self):
-        return self._name
+        self._makeConnections()
 
-    def setName(self, name):
-        self._name = name
-
-    def serialize(self):
-        return ''
-
-    def deserialize(self, string):
-        pass
-
-    def validate(self):
-        return False
+    def _makeConnections(self):
+        self._ui.pushButtonRun.clicked.connect(self.runClicked)
