@@ -22,6 +22,9 @@ from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
 import json
 
 
+BIOMENG321 = False
+
+
 class ProblemView(BaseView):
 
     runClicked = QtCore.Signal()
@@ -41,7 +44,10 @@ class ProblemView(BaseView):
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.lineEditFilter.textChanged.connect(self._proxy_model.setFilterFixedString)
+        if BIOMENG321:
+            self._proxy_model.setFilterFixedString('Biomeng')
+        else:
+            self._ui.lineEditFilter.textChanged.connect(self._proxy_model.setFilterFixedString)
         self._ui.pushButtonRun.clicked.connect(self.runClicked)
 
     def _selectionChanged(self, current_index, previous_index):
@@ -60,13 +66,15 @@ class ProblemView(BaseView):
     def setZincContext(self, zincContext):
         pass
 
+    def setCurrentModel(self, index):
+        self._selection_model.setCurrentIndex(self._proxy_model.index(index, 0), QtGui.QItemSelectionModel.Select)
+
     def setModel(self, model):
         self._proxy_model.setSourceModel(model)
         self._ui.listViewProblems.setModel(self._proxy_model)
         self._setupProblems(model)
         self._selection_model = self._ui.listViewProblems.selectionModel()
         self._selection_model.currentChanged.connect(self._selectionChanged)
-        self._selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtGui.QItemSelectionModel.Select)
 
     def getProblem(self):
         index = self._ui.stackedWidgetProblemView.currentIndex()
