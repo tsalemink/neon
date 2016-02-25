@@ -66,7 +66,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.pushButtonMoveDownSpectrumComponent.clicked.connect(self._moveDownSpectrumComponentClicked)
         self._ui.pushButtonMoveUpSpectrumComponent.clicked.connect(self._moveUpSpectrumComponentClicked)
         self._ui.comboBoxColourMap.currentIndexChanged.connect(self._colourMapIndexChanged)
-        self._ui.checkBoxReverse.clicked.connect(self._reverseClicked)
+        self._ui.pushButtonReverseColours.clicked.connect(self._reverseColoursClicked)
 
         self._ui.spinBoxDataFieldComponent.valueChanged.connect(self._dataFieldComponentValueChanged)
 
@@ -76,6 +76,8 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.lineEditColourRangeMax.editingFinished.connect(self._colourRangeMaxEntered)
         self._ui.checkBoxExtendBelow.clicked.connect(self._extendBelowClicked)
         self._ui.checkBoxExtendAbove.clicked.connect(self._extendAboveClicked)
+        self._ui.checkBoxFixMinimum.clicked.connect(self._fixMinimumClicked)
+        self._ui.checkBoxFixMaximum.clicked.connect(self._fixMaximumClicked)
 
         self._ui.comboBoxScale.currentIndexChanged.connect(self._scaleIndexChanged)
         self._ui.lineEditExaggeration.editingFinished.connect(self._exaggerationEntered)
@@ -101,7 +103,6 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _clearSpectrumComponentUi(self):
         self._ui.comboBoxColourMap.setCurrentIndex(0)
         self._ui.comboBoxScale.setCurrentIndex(0)
-        self._ui.checkBoxReverse.setChecked(False)
 
     def _spectrummoduleCallback(self, spectrummoduleevent):
         '''
@@ -214,13 +215,15 @@ class SpectrumEditorWidget(QtGui.QWidget):
         self._ui.pushButtonAutorange.setEnabled(spectrum_component_selected)
         self._ui.comboBoxScale.setEnabled(spectrum_component_selected)
         self._ui.spinBoxDataFieldComponent.setEnabled(spectrum_component_selected)
-        self._ui.checkBoxReverse.setEnabled(spectrum_component_selected)
+        self._ui.pushButtonReverseColours.setEnabled(spectrum_component_selected)
         self._ui.lineEditDataRangeMin.setEnabled(spectrum_component_selected)
         self._ui.lineEditDataRangeMax.setEnabled(spectrum_component_selected)
         self._ui.lineEditColourRangeMin.setEnabled(spectrum_component_selected)
         self._ui.lineEditColourRangeMax.setEnabled(spectrum_component_selected)
         self._ui.checkBoxExtendBelow.setEnabled(spectrum_component_selected)
         self._ui.checkBoxExtendAbove.setEnabled(spectrum_component_selected)
+        self._ui.checkBoxFixMinimum.setEnabled(spectrum_component_selected)
+        self._ui.checkBoxFixMaximum.setEnabled(spectrum_component_selected)
         self._ui.pushButtonMoveDownSpectrumComponent.setEnabled(spectrum_component_selected)
         self._ui.pushButtonMoveUpSpectrumComponent.setEnabled(spectrum_component_selected)
 
@@ -231,13 +234,14 @@ class SpectrumEditorWidget(QtGui.QWidget):
             self._ui.comboBoxColourMap.setCurrentIndex(sc.getColourMappingType())
             self._ui.comboBoxColourMap.blockSignals(False)
             self._ui.spinBoxDataFieldComponent.setValue(sc.getFieldComponent())
-            self._ui.checkBoxReverse.setChecked(sc.isColourReverse())
             self._ui.lineEditDataRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
             self._ui.lineEditDataRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
             self._ui.lineEditColourRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getColourMinimum()))
             self._ui.lineEditColourRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getColourMaximum()))
             self._ui.checkBoxExtendBelow.setChecked(sc.isExtendBelow())
             self._ui.checkBoxExtendAbove.setChecked(sc.isExtendAbove())
+            self._ui.checkBoxFixMinimum.setChecked(sc.isFixMinimum())
+            self._ui.checkBoxFixMaximum.setChecked(sc.isFixMaximum())
             self._ui.comboBoxScale.setCurrentIndex(sc.getScaleType())
             self._ui.lineEditExaggeration.setText(FLOAT_STRING_FORMAT.format(sc.getExaggeration()))
 
@@ -346,62 +350,26 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _autorangeClicked(self):
         """
         Autorange all components of spectrum.
-        Maintains proportions of minimums and miximums for spectrum components
-        Future: support fixing of minimum or maximum data range in spectrum components
+        Maintains proportions of minimums and miximums for spectrum components, fixed minimums and maximums.
         """
         s = self._getCurrentSpectrum()
-        maxDataComponent = 0
-        oldComponentMinimums = {}
-        oldComponentMaximums = {}
-        sc = s.getFirstSpectrumcomponent()
-        while sc.isValid():
-            dataComponent = sc.getFieldComponent()
-            if dataComponent > maxDataComponent:
-                maxDataComponent = dataComponent
-            thisMinimum = sc.getRangeMinimum()
-            thisMaximum = sc.getRangeMaximum()
-            if (dataComponent not in oldComponentMinimums) or (thisMinimum < oldComponentMinimums[dataComponent]):
-                oldComponentMinimums[dataComponent] = thisMinimum
-            if (dataComponent not in oldComponentMaximums) or (thisMaximum < oldComponentMaximums[dataComponent]):
-                oldComponentMaximums[dataComponent] = thisMaximum
-            sc = s.getNextSpectrumcomponent(sc)
         region = self._zincContext.getDefaultRegion()
         scene = region.getScene()
         scenefiltermodule = self._zincContext.getScenefiltermodule()
         scenefilter = scenefiltermodule.getDefaultScenefilter()
-        foundMaxDataComponent, minimumValues, maximumValues = scene.getSpectrumDataRange(scenefilter, s, maxDataComponent)
-        # print("Data range: " + str(foundMaxDataComponent) + " values, minimum = " + str(minimumValues) + ", maximum = " + str(maximumValues))
-        if foundMaxDataComponent > 0:
-            # work around Zinc SWIG bindings returning scalars if 1 value
-            if not type(minimumValues) is list:
-                minimumValues = [minimumValues]
-                maximumValues = [maximumValues]
-            sc = s.getFirstSpectrumcomponent()
-            while sc.isValid():
-                dataComponent = sc.getFieldComponent()
-                if (0 < dataComponent) and (dataComponent <= foundMaxDataComponent):
-                    oldComponentRange =  oldComponentMaximums[dataComponent] - oldComponentMinimums[dataComponent]
-                    thisMinimum = sc.getRangeMinimum()
-                    thisMaximum = sc.getRangeMaximum()
-                    minimumRatio = (thisMinimum - oldComponentMinimums[dataComponent]) / oldComponentRange
-                    maximumRatio = (thisMaximum - oldComponentMinimums[dataComponent]) / oldComponentRange
-                    dataMinimum = minimumValues[dataComponent - 1]
-                    dataMaximum = maximumValues[dataComponent - 1]
-                    newComponentRange = dataMaximum - dataMinimum
-                    newComponentMinimum = dataMinimum + minimumRatio*newComponentRange
-                    newComponentMaximum = dataMinimum + maximumRatio*newComponentRange
-                    sc.setRangeMinimum(newComponentMinimum)
-                    sc.setRangeMaximum(newComponentMaximum)
-                sc = s.getNextSpectrumcomponent(sc)
+        s.autorange(scene, scenefilter)
         self._updateComponentUi()
 
-    def _reverseClicked(self):
-        selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
-        if len(selected_items):
-            active_item = selected_items[0]
-            sc = active_item.data(SPECTRUM_DATA_ROLE)
-            sc.setColourReverse(self._ui.checkBoxReverse.isChecked())
-
+    def _reverseColoursClicked(self):
+        sc = self._getCurrentSpectrumcomponent()
+        if sc:
+            sm = self._zincContext.getSpectrummodule()
+            sm.beginChange()
+            newColourMaximum = sc.getColourMinimum()
+            newColourMinimum = sc.getColourMaximum()
+            sc.setColourMaximum(newColourMaximum)
+            sc.setColourMinimum(newColourMinimum)
+            sm.endChange()
             self._updateComponentUi()
 
     def _dataFieldComponentValueChanged(self, value):
@@ -477,6 +445,14 @@ class SpectrumEditorWidget(QtGui.QWidget):
     def _extendAboveClicked(self):
         sc = self._getCurrentSpectrumcomponent()
         sc.setExtendAbove(self._ui.checkBoxExtendAbove.isChecked())
+
+    def _fixMinimumClicked(self):
+        sc = self._getCurrentSpectrumcomponent()
+        sc.setFixMinimum(self._ui.checkBoxFixMinimum.isChecked())
+
+    def _fixMaximumClicked(self):
+        sc = self._getCurrentSpectrumcomponent()
+        sc.setFixMaximum(self._ui.checkBoxFixMaximum.isChecked())
 
     def _scaleIndexChanged(self, index):
         selected_items = self._ui.listWidgetSpectrumComponents.selectedItems()
