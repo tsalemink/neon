@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>300</width>
     <height>875</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>398</width>
+        <width>298</width>
         <height>873</height>
        </rect>
       </property>
@@ -129,7 +129,6 @@
            <height>40</height>
           </size>
          </property>
-         <zorder>groupBoxSpectrumProperties</zorder>
         </widget>
        </item>
        <item>
@@ -277,12 +276,12 @@
            <number>7</number>
           </property>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="labelFieldComponent">
             <property name="toolTip">
              <string>Index of component to use from data field</string>
             </property>
             <property name="text">
-             <string>Data field comp.:</string>
+             <string>Field component:</string>
             </property>
            </widget>
           </item>
@@ -297,62 +296,39 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="labelColourMap">
             <property name="text">
-             <string>Colour Map:</string>
+             <string>Colour map:</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="comboBoxColourMap"/>
           </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="checkBoxReverse">
-            <property name="text">
-             <string>Reverse</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="2">
+          <item row="6" column="0" colspan="2">
            <widget class="QGroupBox" name="groupBox_3">
             <property name="title">
-             <string/>
+             <string>Range</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <property name="margin">
               <number>7</number>
              </property>
              <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEditDataRangeMin">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>2</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QCheckBox" name="checkBoxFixMinimum">
                <property name="text">
-                <string>0</string>
+                <string/>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_7">
-               <property name="toolTip">
-                <string>Component to use from data field</string>
-               </property>
+             <item row="1" column="4">
+              <widget class="QCheckBox" name="checkBoxExtendBelow">
                <property name="text">
-                <string>Min:</string>
+                <string/>
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Norm. Colour:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
+             <item row="2" column="2">
               <widget class="QLineEdit" name="lineEditDataRangeMax">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -365,17 +341,54 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="label_6">
+             <item row="2" column="0">
+              <widget class="QLabel" name="labelRangeMaximum">
                <property name="toolTip">
                 <string>Component to use from data field</string>
                </property>
                <property name="text">
-                <string>Data:</string>
+                <string>Max:</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="2">
+             <item row="0" column="3">
+              <widget class="QLabel" name="labelRangeColour">
+               <property name="text">
+                <string>Colour:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labelRangeMinimum">
+               <property name="toolTip">
+                <string>Component to use from data field</string>
+               </property>
+               <property name="text">
+                <string>Min:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="lineEditDataRangeMin">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>2</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QCheckBox" name="checkBoxFixMaximum">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
               <widget class="QLineEdit" name="lineEditColourRangeMax">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -388,7 +401,21 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2">
+             <item row="2" column="4">
+              <widget class="QCheckBox" name="checkBoxExtendAbove">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QLabel" name="labelRangeExtend">
+               <property name="text">
+                <string>Ext</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
               <widget class="QLineEdit" name="lineEditColourRangeMin">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -401,64 +428,50 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_8">
+             <item row="0" column="2">
+              <widget class="QLabel" name="labelRangeData">
                <property name="toolTip">
                 <string>Component to use from data field</string>
                </property>
                <property name="text">
-                <string>Max:</string>
+                <string>Data:</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_9">
+             <item row="0" column="1">
+              <widget class="QLabel" name="labelRangeFix">
                <property name="text">
-                <string>Range:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="QCheckBox" name="checkBoxExtendBelow">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3">
-              <widget class="QCheckBox" name="checkBoxExtendAbove">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>Ext</string>
+                <string>Fix</string>
                </property>
               </widget>
              </item>
             </layout>
            </widget>
           </item>
-          <item row="9" column="1">
-           <widget class="QLineEdit" name="lineEditExaggeration"/>
-          </item>
-          <item row="8" column="1">
-           <widget class="QComboBox" name="comboBoxScale"/>
-          </item>
           <item row="8" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="labelScaleType">
             <property name="text">
              <string>Scale type:</string>
             </property>
            </widget>
           </item>
+          <item row="8" column="1">
+           <widget class="QComboBox" name="comboBoxScale"/>
+          </item>
           <item row="9" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="labelExaggeration">
             <property name="text">
              <string>Exaggeration:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QLineEdit" name="lineEditExaggeration"/>
+          </item>
+          <item row="7" column="1">
+           <widget class="QPushButton" name="pushButtonReverseColours">
+            <property name="text">
+             <string>Reverse colours</string>
             </property>
            </widget>
           </item>

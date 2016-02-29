@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'res/designer/sceneeditorwidget.ui'
+# Form implementation generated from reading ui file 'res\designer\sceneeditorwidget.ui'
 #
-# Created: Tue Dec  1 09:47:55 2015
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# Created: Thu Feb 25 08:11:37 2016
+#      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
 
-
 class Ui_SceneEditorWidget(object):
     def setupUi(self, SceneEditorWidget):
         SceneEditorWidget.setObjectName("SceneEditorWidget")
-        SceneEditorWidget.resize(255, 717)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        SceneEditorWidget.resize(300, 725)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(SceneEditorWidget.sizePolicy().hasHeightForWidth())
@@ -23,19 +22,41 @@ class Ui_SceneEditorWidget(object):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.graphics_listview = QtGui.QListView(SceneEditorWidget)
+        self.scrollArea = QtGui.QScrollArea(SceneEditorWidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy)
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName("scrollArea")
+        self.scrollAreaWidgetContents = QtGui.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 294, 719))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_2.setSpacing(0)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.graphics_listview = QtGui.QListView(self.scrollAreaWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.graphics_listview.sizePolicy().hasHeightForWidth())
+        self.graphics_listview.setSizePolicy(sizePolicy)
         self.graphics_listview.setObjectName("graphics_listview")
-        self.verticalLayout.addWidget(self.graphics_listview)
-        self.frame = QtGui.QFrame(SceneEditorWidget)
+        self.verticalLayout_2.addWidget(self.graphics_listview)
+        self.frame = QtGui.QFrame(self.scrollAreaWidgetContents)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.horizontalLayout = QtGui.QHBoxLayout(self.frame)
-        self.horizontalLayout.setContentsMargins(0, 7, 0, 7)
+        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setContentsMargins(0, 2, 0, 2)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.add_graphics_combobox = QtGui.QComboBox(self.frame)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(1)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.add_graphics_combobox.sizePolicy().hasHeightForWidth())
         self.add_graphics_combobox.setSizePolicy(sizePolicy)
@@ -52,17 +73,24 @@ class Ui_SceneEditorWidget(object):
         self.add_graphics_combobox.addItem("")
         self.horizontalLayout.addWidget(self.add_graphics_combobox)
         self.delete_graphics_button = QtGui.QPushButton(self.frame)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.delete_graphics_button.sizePolicy().hasHeightForWidth())
+        self.delete_graphics_button.setSizePolicy(sizePolicy)
         self.delete_graphics_button.setObjectName("delete_graphics_button")
         self.horizontalLayout.addWidget(self.delete_graphics_button)
-        self.verticalLayout.addWidget(self.frame)
-        self.graphics_editor = GraphicsEditorWidget(SceneEditorWidget)
+        self.verticalLayout_2.addWidget(self.frame)
+        self.graphics_editor = GraphicsEditorWidget(self.scrollAreaWidgetContents)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.graphics_editor.sizePolicy().hasHeightForWidth())
         self.graphics_editor.setSizePolicy(sizePolicy)
         self.graphics_editor.setObjectName("graphics_editor")
-        self.verticalLayout.addWidget(self.graphics_editor)
+        self.verticalLayout_2.addWidget(self.graphics_editor)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.verticalLayout.addWidget(self.scrollArea)
 
         self.retranslateUi(SceneEditorWidget)
         QtCore.QObject.connect(self.graphics_listview, QtCore.SIGNAL("clicked(QModelIndex)"), SceneEditorWidget.graphicsListItemClicked)
