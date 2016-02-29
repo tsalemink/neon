@@ -65,7 +65,7 @@ class Ui_SpectrumEditorWidget(object):
         self.listWidgetSpectrums.setObjectName("listWidgetSpectrums")
         self.horizontalLayout_2.addWidget(self.listWidgetSpectrums)
         self.verticalLayout_2.addWidget(self.groupBox)
-        self.sceneviewerWidgetPreview = SceneviewerWidget(self.scrollAreaWidgetContents)
+        self.sceneviewerWidgetPreview = SceneviewerWidget(self.scrollAreaWidgetContents, shared_context)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
