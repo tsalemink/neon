@@ -16,15 +16,15 @@
 import json
 
 from opencmiss.neon.ui.problems.base import BaseProblem
-from opencmiss.neon.ui.problems.ui_biomeng321lab1 import Ui_Biomeng321Lab1
-from opencmiss.neon.core.problems.biomeng321lab1 import BOUNDARY_CONDITIONS
+from opencmiss.neon.ui.problems.ui_biomeng321lab2 import Ui_Biomeng321Lab2
+from opencmiss.neon.core.problems.biomeng321lab2 import BOUNDARY_CONDITIONS
 
 
-class Biomeng321Lab1(BaseProblem):
+class Biomeng321Lab2(BaseProblem):
 
     def __init__(self, parent=None):
-        super(Biomeng321Lab1, self).__init__(parent)
-        self._ui = Ui_Biomeng321Lab1()
+        super(Biomeng321Lab2, self).__init__(parent)
+        self._ui = Ui_Biomeng321Lab2()
         self._ui.setupUi(self)
 
         self._ui.comboBoxBoundaryConditions.clear()

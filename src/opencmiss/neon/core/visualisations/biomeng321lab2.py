@@ -18,11 +18,11 @@ import json
 from opencmiss.neon.core.visualisations.base import BaseVisualisation
 
 
-class Biomeng321Lab1(BaseVisualisation):
+class Biomeng321Lab2(BaseVisualisation):
 
     def __init__(self):
-        super(Biomeng321Lab1, self).__init__()
-        self.setName('Bioemeng 321 Lab1 Visualisation')
+        super(Biomeng321Lab2, self).__init__()
+        self.setName('Bioemeng 321 Lab2 Visualisation')
 
     def visualise(self, document):
         node_filename = self._simulation.getNodeFilename()
@@ -39,7 +39,7 @@ default_visualisation = {
     2,
     0
   ],
-  "Project": "{\"problem\": \"{\\\"boundary_condition\\\": \\\"Model 1 (Uniaxial extension of unit cube)\\\"}\"}",
+  "Project": "{\"problem\": \"{\\\"boundary_condition\\\": \\\"Model 1 (Equibiaxial extension of unit cube, isotropic, 0 degree fibre rotation)\\\"}\"}",
   "RootRegion": {
     "Model": {
       "Sources": [
@@ -333,6 +333,47 @@ default_visualisation = {
           "SelectedMaterial": "default_selected",
           "Tessellation": "default_points",
           "Type": "POINTS",
+          "VisibilityFlag": True
+        },
+        {
+          "CoordinateField": "DeformedGeometry",
+          "ElementFaceType": "ALL",
+          "Exterior": False,
+          "FieldDomainType": "MESH_HIGHEST_DIMENSION",
+          "LineAttributes": {
+            "BaseSize": [
+              0.01,
+              0.01
+            ],
+            "ScaleFactors": [
+              1,
+              1
+            ],
+            "ShapeType": "CIRCLE_EXTRUSION"
+          },
+          "Material": "gold",
+          "RenderLineWidth": 1,
+          "RenderPointSize": 1,
+          "RenderPolygonMode": "RENDER_POLYGON_SHADED",
+          "SamplingAttributes": {
+            "ElementPointSamplingMode": "CELL_CENTRES",
+            "Location": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Scenecoordinatesystem": "LOCAL",
+          "SelectMode": "ON",
+          "SelectedMaterial": "default_selected",
+          "Streamlines": {
+            "ColourDataType": "FIELD",
+            "StreamVectorField": "Fibre",
+            "TrackDirection": "FORWARD",
+            "TrackLength": 1
+          },
+          "Tessellation": "temp5",
+          "Type": "STREAMLINES",
           "VisibilityFlag": True
         }
       ],

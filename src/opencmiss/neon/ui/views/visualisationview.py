@@ -43,6 +43,13 @@ class VisualisationView(BaseView):
     def setScene(self, scene):
         self._ui.widget.getSceneviewer().setScene(scene)
 
+    def setSceneviewerState(self, state):
+        self._ui.widget.getSceneviewer().readDescription(json.dumps(state))
+
+    def getSceneviewerState(self):
+        d = json.loads(self._ui.widget.getSceneviewer().writeDescription())
+        return d
+
     def saveImage(self, filename, wysiwyg, width, height):
         sv = self._ui.widget.getSceneviewer()
         if isinstance(filename, unicode):

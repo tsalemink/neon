@@ -22,9 +22,6 @@ from opencmiss.neon.ui.views.ui_problemview import Ui_ProblemView
 from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 
-BIOMENG321 = False
-
-
 class ProblemView(BaseView):
 
     runClicked = QtCore.Signal()

@@ -18,7 +18,7 @@ from PySide import QtCore, QtGui
 from opencmiss.neon.ui.dialogs.ui_newprojectdialog import Ui_NewProjectDialog
 
 
-BIOMENG321 = False
+BIOMENG321 = True
 
 
 class NewProjectDialog(QtGui.QDialog):

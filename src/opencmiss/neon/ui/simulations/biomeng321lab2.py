@@ -16,31 +16,34 @@
 from PySide import QtGui
 
 from opencmiss.neon.ui.simulations.base import BaseSimulationView
-from opencmiss.neon.core.simulations.biomeng321lab1 import Biomeng321Lab1 as Biomeng321Lab1Simulation
+from opencmiss.neon.core.simulations.biomeng321lab2 import Biomeng321Lab2 as Biomeng321Lab2Simulation
 
-from opencmiss.neon.ui.simulations.ui_biomeng321lab1 import Ui_Biomeng321Lab1
+from opencmiss.neon.ui.simulations.ui_biomeng321lab2 import Ui_Biomeng321Lab2
 from opencmiss.neon.ui.misc.utils import set_wait_cursor
-from opencmiss.neon.core.problems.biomeng321lab1 import BOUNDARY_CONDITIONS
+from opencmiss.neon.core.problems.biomeng321lab2 import BOUNDARY_CONDITIONS
 
 
-class Biomeng321Lab1(BaseSimulationView):
+class Biomeng321Lab2(BaseSimulationView):
 
     def __init__(self, parent=None):
-        super(Biomeng321Lab1, self).__init__(parent)
-        self._ui = Ui_Biomeng321Lab1()
+        super(Biomeng321Lab2, self).__init__(parent)
+        self._ui = Ui_Biomeng321Lab2()
         self._ui.setupUi(self)
+        self._ui.groupBox_4.setVisible(False)
 
         self._map_name_ui = self._createNameUiMap()
 
-        self._simulation = Biomeng321Lab1Simulation()
+        self._simulation = Biomeng321Lab2Simulation()
 
     def _createNameUiMap(self):
         map_name_ui = {}
-        map_name_ui['Cauchy Stress Tensor'] = self._ui.tableWidgetCauchyStress
-        map_name_ui['Deformation Gradient Tensor'] = self._ui.tableWidgetDeformationGradient
-        map_name_ui['Green-Lagrange Strain Tensor'] = self._ui.tableWidgetGreenLagrangeStrain
-        map_name_ui['Right Cauchy-Green Deformation Tensor'] = self._ui.tableWidgetRightCauchyGreenDeformation
-        map_name_ui['Second Piola-Kirchhoff Stress Tensor'] = self._ui.tableWidgetSecondPiolaKirchoffStress
+        map_name_ui['Cauchy stress tensor (fibre coordinate system)'] = self._ui.tableWidgetCauchyStress
+        map_name_ui['Deformation gradient tensor'] = self._ui.tableWidgetDeformationGradient
+        map_name_ui['Green-Lagrange strain tensor (reference coordinate system)'] = self._ui.tableWidgetGreenLagrangeStrainReference
+        map_name_ui['Green-Lagrange strain tensor (fibre coordinate system)'] = self._ui.tableWidgetGreenLagrangeStrainFibre
+        map_name_ui['Right Cauchy-Green deformation tensor'] = self._ui.tableWidgetRightCauchyGreenDeformation
+        map_name_ui['Second Piola-Kirchhoff stress tensor (reference coordinate system)'] = self._ui.tableWidgetSecondPiolaKirchoffStressReference
+        map_name_ui['Second Piola-Kirchhoff stress tensor (fibre coordinate system)'] = self._ui.tableWidgetSecondPiolaKirchoffStressFibre
 
         return map_name_ui
 

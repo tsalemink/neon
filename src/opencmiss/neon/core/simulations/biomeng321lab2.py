@@ -21,11 +21,11 @@ from opencmiss.iron import iron
 from opencmiss.neon.core.simulations.local import LocalSimulation
 
 
-class Biomeng321Lab1(LocalSimulation):
+class Biomeng321Lab2(LocalSimulation):
 
     def __init__(self):
-        super(Biomeng321Lab1, self).__init__()
-        self.setName('Biomeng321 Lab1 Simulation')
+        super(Biomeng321Lab2, self).__init__()
+        self.setName('Biomeng321 Lab2 Simulation')
 
         self._out_exnode_file = None
         self._out_exelem_file = None
@@ -224,7 +224,7 @@ def solve_model(exportname, model=1, debug=False):
 
     problemSpecification = [iron.ProblemClasses.ELASTICITY,
         iron.ProblemTypes.FINITE_ELASTICITY,
-        iron.EquationsSetSubtypes.MOONEY_RIVLIN]
+        iron.EquationsSetSubtypes.ORTHOTROPIC_MATERIAL_COSTA]
     equationsSet.CreateStart(equationsSetUserNumber,region,fibreField,problemSpecification,
         equationsSetFieldUserNumber, equationsSetField)
     equationsSet.CreateFinish()
@@ -252,11 +252,44 @@ def solve_model(exportname, model=1, debug=False):
     materialField.VariableLabelSet(iron.FieldVariableTypes.U,"Material")
     equationsSet.MaterialsCreateFinish()
 
-    # Set Mooney-Rivlin constants c10 and c01 respectively.
-    materialField.ComponentValuesInitialiseDP(
-        iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,1,1.0)
-    materialField.ComponentValuesInitialiseDP(
-        iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,2,0.2)
+    # Set Costa constitutive relation parameters.
+    # Q=[c_ff 2c_fs 2c_fn c_ss 2c_ns c_nn]' * [E_ff E_fs  E_fn  E_ss E_sn  E_nn].^2;
+    if model in [1, 3, 4]:
+        c_1 = 0.0475
+        c_ff = 15.25
+        c_fs = 6.05
+        c_fn = c_fs
+        c_ss = c_ff
+        c_sn = c_fs
+        c_nn = c_ff
+    elif model in [2, 5, 6]:
+        c_1 = 0.0475
+        c_ff = 15.25
+        c_fs = 6.95
+        c_fn = 6.05
+        c_ss = 6.8
+        c_sn = 4.93
+        c_nn = 8.9
+
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,1,c_1)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,2,c_ff)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,3,c_fs)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,4,c_fn)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,5,c_ss)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,6,c_sn)
+    materialField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,7,c_nn)
+
+    if model in [1, 2]:
+        angle = 0.
+    elif model == 3:
+        angle = 30.
+    elif model in [4, 5]:
+        angle = 45.
+    elif model ==6:
+        angle = 90.
+
+    fibreField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,1,angle)
+
 
     # Create equations
     equations = iron.Equations()
@@ -322,123 +355,30 @@ def solve_model(exportname, model=1, debug=False):
     # Prescribe boundary conditions (absolute nodal parameters)
     boundaryConditions = iron.BoundaryConditions()
     solverEquations.BoundaryConditionsCreateStart(boundaryConditions)
-    if model == 1:
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.5)
 
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,X,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,X,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,X,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,X,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.25)
 
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
 
-        p = -2.*-0.1056E+01
 
-    elif model == 2:
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,Y,iron.BoundaryConditionsTypes.FIXED,0.25)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        p = -2.*-0.6656E+00
-
-    elif model == 3:
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        p = -2.*-0.1450E+01
-
-    elif model == 4:
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Z,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,Z,iron.BoundaryConditionsTypes.FIXED,0.5)
-
-        p = -2.*-0.1056E+01
-
-    elif model == 5:
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,X,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,X,iron.BoundaryConditionsTypes.FIXED,0.5)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,X,iron.BoundaryConditionsTypes.FIXED,0.25)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,X,iron.BoundaryConditionsTypes.FIXED,0.75)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,X,iron.BoundaryConditionsTypes.FIXED,0.75)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Y,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,5,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,6,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,7,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-        boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,8,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
-
-        p = -2.*-0.1000E+01
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,1,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,2,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,3,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.AddNode(dependentField,iron.FieldVariableTypes.U,1,1,4,Z,iron.BoundaryConditionsTypes.FIXED,0.0)
 
     solverEquations.BoundaryConditionsCreateFinish()
 
@@ -473,42 +413,52 @@ def solve_model(exportname, model=1, debug=False):
     F = equationsSet.TensorInterpolateXi(
         iron.EquationsSetTensorEvaluateTypes.DEFORMATION_GRADIENT,
         elementNumber, xiPosition,(3,3))
-    results['Deformation Gradient Tensor'] = F
+    results["Deformation gradient tensor"] = F
     if debug:
-        print("Deformation Gradient Tensor")
+        print("Deformation gradient tensor")
         print(F)
 
     C = equationsSet.TensorInterpolateXi(
         iron.EquationsSetTensorEvaluateTypes.R_CAUCHY_GREEN_DEFORMATION,
         elementNumber, xiPosition,(3,3))
-    results['Right Cauchy-Green Deformation Tensor'] = C
+    results["Right Cauchy-Green deformation tensor"] = C
     if debug:
-        print("Right Cauchy-Green Deformation Tensor")
+        print("Right Cauchy-Green deformation tensor")
         print(C)
 
-    E = equationsSet.TensorInterpolateXi(
+    Efib = equationsSet.TensorInterpolateXi(
         iron.EquationsSetTensorEvaluateTypes.GREEN_LAGRANGE_STRAIN,
         elementNumber, xiPosition,(3,3))
-    results['Green-Lagrange Strain Tensor'] = E
+    results["Green-Lagrange strain tensor (fibre coordinate system)"] = Efib
     if debug:
-        print("Green-Lagrange Strain Tensor")
-        print(E)
+        print("Green-Lagrange strain tensor (fibre coordinate system)")
+        print(Efib)
+
+    Q = numpy.array([[numpy.cos(numpy.deg2rad(angle)), -numpy.sin(numpy.deg2rad(angle)), 0],
+                     [numpy.sin(numpy.deg2rad(angle)), numpy.cos(numpy.deg2rad(angle)),  0],
+                     [0               , 0               ,  1]])
+    Eref = numpy.dot(Q,numpy.dot(Efib,numpy.matrix.transpose(Q)))
+    results["Green-Lagrange strain tensor (reference coordinate system)"] = Eref
+    if debug:
+        print("Green-Lagrange strain tensor (reference coordinate system)")
+        print(Eref)
+
 
     I1=numpy.trace(C)
     I2=0.5*(numpy.trace(C)**2.-numpy.tensordot(C,C))
     I3=numpy.linalg.det(C)
-    results['Invariants'] = [I1, I2, I3]
+    results["Invariants"] = [I1, I2, I3]
     if debug:
         print("Invariants")
         print("I1={0}, I2={1}, I3={2}".format(I1,I2,I3))
 
-    TC = equationsSet.TensorInterpolateXi(
+    TCfib = equationsSet.TensorInterpolateXi(
         iron.EquationsSetTensorEvaluateTypes.CAUCHY_STRESS,
         elementNumber, xiPosition,(3,3))
-    results['Cauchy Stress Tensor'] = TC
+    results["Cauchy stress tensor (fibre coordinate system)"] = TCfib
     if debug:
-        print("Cauchy Stress Tensor")
-        print(TC)
+        print("Cauchy stress tensor (fibre coordinate system)")
+        print(TCfib)
 
     # Output of Second Piola-Kirchhoff Stress Tensor not implemented. It is
     # instead, calculated from TG=J*F^(-1)*TC*F^(-T), where T indicates the
@@ -517,20 +467,26 @@ def solve_model(exportname, model=1, debug=False):
     #    iron.EquationsSetTensorEvaluateTypes.SECOND_PK_STRESS,
     #    elementNumber, xiPosition,(3,3))
     #J=1. #Assumes J=1
-    TG = numpy.dot(numpy.linalg.inv(F),numpy.dot(
-            TC,numpy.linalg.inv(numpy.matrix.transpose(F))))
-    results['Second Piola-Kirchhoff Stress Tensor'] = TG
+    TGfib = numpy.dot(numpy.linalg.inv(F),numpy.dot(
+            TCfib,numpy.linalg.inv(numpy.matrix.transpose(F))))
+    results["Second Piola-Kirchhoff stress tensor (fibre coordinate system)"] = TGfib
     if debug:
-        print("Second Piola-Kirchhoff Stress Tensor")
-        print(TG)
+        print("Second Piola-Kirchhoff stress tensor (fibre coordinate system)")
+        print(TGfib)
+
+    TGref = numpy.dot(Q,numpy.dot(TGfib,numpy.matrix.transpose(Q)))
+    results["Second Piola-Kirchhoff stress tensor (reference coordinate system)"] = TGref
+    if debug:
+        print("Second Piola-Kirchhoff stress tensor (reference coordinate system)")
+        print(TGref)
 
     # Note that the hydrostatic pressure value is different from the value quoted
     # in the original lab instructions. This is because the stress has been
     # evaluated using modified invariants (isochoric invariants)
-    #p = dependentField.ParameterSetGetElement(
-    #    iron.FieldVariableTypes.U,
-    #    iron.FieldParameterSetTypes.VALUES,elementNumber,4)
-    results['Hydrostatic pressure'] = p
+    p = -dependentField.ParameterSetGetElement(
+        iron.FieldVariableTypes.U,
+        iron.FieldParameterSetTypes.VALUES,elementNumber,4)
+    results["Hydrostatic pressure"] = p
     if debug:
         print("Hydrostatic pressure")
         print(p)

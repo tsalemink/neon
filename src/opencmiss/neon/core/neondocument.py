@@ -15,6 +15,7 @@
 '''
 import json
 
+from opencmiss.neon.core.neonsceneviewer import NeonSceneviewer
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
@@ -32,6 +33,7 @@ class NeonDocument(object):
         self._rootRegion = None
         self._spectrums = None
         self._tessellations = None
+        self._sceneviewer = None
 
     def initialiseVisualisationContents(self):
         self._zincContext = Context("Neon")
@@ -45,10 +47,10 @@ class NeonDocument(object):
         zincRootRegion = self._zincContext.getDefaultRegion()
         self._rootRegion = NeonRegion(name=None, zincRegion=zincRootRegion, parent=None)
         self._rootRegion.connectRegionChange(self._regionChange)
-        self._rootRegion._document = self
 
         self._spectrums = NeonSpectrums(self._zincContext)
         self._tessellations = NeonTessellations(self._zincContext)
+        self._sceneviewer = NeonSceneviewer(self._zincContext)
         NeonLogger.setZincContext(self._zincContext)
 
     def freeVisualisationContents(self):
@@ -56,6 +58,9 @@ class NeonDocument(object):
         Deletes subobjects of document to help free memory held by Zinc objects earlier.
         """
         self._rootRegion.freeContents()
+        del self._sceneviewer
+        del self._tessellations
+        del self._spectrums
         del self._rootRegion
         del self._zincContext
 
@@ -94,6 +99,8 @@ class NeonDocument(object):
             self._tessellations.deserialize(d["Tessellations"])
         if "Spectrums" in d:
             self._spectrums.deserialize(d["Spectrums"])
+        if "Sceneviewer" in d:
+            self._sceneviewer.deserialize(d["Sceneviewer"])
         self._rootRegion.deserialize(d["RootRegion"])
         if neon_version == '0.1.0':
             self._problem.setName('Generic')
@@ -107,6 +114,7 @@ class NeonDocument(object):
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
+        dictOutput["Sceneviewer"] = self._sceneviewer.serialize()
         return json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2)
 
     def getZincContext(self):
@@ -126,3 +134,6 @@ class NeonDocument(object):
 
     def getProject(self):
         return self._project
+
+    def getSceneviewer(self):
+        return self._sceneviewer

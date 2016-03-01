@@ -47,6 +47,8 @@ class MainWindow(QtGui.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
+        self._visualisation_view_state_update_pending = False
+
         # List of possible views
         self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
@@ -456,6 +458,11 @@ class MainWindow(QtGui.QMainWindow):
         scene = zincRootRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
 
+        if self._visualisation_view_ready:
+            self._restoreSceneviewerState()
+        else:
+            self._visualisation_view_state_update_pending = True
+
         project = document.getProject()
         index = self._model.getProjectModel().getIndex(project)
         self._problem_view.setCurrentIndex(index.row())
@@ -470,12 +477,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
-#         self._onDocumentChanged()
+        if self._visualisation_view_state_update_pending:
+            self._restoreSceneviewerState()
 
     def _saveTriggered(self):
         if self._model.getLocation() is None:
             self._saveAsTriggered()
         else:
+            self._recordSceneviewerState()
             self._model.save()
 
     def _saveAsTriggered(self):
@@ -483,7 +492,19 @@ class MainWindow(QtGui.QMainWindow):
         if filename:
             self._location = os.path.dirname(filename)
             self._model.setLocation(filename)
+            self._recordSceneviewerState()
             self._model.save()
+
+    def _restoreSceneviewerState(self):
+        document = self._model.getDocument()
+        sceneviewer_state = document.getSceneviewer().serialize()
+        self._visualisation_view.setSceneviewerState(sceneviewer_state)
+        self._visualisation_view_state_update_pending = False
+
+    def _recordSceneviewerState(self):
+        sceneviewer_state = self._visualisation_view.getSceneviewerState()
+        document = self._model.getDocument()
+        document.getSceneviewer().deserialize(sceneviewer_state)
 
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
