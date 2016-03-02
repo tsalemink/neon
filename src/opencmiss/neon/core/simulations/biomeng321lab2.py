@@ -14,6 +14,8 @@
    limitations under the License.
 '''
 import os
+
+import math
 import numpy
 from tempfile import NamedTemporaryFile
 
@@ -40,7 +42,7 @@ class Biomeng321Lab2(LocalSimulation):
         return True
 
     def setup(self):
-        out_file_handle = NamedTemporaryFile(prefix='biomeng321_lab1_', delete=False)
+        out_file_handle = NamedTemporaryFile(prefix='biomeng321_lab2_', delete=False)
         self._out_exfile = out_file_handle.name
         out_file_handle.close()
 
@@ -282,13 +284,13 @@ def solve_model(exportname, model=1, debug=False):
     if model in [1, 2]:
         angle = 0.
     elif model == 3:
-        angle = 30.
+        angle = math.pi/6.0
     elif model in [4, 5]:
-        angle = 45.
+        angle = math.pi/4.0
     elif model ==6:
-        angle = 90.
+        angle = math.pi/2.0
 
-    fibreField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U,iron.FieldParameterSetTypes.VALUES,1,angle)
+    fibreField.ComponentValuesInitialiseDP(iron.FieldVariableTypes.U, iron.FieldParameterSetTypes.VALUES, 1, angle)
 
 
     # Create equations

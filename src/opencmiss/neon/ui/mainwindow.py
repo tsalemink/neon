@@ -290,6 +290,7 @@ class MainWindow(QtGui.QMainWindow):
             self._addRecent(settings.value('item'))
         settings.endArray()
         # Always want to initialise with the problem view to stop Zinc from initialising to early.
+        self._preChangeView()
         self._setCurrentView('0')  # settings.value('current_view', '0'))
         settings.endGroup()
 
@@ -329,8 +330,12 @@ class MainWindow(QtGui.QMainWindow):
 
     def _preChangeView(self):
         current_view = self._ui.viewStackedWidget.currentWidget()
+        dependent_editors = current_view.getDependentEditors()
         view_state = self.saveState(VERSION_MAJOR)
         self._view_states[current_view] = view_state
+
+        for ed in dependent_editors:
+            ed.setHidden(True)
 
         action_name = getEditorMenuName(current_view)
         action = self._getEditorAction(action_name)
