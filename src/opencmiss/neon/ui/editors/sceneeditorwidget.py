@@ -41,6 +41,7 @@ class SceneEditorWidget(QtGui.QWidget):
         self._scene = None
         # Using composition to include the visual element of the GUI.
         self.ui = Ui_SceneEditorWidget()
+        self._graphicsItems = None
         self.ui.setupUi(self)
 
     def getScene(self):
@@ -103,6 +104,8 @@ class SceneEditorWidget(QtGui.QWidget):
         '''
         Fill the graphics list view with the list of graphics for current region/scene
         '''
+        if self._graphicsItems is not None:
+            self._graphicsItems.clear()  # Must clear or holds on to graphics references
         self._graphicsItems = QtGui.QStandardItemModel(self.ui.graphics_listview)
         selectedIndex = None
         if self._scene:

@@ -17,6 +17,7 @@ import json
 
 from PySide import QtCore, QtGui
 
+from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.neon.ui.editors.ui_tessellationeditorwidget import Ui_TessellationEditorWidget
 from opencmiss.neon.ui.delegates.spinboxdelegate import SpinBoxDelegate
 
@@ -89,7 +90,8 @@ class TessellationEditorWidget(QtGui.QWidget):
             t = first_item.data(TESSELLATION_DATA_ROLE)
 
         if item_column == 0:
-            t.setName(item.data(QtCore.Qt.DisplayRole))
+            if ZINC_OK != t.setName(str(item.data(QtCore.Qt.DisplayRole))):
+                item.setData(QtCore.Qt.DisplayRole, t.getName())
         elif item_column == 1 or item_column == 2:
             item_data = item.data(QtCore.Qt.DisplayRole)
             value = processMultiFormatData(item_data)

@@ -120,6 +120,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         material = None
         dataField = None
         spectrum = None
+        tessellation = None
         isExterior = False
         isWireframe = False
         pointattributes = None
@@ -132,6 +133,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             material = self._graphics.getMaterial()
             dataField = self._graphics.getDataField()
             spectrum = self._graphics.getSpectrum()
+            tessellation = self._graphics.getTessellation()
             isExterior = self._graphics.isExterior()
             isWireframe = self._graphics.getRenderPolygonMode() == Graphics.RENDER_POLYGON_MODE_WIREFRAME
             contours = self._graphics.castContours()
@@ -147,6 +149,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.material_chooser.setMaterial(material)
         self.ui.data_field_chooser.setField(dataField)
         self.ui.spectrum_chooser.setSpectrum(spectrum)
+        self.ui.tessellation_chooser.setTessellation(tessellation)
         self.ui.exterior_checkbox.setCheckState(QtCore.Qt.Checked if isExterior else QtCore.Qt.Unchecked)
         self._faceDisplay()
         self.ui.wireframe_checkbox.setCheckState(QtCore.Qt.Checked if isWireframe else QtCore.Qt.Unchecked)
@@ -213,7 +216,6 @@ class GraphicsEditorWidget(QtGui.QWidget):
         else:
             self.ui.sampling_groupbox.hide()
         self._samplingModeDisplay()
-        self._samplingDivisionsDisplay()
 
     def setScene(self, scene):
         '''
@@ -222,6 +224,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.material_chooser.setMaterialmodule(scene.getMaterialmodule())
         self.ui.glyph_chooser.setGlyphmodule(scene.getGlyphmodule())
         self.ui.spectrum_chooser.setSpectrummodule(scene.getSpectrummodule())
+        self.ui.tessellation_chooser.setTessellationmodule(scene.getTessellationmodule())
         region = scene.getRegion()
         self.ui.coordinate_field_chooser.setRegion(region)
         self.ui.data_field_chooser.setRegion(region)
@@ -348,6 +351,14 @@ class GraphicsEditorWidget(QtGui.QWidget):
                 self._graphics.setSpectrum(spectrum)
             else:
                 self._graphics.setSpectrum(Spectrum())
+
+    def tessellationChanged(self, index):
+        '''
+        An item was selected at index in tessellation chooser widget
+        '''
+        if self._graphics:
+            tessellation = self.ui.tessellation_chooser.getTessellation()
+            self._graphics.setTessellation(tessellation)
 
     def exteriorClicked(self, isChecked):
         '''
@@ -698,42 +709,3 @@ class GraphicsEditorWidget(QtGui.QWidget):
             samplingattributes = self._graphics.getGraphicssamplingattributes()
             if samplingattributes.isValid():
                 samplingattributes.setElementPointSamplingMode(index + Element.POINT_SAMPLING_MODE_CELL_CENTRES)
-
-    def _samplingDivisionsDisplay(self):
-        '''
-        Display the current sampling divisions
-        '''
-        if self._graphics:
-            tessellation = self._graphics.getTessellation()
-            _, samplingDivisions = tessellation.getMinimumDivisions(3)
-            self._displayScale(self.ui.sampling_divisions_lineedit, samplingDivisions, '{:d}')
-            return
-        self.ui.sampling_divisions_lineedit.setText('')
-
-    def samplingDivisionsEntered(self):
-        '''
-        Set sampling base size from text in widget
-        '''
-        try:
-            samplingDivisions = self._parseScaleInteger(self.ui.sampling_divisions_lineedit)
-            tessellation = self._graphics.getTessellation()
-            _, oldSamplingDivisions = tessellation.getMinimumDivisions(3)
-            # only set if different from current values
-            divisions = 0
-            for i in range(3):
-                if i < len(samplingDivisions):
-                    divisions = samplingDivisions[i]
-                if divisions != oldSamplingDivisions[i]:
-                    scene = self._graphics.getScene()
-                    tessellationmodule = scene.getTessellationmodule()
-                    if all((i == 1) for i in samplingDivisions):
-                        tessellation = tessellationmodule.getDefaultPointsTessellation()
-                    else:
-                        tessellation = tessellationmodule.createTessellation()
-                        if ZINC_OK != tessellation.setMinimumDivisions(samplingDivisions):
-                            raise
-                    self._graphics.setTessellation(tessellation)
-                    break
-        except:
-            print("Invalid sampling divisions")
-        self._samplingDivisionsDisplay()
