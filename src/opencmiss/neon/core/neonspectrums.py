@@ -57,7 +57,7 @@ class NeonSpectrums(object):
             self.findOrCreateSpectrumGlyphColourBar(spectrum)
             spectrum = iterater.next()
 
-    def findOrCreateSpectrumGlyphColourBar(self, spectrum):
+    def _findSpectrumGlyphColourBar(self, spectrum):
         """
         Find or create a GlyphColourBar for spectrum in the glyph module.
         Newly created colour bar is set up for display in the normalised window coordinates at left.
@@ -79,6 +79,20 @@ class NeonSpectrums(object):
             if colourBar.isValid() and (colourBar.getSpectrum() == spectrum):
                 return colourBar
             glyph = glyphiterator.next()
+
+        return None
+
+    def findOrCreateSpectrumGlyphColourBar(self, spectrum):
+        """
+        Find or create a GlyphColourBar for spectrum in the glyph module.
+        Newly created colour bar is set up for display in the normalised window coordinates at left.
+        """
+        colourBar = self._findSpectrumGlyphColourBar(spectrum)
+        if colourBar:
+            return colourBar
+
+        glyphmodule = self._zincContext.getGlyphmodule()
+        glyphName = SPECTRUM_GLYPH_NAME_FORMAT.format(spectrum.getName())
 
         # create a new colour bar, matching Cmgui's defaults:
         glyphmodule.beginChange()
@@ -102,6 +116,7 @@ class NeonSpectrums(object):
     def renameSpectrum(self, spectrum, name):
         """
         Renames spectrum and its glyph
+        :return True on success, otherwise False (means name not set)
         """
         colourBar = self.findOrCreateSpectrumGlyphColourBar(spectrum)
         result = spectrum.setName(str(name))
@@ -112,11 +127,31 @@ class NeonSpectrums(object):
             while (colourBar.setName(tmpName) != ZINC_OK):
                 tmpName = glyphName + str(i)
                 i += 1
+            return True
+        return False
 
-    def removeSpectrum(self, spectrum):
+    def removeSpectrumByName(self, name):
         """
         Unmanages spectrum and its colour bar. Note spectrum is only removed if neither are in use.
+        :return True if spectrum and colour bar removed, false if failed i.e. either are in use.
         """
+        spectrum = self._spectrummodule.findSpectrumByName(name)
+        colourBar = self._findSpectrumGlyphColourBar(spectrum)
+        if colourBar:
+            colourBarName = colourBar.getName()
+            colourBar.setManaged(False)
+            del colourBar
+            colourBar = self._findSpectrumGlyphColourBar(spectrum)
+            if colourBar and (colourBar.getName() == colourBarName):
+                # colour bar is in use; do not remove spectrum
+                colourBar.setManaged(True)
+                return False
         spectrum.setManaged(False)
-        colourBar = self.findOrCreateSpectrumGlyphColourBar(spectrum)
-        colourBar.setManaged(False)
+        del spectrum
+        spectrum = self._spectrummodule.findSpectrumByName(name)
+        if spectrum.isValid():
+            # spectrum is in use so can't remove
+            spectrum.setManaged(True)
+            self.findOrCreateSpectrumGlyphColourBar(spectrum)
+            return False
+        return True
