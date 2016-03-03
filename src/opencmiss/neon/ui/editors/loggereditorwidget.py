@@ -15,15 +15,15 @@
 '''
 from PySide import QtGui
 
-from opencmiss.neon.ui.dialogs.ui_loggerdialog import Ui_LoggerDialog
+from opencmiss.neon.ui.editors.ui_loggereditorwidget import Ui_LoggerEditorWidget
 from opencmiss.neon.core.neonlogger import CustomStream
 
 
-class LoggerDialog(QtGui.QWidget):
+class LoggerEditorWidget(QtGui.QWidget):
 
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self._ui = Ui_LoggerDialog()
+        self._ui = Ui_LoggerEditorWidget()
         self._ui.setupUi(self)
 
         self._logger = None
@@ -40,8 +40,12 @@ class LoggerDialog(QtGui.QWidget):
         self._ui.logText.insertPlainText(message)
 
     def _makeConnections(self):
-        CustomStream.stdout().messageWritten.connect(self.writeMessage)
-        CustomStream.stderr().messageWritten.connect(self.writeMessage)
+        stdout = CustomStream.stdout()
+        stderr = CustomStream.stderr()
+        if hasattr(stdout, 'messageWritten'):
+            stdout.messageWritten.connect(self.writeMessage)
+        if hasattr(stderr, 'messageWritten'):
+            stderr.messageWritten.connect(self.writeMessage)
 
     def copyToClipboard(self):
         QtGui.QApplication.clipboard().setText(self._ui.logText.toPlainText())
