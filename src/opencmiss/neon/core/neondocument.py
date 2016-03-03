@@ -21,6 +21,7 @@ from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
 from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
+from opencmiss.zinc.material import Material
 from opencmiss.neon.core.neonlogger import NeonLogger
 from opencmiss.neon.core.neonproject import NeonProject
 
@@ -38,9 +39,21 @@ class NeonDocument(object):
     def initialiseVisualisationContents(self):
         self._zincContext = Context("Neon")
 
+        sceneviewermodule = self._zincContext.getSceneviewermodule()
+        sceneviewermodule.setDefaultBackgroundColourRGB([1.0, 1.0, 1.0])
+
         # set up standard materials and glyphs
         materialmodule = self._zincContext.getMaterialmodule()
+        materialmodule.beginChange()
         materialmodule.defineStandardMaterials()
+        # make default material black
+        defaultMaterial = materialmodule.getDefaultMaterial()
+        defaultMaterial.setAttributeReal3(Material.ATTRIBUTE_AMBIENT, [0.0, 0.0, 0.0])
+        defaultMaterial.setAttributeReal3(Material.ATTRIBUTE_DIFFUSE, [0.0, 0.0, 0.0])
+        # still want surfaces to default to white material
+        white = materialmodule.findMaterialByName("white")
+        materialmodule.setDefaultSurfaceMaterial(white)
+        materialmodule.endChange()
         glyphmodule = self._zincContext.getGlyphmodule()
         glyphmodule.defineStandardGlyphs()
 
@@ -93,17 +106,24 @@ class NeonDocument(object):
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
         # zincRegion.beginHierarchicalChange()
         result = True
-        if "Project" in d:
-            self._project.deserialize(d["Project"])
-        if "Tessellations" in d:
-            self._tessellations.deserialize(d["Tessellations"])
-        if "Spectrums" in d:
-            self._spectrums.deserialize(d["Spectrums"])
-        if "Sceneviewer" in d:
-            self._sceneviewer.deserialize(d["Sceneviewer"])
-        self._rootRegion.deserialize(d["RootRegion"])
-        if neon_version == '0.1.0':
-            self._problem.setName('Generic')
+        try:
+            if "Project" in d:
+                self._project.deserialize(d["Project"])
+            if "Tessellations" in d:
+                self._tessellations.deserialize(d["Tessellations"])
+            if "Spectrums" in d:
+                self._spectrums.deserialize(d["Spectrums"])
+            if "Sceneviewer" in d:
+                self._sceneviewer.deserialize(d["Sceneviewer"])
+            self._rootRegion.deserialize(d["RootRegion"])
+            if neon_version == '0.1.0':
+                self._problem.setName('Generic')
+        except:
+            NeonLogger.getLogger().error("Exception in NeonDocument.deserialize")
+            result = False
+        finally:
+            # zincRegion.endHierarchicalChange() - see above why this can't be done yet
+            pass
         return result
 
     def serialize(self, basePath=None):
