@@ -21,13 +21,12 @@ from PySide import QtCore
 
 from opencmiss.zinc.logger import Logger
 
-ENABLE_STD_STREAM_CAPTURE = False
+ENABLE_STD_STREAM_CAPTURE = True
 
 
 class CustomStream(QtCore.QObject):
     _stdout = None
     _stderr = None
-    _saved_stdout = None
     messageWritten = QtCore.Signal([str, str])
 
     def flush(self):
@@ -44,7 +43,6 @@ class CustomStream(QtCore.QObject):
     def stdout():
         if (not CustomStream._stdout):
             CustomStream._stdout = CustomStream()
-            CustomStream._saved_stdout = sys.stdout
             sys.stdout = CustomStream._stdout if ENABLE_STD_STREAM_CAPTURE else sys.stdout
         return CustomStream._stdout
 
@@ -52,7 +50,7 @@ class CustomStream(QtCore.QObject):
     def stderr():
         if (not CustomStream._stderr):
             CustomStream._stderr = CustomStream()
-            sys.stderr = CustomStream._stdout if ENABLE_STD_STREAM_CAPTURE else sys.stderr
+            sys.stderr = CustomStream._stderr if ENABLE_STD_STREAM_CAPTURE else sys.stderr
         return CustomStream._stderr
 
 
