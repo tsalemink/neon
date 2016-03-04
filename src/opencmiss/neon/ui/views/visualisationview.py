@@ -25,12 +25,12 @@ class VisualisationView(BaseView):
 
     graphicsInitialized = QtCore.Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(VisualisationView, self).__init__(parent)
         self._name = 'Visualisation'
 
         self._ui = Ui_VisualisationView()
-        self._ui.setupUi(self)
+        self._ui.setupUi(shared_opengl_widget, self)
 
         self._makeConnections()
 

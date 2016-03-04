@@ -1,25 +1,30 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'res\designer\simulations\biomeng321lab2.ui'
+# Form implementation generated from reading ui file 'res/designer/simulations/biomeng321lab2.ui'
 #
-# Created: Tue Mar 01 13:42:55 2016
-#      by: pyside-uic 0.2.14 running on PySide 1.1.2
+# Created: Fri Mar  4 13:31:07 2016
+#      by: pyside-uic 0.2.15 running on PySide 1.2.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
 
 class Ui_Biomeng321Lab2(object):
-    def setupUi(self, Biomeng321Lab2):
+    def setupUi(self, shared_opengl_widget, Biomeng321Lab2):
         Biomeng321Lab2.setObjectName("Biomeng321Lab2")
-        Biomeng321Lab2.resize(855, 728)
+        Biomeng321Lab2.resize(855, 731)
         self.verticalLayout = QtGui.QVBoxLayout(Biomeng321Lab2)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox = QtGui.QGroupBox(Biomeng321Lab2)
         self.groupBox.setObjectName("groupBox")
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.groupBox)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.gridLayout_3 = QtGui.QGridLayout(self.groupBox)
+        self.gridLayout_3.setObjectName("gridLayout_3")
         self.groupBox_9 = QtGui.QGroupBox(self.groupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(2)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_9.sizePolicy().hasHeightForWidth())
+        self.groupBox_9.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setWeight(75)
@@ -138,6 +143,11 @@ class Ui_Biomeng321Lab2(object):
         self.label_10.setObjectName("label_10")
         self.horizontalLayout_3.addWidget(self.label_10)
         self.tableWidgetGreenLagrangeStrainReference = QtGui.QTableWidget(self.groupBox_5)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tableWidgetGreenLagrangeStrainReference.sizePolicy().hasHeightForWidth())
+        self.tableWidgetGreenLagrangeStrainReference.setSizePolicy(sizePolicy)
         self.tableWidgetGreenLagrangeStrainReference.setObjectName("tableWidgetGreenLagrangeStrainReference")
         self.tableWidgetGreenLagrangeStrainReference.setColumnCount(0)
         self.tableWidgetGreenLagrangeStrainReference.setRowCount(0)
@@ -162,6 +172,11 @@ class Ui_Biomeng321Lab2(object):
         self.label_16.setObjectName("label_16")
         self.horizontalLayout_4.addWidget(self.label_16)
         self.tableWidgetGreenLagrangeStrainFibre = QtGui.QTableWidget(self.groupBox_5)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tableWidgetGreenLagrangeStrainFibre.sizePolicy().hasHeightForWidth())
+        self.tableWidgetGreenLagrangeStrainFibre.setSizePolicy(sizePolicy)
         self.tableWidgetGreenLagrangeStrainFibre.setObjectName("tableWidgetGreenLagrangeStrainFibre")
         self.tableWidgetGreenLagrangeStrainFibre.setColumnCount(0)
         self.tableWidgetGreenLagrangeStrainFibre.setRowCount(0)
@@ -170,8 +185,21 @@ class Ui_Biomeng321Lab2(object):
         self.horizontalLayout_4.addWidget(self.tableWidgetGreenLagrangeStrainFibre)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
         self.gridLayout_2.addWidget(self.groupBox_5, 1, 1, 1, 1)
-        self.verticalLayout_2.addWidget(self.groupBox_9)
+        self.gridLayout_3.addWidget(self.groupBox_9, 0, 0, 1, 1)
+        self.widgetSceneviewer = SceneviewerWidget(self.groupBox, shared_opengl_widget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(3)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widgetSceneviewer.sizePolicy().hasHeightForWidth())
+        self.widgetSceneviewer.setSizePolicy(sizePolicy)
+        self.widgetSceneviewer.setObjectName("widgetSceneviewer")
+        self.gridLayout_3.addWidget(self.widgetSceneviewer, 0, 1, 2, 1)
         self.groupBox_10 = QtGui.QGroupBox(self.groupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(2)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_10.sizePolicy().hasHeightForWidth())
+        self.groupBox_10.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setWeight(75)
@@ -283,7 +311,7 @@ class Ui_Biomeng321Lab2(object):
         self.label_14.setObjectName("label_14")
         self.gridLayout_7.addWidget(self.label_14, 0, 1, 1, 1)
         self.gridLayout.addWidget(self.groupBox_4, 1, 1, 1, 1)
-        self.verticalLayout_2.addWidget(self.groupBox_10)
+        self.gridLayout_3.addWidget(self.groupBox_10, 1, 0, 1, 1)
         self.verticalLayout.addWidget(self.groupBox)
 
         self.retranslateUi(Biomeng321Lab2)
@@ -324,3 +352,4 @@ class Ui_Biomeng321Lab2(object):
         self.label_13.setText(QtGui.QApplication.translate("Biomeng321Lab2", "sigma", None, QtGui.QApplication.UnicodeUTF8))
         self.label_14.setText(QtGui.QApplication.translate("Biomeng321Lab2", "=", None, QtGui.QApplication.UnicodeUTF8))
 
+from opencmiss.neon.ui.zincwidgets.sceneviewerwidget import SceneviewerWidget

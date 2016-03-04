@@ -23,12 +23,13 @@ from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
 class SimulationView(BaseView):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(SimulationView, self).__init__(parent)
         self._name = 'Simulation'
 
         self._ui = Ui_SimulationView()
         self._ui.setupUi(self)
+        self._ui.shared_opengl_widget = shared_opengl_widget
 
         self._makeConnections()
 
@@ -40,7 +41,7 @@ class SimulationView(BaseView):
 
     def setupSimulations(self, model):
         swsv = self._ui.stackedWidgetSimulationView
-        classes = instantiateRelatedClasses(model, 'simulations')
+        classes = instantiateRelatedClasses(model, 'simulations', self._ui.shared_opengl_widget, self)
         for c in classes:
             c.setParent(swsv)
             project = model.getProject(model.index(swsv.count(), 0))

@@ -26,7 +26,7 @@ from opencmiss.neon.core.problems.ventilation import getExecutableForPlatform
 
 class Ventilation(BaseProblem):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(Ventilation, self).__init__(parent)
         self._ui = Ui_VentilationWidget()
         self._ui.setupUi(self)

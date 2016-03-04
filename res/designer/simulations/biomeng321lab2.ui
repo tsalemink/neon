@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>855</width>
-    <height>728</height>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,9 +19,15 @@
      <property name="title">
       <string>Solution</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
        <widget class="QGroupBox" name="groupBox_9">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>2</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -218,6 +224,12 @@
               </item>
               <item>
                <widget class="QTableWidget" name="tableWidgetGreenLagrangeStrainReference">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <attribute name="horizontalHeaderVisible">
                  <bool>false</bool>
                 </attribute>
@@ -260,6 +272,12 @@
               </item>
               <item>
                <widget class="QTableWidget" name="tableWidgetGreenLagrangeStrainFibre">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <attribute name="horizontalHeaderVisible">
                  <bool>false</bool>
                 </attribute>
@@ -276,8 +294,24 @@
         </layout>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1" rowspan="2">
+       <widget class="SceneviewerWidget" name="widgetSceneviewer" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>3</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QGroupBox" name="groupBox_10">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>2</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -473,6 +507,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SceneviewerWidget</class>
+   <extends>QWidget</extends>
+   <header>opencmiss/neon/ui/zincwidgets/sceneviewerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -16,7 +16,7 @@
 import importlib
 
 
-def instantiateRelatedClasses(model, view):
+def instantiateRelatedClasses(model, view, shared_gl_widget, parent):
     classes = []
     for row in range(model.rowCount()):
         index = model.index(row, 0)
@@ -26,6 +26,6 @@ def instantiateRelatedClasses(model, view):
 
         module_name = importlib.import_module(module + '.' + identifier.lower())
         class_ = getattr(module_name, identifier)
-        classes.append(class_())
+        classes.append(class_(shared_gl_widget, parent))
 
     return classes
