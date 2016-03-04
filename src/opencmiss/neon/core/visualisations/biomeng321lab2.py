@@ -444,7 +444,7 @@ default_visualisation = {
     ],
     "NearClippingPlane": 0.2457230375503514,
     "PerturbLinesFlag": False,
-    "ProjectionMode": "PERSPECTIVE",
+    "ProjectionMode": "PARALLEL",
     "Scene": "/",
     "Scenefilter": "default",
     "TranslationRate": 1,

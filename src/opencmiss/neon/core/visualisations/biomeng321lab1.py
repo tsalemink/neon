@@ -403,7 +403,7 @@ default_visualisation = {
    "LookatPosition" : [ 0.7499999906867743, 0.4949999954551458, 0.7499999906867743 ],
    "NearClippingPlane" : 0.2457230375503514,
    "PerturbLinesFlag" : False,
-   "ProjectionMode" : "PERSPECTIVE",
+   "ProjectionMode" : "PARALLEL",
    "Scene" : "/",
    "Scenefilter" : "default",
    "TranslationRate" : 1,
