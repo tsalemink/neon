@@ -33,22 +33,23 @@ class Biomeng321Lab2(BaseVisualisation):
         state = json.dumps(visualisation_description)
         document.deserialize(state)
 
+
 default_visualisation = {
   "OpenCMISS-Neon Version": [
     0,
     2,
     0
   ],
-  "Project": "{\"problem\": \"{\\\"boundary_condition\\\": \\\"Model 1 (Equibiaxial extension of unit cube, isotropic, 0 degree fibre rotation)\\\"}\"}",
+  "Project": "{\"problem\": \"{\\\"boundary_condition\\\": \\\"Model 1 (Equibiaxial extension of unit cube, isotropic, 0 degree fibre rotation)\\\"}\", \"identifier\": \"Biomeng321Lab2\"}",
   "RootRegion": {
     "Model": {
       "Sources": [
         {
-          "FileName": "../../tmp/biomeng321_lab1_cfoYB4.exnode",
+          "FileName": "c:\\users\\hsor001\\appdata\\local\\temp\\biomeng321_lab2_wn_bgi.exnode",
           "Type": "FILE"
         },
         {
-          "FileName": "../../tmp/biomeng321_lab1_cfoYB4.exelem",
+          "FileName": "c:\\users\\hsor001\\appdata\\local\\temp\\biomeng321_lab2_wn_bgi.exelem",
           "Type": "FILE"
         }
       ]
@@ -372,13 +373,90 @@ default_visualisation = {
             "TrackDirection": "FORWARD",
             "TrackLength": 1
           },
-          "Tessellation": "temp5",
+          "Tessellation": "streamlines",
+          "Type": "STREAMLINES",
+          "VisibilityFlag": True
+        },
+        {
+          "CoordinateField": "DeformedGeometry",
+          "ElementFaceType": "ALL",
+          "Exterior": False,
+          "FieldDomainType": "MESH_HIGHEST_DIMENSION",
+          "LineAttributes": {
+            "BaseSize": [
+              0.01,
+              0.01
+            ],
+            "ScaleFactors": [
+              1,
+              1
+            ],
+            "ShapeType": "CIRCLE_EXTRUSION"
+          },
+          "Material": "gold",
+          "RenderLineWidth": 1,
+          "RenderPointSize": 1,
+          "RenderPolygonMode": "RENDER_POLYGON_SHADED",
+          "SamplingAttributes": {
+            "ElementPointSamplingMode": "CELL_CENTRES",
+            "Location": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Scenecoordinatesystem": "LOCAL",
+          "SelectMode": "ON",
+          "SelectedMaterial": "default_selected",
+          "Streamlines": {
+            "ColourDataType": "FIELD",
+            "StreamVectorField": "Fibre",
+            "TrackDirection": "REVERSE",
+            "TrackLength": 1
+          },
+          "Tessellation": "streamlines",
           "Type": "STREAMLINES",
           "VisibilityFlag": True
         }
       ],
       "VisibilityFlag": True
     }
+  },
+  "Sceneviewer": {
+    "AntialiasSampling": 0,
+    "BackgroundColourRGB": [
+      1,
+      1,
+      1
+    ],
+    "EyePosition": [
+      1.363185969378734,
+      3.22676199826145,
+      4.788985480726977
+    ],
+    "FarClippingPlane": 9.97371765089012,
+    "LightingLocalViewer": False,
+    "LightingTwoSided": True,
+    "LookatPosition": [
+      0.7499999906867743,
+      0.4949999954551458,
+      0.7499999906867743
+    ],
+    "NearClippingPlane": 0.2457230375503514,
+    "PerturbLinesFlag": False,
+    "ProjectionMode": "PERSPECTIVE",
+    "Scene": "/",
+    "Scenefilter": "default",
+    "TranslationRate": 1,
+    "TransparencyMode": "FAST",
+    "TumbleRate": 1.5,
+    "UpVector": [
+      -0.3796614995075607,
+      0.792036478910918,
+      -0.4780537227824904
+    ],
+    "ViewAngle": 0.6981317007976321,
+    "ZoomRate": 1
   },
   "Spectrums": {
     "DefaultSpectrum": "default",
@@ -396,6 +474,8 @@ default_visualisation = {
             "ExtendAbove": True,
             "ExtendBelow": True,
             "FieldComponent": 1,
+            "FixMaximum": False,
+            "FixMinimum": False,
             "NumberOfBands": 10,
             "RangeMaximum": 1,
             "RangeMinimum": 0,
@@ -431,27 +511,19 @@ default_visualisation = {
         "RefinementFactors": [
           1
         ]
+      },
+      {
+        "CircleDivisions": 12,
+        "MinimumDivisions": [
+          3,
+          3,
+          1
+        ],
+        "Name": "streamlines",
+        "RefinementFactors": [
+          1
+        ]
       }
     ]
-  },
-  "Sceneviewer": {
-   "AntialiasSampling" : 0,
-   "BackgroundColourRGB" : [ 1, 1, 1 ],
-   "EyePosition" : [ 1.476158100226215, 2.308947124720783, 5.259347469576348 ],
-   "FarClippingPlane" : 9.973717650890119,
-   "LightingLocalViewer" : False,
-   "LightingTwoSided" : True,
-   "LookatPosition" : [ 0.7499999906867743, 0.4949999954551458, 0.7499999906867743 ],
-   "NearClippingPlane" : 0.2457230375503514,
-   "PerturbLinesFlag" : False,
-   "ProjectionMode" : "PERSPECTIVE",
-   "Scene" : "/",
-   "Scenefilter" : "default",
-   "TranslationRate" : 1,
-   "TransparencyMode" : "FAST",
-   "TumbleRate" : 1.5,
-   "UpVector" : [ 0.001222424923825126, 0.9276818468650682, -0.3733696515175348 ],
-   "ViewAngle" : 0.6981317007977296,
-   "ZoomRate" : 1
   }
 }
