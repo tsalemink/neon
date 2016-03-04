@@ -21,9 +21,10 @@ from opencmiss.neon.core.mainapplication import MainApplication
 from opencmiss.neon.ui.mainwindow import MainWindow
 from opencmiss.neon.settings.mainsettings import setApplicationSettings
 
+
 def main():
     argv = sys.argv[:]
-    
+
     app = QtGui.QApplication(argv)
 
     setApplicationSettings(app)

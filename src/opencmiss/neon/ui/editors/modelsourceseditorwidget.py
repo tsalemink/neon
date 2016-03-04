@@ -23,14 +23,14 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
+from PySide import QtGui
 
-from PySide import QtCore, QtGui
-
-#from opencmiss.neon.core.neonregion import NeonRegion
+# from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonmodelsources import NeonModelSourceFile
 
 from opencmiss.neon.ui.editors.ui_modelsourceseditorwidget import Ui_ModelSourcesEditorWidget
 from opencmiss.neon.core.neonlogger import NeonLogger
+
 
 class ModelSourcesEditorWidget(QtGui.QWidget):
 
@@ -54,7 +54,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
         self._ui.addMenu.addAction(self._ui.action_Hello)
         self._ui.addMenu.show()
         self._ui.horizontalLayout.addWidget(self._ui.addMenu)
-        #self._ui.addMenu = QtGui.QMenu(self._ui.frame)
+        # self._ui.addMenu = QtGui.QMenu(self._ui.frame)
 
 
         self._makeConnections()

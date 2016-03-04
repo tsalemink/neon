@@ -190,7 +190,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             sceneviewer.beginChange()
             sceneviewer.setScene(self._previewZincScene)
             sceneviewer.setProjectionMode(Sceneviewer.PROJECTION_MODE_PARALLEL)
-            result, centre = colourBar.getCentre(3)
+            _, centre = colourBar.getCentre(3)
             eye = [centre[0], centre[1], centre[2] + 5.0]
             up = [-1.0, 0.0, 0.0]
             sceneviewer.setLookatParametersNonSkew(eye, centre, up)
@@ -399,7 +399,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-             NeonLogger.getLogger().error("Error setting spectrum component data range minimum")
+            NeonLogger.getLogger().error("Error setting spectrum component data range minimum")
         self._ui.lineEditDataRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMinimum()))
 
     def _dataRangeMaxEntered(self):
@@ -411,7 +411,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-             NeonLogger.getLogger().error("Error setting spectrum component data range maximum")
+            NeonLogger.getLogger().error("Error setting spectrum component data range maximum")
         self._ui.lineEditDataRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getRangeMaximum()))
 
     def _colourRangeMinEntered(self):
@@ -423,7 +423,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-             NeonLogger.getLogger().error("Error setting spectrum component colour range minimum")
+            NeonLogger.getLogger().error("Error setting spectrum component colour range minimum")
         self._ui.lineEditColourRangeMin.setText(FLOAT_STRING_FORMAT.format(sc.getColourMinimum()))
 
     def _colourRangeMaxEntered(self):
@@ -435,7 +435,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-             NeonLogger.getLogger().error("Error setting spectrum component colour range maximum")
+            NeonLogger.getLogger().error("Error setting spectrum component colour range maximum")
         self._ui.lineEditColourRangeMax.setText(FLOAT_STRING_FORMAT.format(sc.getColourMaximum()))
 
     def _extendBelowClicked(self):
@@ -472,7 +472,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             if result != ZINC_OK:
                 raise ValueError("")
         except ValueError:
-             NeonLogger.getLogger().error("Error setting log scale exaggeration")
+            NeonLogger.getLogger().error("Error setting log scale exaggeration")
         self._ui.lineEditExaggeration.setText(FLOAT_STRING_FORMAT.format(sc.getExaggeration()))
 
     def _moveDownSpectrumComponentClicked(self):
@@ -530,12 +530,13 @@ COLOUR_MAPPING_PREFIX = 'COLOUR_MAPPING_TYPE_'
 SCALE_TYPE_PREFIX = 'SCALE_TYPE_'
 PRIVATE_SPECTRUM_FORMAT = 'spectrum_{0}'
 
-from opencmiss.zinc.scenecoordinatesystem import SCENECOORDINATESYSTEM_NORMALISED_WINDOW_FILL as NORMALISED_WINDOW_FILL
 
 def createSpectrumListItem(name):
     i = QtGui.QListWidgetItem(name)
     i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
+
     return i
+
 
 def createItem(name, data, editable=False):
     i = QtGui.QListWidgetItem(name)

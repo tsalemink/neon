@@ -19,4 +19,15 @@ import importlib
 def importProblem(name):
     module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.core.problems')
     class_ = getattr(module_name, name)
+
+    return class_()
+
+
+def getMatchingVisualisationClass(simulation):
+    module_string = simulation.__class__.__module__
+    class_name = simulation.__class__.__name__
+    visualisation_module = module_string.replace('simulations', 'visualisations')
+    module_name = importlib.import_module(visualisation_module)
+    class_ = getattr(module_name, class_name)
+
     return class_()

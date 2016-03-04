@@ -26,6 +26,7 @@ def getExecutableForPlatform():
 class Ventilation(ExternalProblem):
 
     def __init__(self):
+        super(Ventilation, self).__init__()
         self.setName('Ventilation')
         self.setInBuiltExecutable(getExecutableForPlatform())
 
@@ -44,19 +45,19 @@ class Ventilation(ExternalProblem):
 
     def _defineDefaultFlowParameters(self):
         d = {}
-        d['FRC'] = 0.36000E+01
+        d['FRC'] = 3.035
         d['constrict'] = 1.00000E+00
         d['T_interval'] = 4.00000E+00
         d['Gdirn'] = 3
         d['press_in'] = 0.00000E+00
-        d['COV'] = 0.20000E+00
-        d['RMaxMean'] = 1.29000E+00
-        d['RMinMean'] = 0.78000E+00
-        d['i_to_e_ratio'] = 0.5000E+00
-        d['refvol'] = 0.60000E+00
-        d['volume_target'] = 8.00000E+05
-        d['pmus_step'] = -5.29559E+02
-        d['expiration_type'] = 'passive'
+        d['COV'] = 0.00000E+00
+        d['RMaxMean'] = 1.0000E+00
+        d['RMinMean'] = 1.0000E+00
+        d['i_to_e_ratio'] = 1.0000E+00
+        d['refvol'] = 0.50000E+00
+        d['volume_target'] = 1.00000E+06
+        d['pmus_step'] = -196.133
+        d['expiration_type'] = 'active'
         d['chest_wall_compliance'] = 2039.4324E+00
 
         return d
@@ -67,13 +68,16 @@ class Ventilation(ExternalProblem):
         d['tree_ipelem'] = ''
         d['tree_ipnode'] = ''
         d['tree_ipfield'] = ''
-        d['tree_exnode'] = ''
-        d['tree_exelem'] = ''
+        d['tree_ipmesh'] = ''
 
         d['flow_inbuilt'] = True
         d['flow_exelem'] = ''
 
-        d['out_exnode'] = ''
+        d['terminal_exnode'] = ''
+        d['tree_exnode'] = ''
+        d['tree_exelem'] = ''
+        d['ventilation_exelem'] = ''
+        d['radius_exelem'] = ''
 
         return d
 
@@ -95,16 +99,17 @@ class Ventilation(ExternalProblem):
     def updateFileInputOutputs(self, values):
         self._file_input_outputs.update(values)
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         d['executable_inbuilt'] = self.isInBuiltExecutable()
         d['executable'] = self.getExecutable() if not self.isInBuiltExecutable() else ''
         d['file_input_outputs'] = self._file_input_outputs
         d['main_parameters'] = self._main_parameters
         d['flow_parameters'] = self._flow_parameters
+
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
         executable_inbuilt = d['executable_inbuilt'] if 'executable_inbuilt' in d else True
         if executable_inbuilt:

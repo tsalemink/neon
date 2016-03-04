@@ -17,6 +17,7 @@ from PySide import QtGui
 
 from opencmiss.zinc.field import Field
 
+
 class FieldChooserWidget(QtGui.QComboBox):
 
     def __init__(self, parent=None):

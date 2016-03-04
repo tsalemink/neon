@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from opencmiss.neon.core.serialisers.base import BaseSerialiser
+from opencmiss.neon.core.serializers.base import BaseSerialiser
 
 
 class IdentifierValue(BaseSerialiser):
@@ -21,7 +21,7 @@ class IdentifierValue(BaseSerialiser):
     def __init__(self):
         pass
 
-    def serialise(self, parameters):
+    def serialize(self, parameters):
         string = ''
         for k in parameters:
             string += '{0} {1}\n'.format(k, parameters[k])

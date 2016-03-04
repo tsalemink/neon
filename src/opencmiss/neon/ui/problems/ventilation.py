@@ -21,11 +21,12 @@ from PySide import QtGui
 from opencmiss.neon.ui.problems.base import BaseProblem
 from opencmiss.neon.core.problems.constants import RespirationConstants
 from opencmiss.neon.ui.problems.ui_ventilationwidget import Ui_VentilationWidget
+from opencmiss.neon.core.problems.ventilation import getExecutableForPlatform
 
 
 class Ventilation(BaseProblem):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(Ventilation, self).__init__(parent)
         self._ui = Ui_VentilationWidget()
         self._ui.setupUi(self)
@@ -56,10 +57,7 @@ class Ventilation(BaseProblem):
         self._map_ui_to_keys = {}
         self._map_chooser_to_line_edit = {}
 
-        # Executable
-        self._map_keys_to_ui['executable'] = self._ui.lineEditExecutable
-        self._map_ui_to_keys[self._ui.lineEditExecutable] = 'executable'
-
+        # The executable ui is not added to the map, it is dealt with separately
         # File input outputs
         self._map_keys_to_ui['tree_inbuilt'] = self._ui.checkBoxInBuiltTree
         self._map_ui_to_keys[self._ui.checkBoxInBuiltTree] = 'tree_inbuilt'
@@ -69,16 +67,22 @@ class Ventilation(BaseProblem):
         self._map_ui_to_keys[self._ui.lineEditIpNode] = 'tree_ipnode'
         self._map_keys_to_ui['tree_ipfield'] = self._ui.lineEditIpField
         self._map_ui_to_keys[self._ui.lineEditIpField] = 'tree_ipfield'
-        self._map_keys_to_ui['tree_exnode'] = self._ui.lineEditExNode
-        self._map_ui_to_keys[self._ui.lineEditExNode] = 'tree_exnode'
-        self._map_keys_to_ui['tree_exelem'] = self._ui.lineEditExElem
-        self._map_ui_to_keys[self._ui.lineEditExElem] = 'tree_exelem'
+        self._map_keys_to_ui['tree_ipmesh'] = self._ui.lineEditIpMesh
+        self._map_ui_to_keys[self._ui.lineEditIpMesh] = 'tree_ipmesh'
         self._map_keys_to_ui['flow_inbuilt'] = self._ui.checkBoxInBuiltFlow
         self._map_ui_to_keys[self._ui.checkBoxInBuiltFlow] = 'flow_inbuilt'
         self._map_keys_to_ui['flow_exelem'] = self._ui.lineEditFlow
         self._map_ui_to_keys[self._ui.lineEditFlow] = 'flow_exelem'
-        self._map_keys_to_ui['out_exnode'] = self._ui.lineEditOutExNode
-        self._map_ui_to_keys[self._ui.lineEditOutExNode] = 'out_exnode'
+        self._map_keys_to_ui['terminal_exnode'] = self._ui.lineEditTerminalExNode
+        self._map_ui_to_keys[self._ui.lineEditTerminalExNode] = 'terminal_exnode'
+        self._map_keys_to_ui['tree_exnode'] = self._ui.lineEditTreeExNode
+        self._map_ui_to_keys[self._ui.lineEditTreeExNode] = 'tree_exnode'
+        self._map_keys_to_ui['tree_exelem'] = self._ui.lineEditTreeExElem
+        self._map_ui_to_keys[self._ui.lineEditTreeExElem] = 'tree_exelem'
+        self._map_keys_to_ui['ventilation_exelem'] = self._ui.lineEditVentilationExElem
+        self._map_ui_to_keys[self._ui.lineEditVentilationExElem] = 'ventilation_exelem'
+        self._map_keys_to_ui['radius_exelem'] = self._ui.lineEditRadiusExElem
+        self._map_ui_to_keys[self._ui.lineEditRadiusExElem] = 'radius_exelem'
 
         # Main parameters
         self._map_keys_to_ui['dt'] = self._ui.doubleSpinBoxTimeStep
@@ -122,23 +126,30 @@ class Ventilation(BaseProblem):
 
         # Chooser button buddies
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseExecutable] = self._ui.lineEditExecutable
-        self._map_chooser_to_line_edit[self._ui.pushButtonChooseExElem] = self._ui.lineEditExElem
-        self._map_chooser_to_line_edit[self._ui.pushButtonChooseExNode] = self._ui.lineEditExNode
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseTreeExElem] = self._ui.lineEditTreeExElem
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseTreeExNode] = self._ui.lineEditTreeExNode
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseFlow] = self._ui.lineEditFlow
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseIpElem] = self._ui.lineEditIpElem
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseIpField] = self._ui.lineEditIpField
         self._map_chooser_to_line_edit[self._ui.pushButtonChooseIpNode] = self._ui.lineEditIpNode
-        self._map_chooser_to_line_edit[self._ui.pushButtonChooseOutExNode] = self._ui.lineEditOutExNode
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseIpMesh] = self._ui.lineEditIpMesh
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseTerminalExNode] = self._ui.lineEditTerminalExNode
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseVentilationExElem] = self._ui.lineEditVentilationExElem
+        self._map_chooser_to_line_edit[self._ui.pushButtonChooseRadiusExElem] = self._ui.lineEditRadiusExElem
 
     def _makeConnections(self):
-        self._ui.pushButtonChooseExecutable.clicked.connect(self._chooserClicked)
-        self._ui.pushButtonChooseExElem.clicked.connect(self._chooserClicked)
-        self._ui.pushButtonChooseExNode.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseExecutable.clicked.connect(self._executableChooserClicked)
+
+        self._ui.pushButtonChooseTreeExElem.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseTreeExNode.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseFlow.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseIpElem.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseIpField.clicked.connect(self._chooserClicked)
         self._ui.pushButtonChooseIpNode.clicked.connect(self._chooserClicked)
-        self._ui.pushButtonChooseOutExNode.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseIpMesh.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseTerminalExNode.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseVentilationExElem.clicked.connect(self._chooserClicked)
+        self._ui.pushButtonChooseRadiusExElem.clicked.connect(self._chooserClicked)
 
         self._ui.checkBoxInBuiltExecutable.clicked.connect(self._inBuiltExecutableClicked)
         self._ui.lineEditExecutable.editingFinished.connect(self._executableLocationChanged)
@@ -171,6 +182,9 @@ class Ventilation(BaseProblem):
         state = self._ui.checkBoxInBuiltExecutable.isChecked()
         self._ui.lineEditExecutable.setEnabled(not state)
         self._ui.pushButtonChooseExecutable.setEnabled(not state)
+        if state:
+            self._ui.lineEditExecutable.clear()
+            self._problem.setInBuiltExecutable(getExecutableForPlatform())
 
     def _inBuiltFlowClicked(self):
         state = self._ui.checkBoxInBuiltFlow.isChecked()
@@ -183,10 +197,6 @@ class Ventilation(BaseProblem):
         state = self._ui.checkBoxInBuiltTree.isChecked()
         key = self._map_ui_to_keys[self._ui.checkBoxInBuiltTree]
         self._problem.updateFileInputOutputs({key: state})
-        self._ui.lineEditExElem.setEnabled(not state)
-        self._ui.pushButtonChooseExElem.setEnabled(not state)
-        self._ui.lineEditExNode.setEnabled(not state)
-        self._ui.pushButtonChooseExNode.setEnabled(not state)
         self._ui.lineEditIpElem.setEnabled(not state)
         self._ui.pushButtonChooseIpElem.setEnabled(not state)
         self._ui.lineEditIpField.setEnabled(not state)
@@ -205,7 +215,7 @@ class Ventilation(BaseProblem):
         return key in check_boxes
 
     def _isOutputFile(self, key):
-        output_files = ['out_exnode']
+        output_files = ['terminal_exnode', 'tree_exnode', 'tree_exelem', 'ventilation_exelem', 'radius_exelem']
 
         return key in output_files
 
@@ -246,6 +256,18 @@ class Ventilation(BaseProblem):
     def _executableLocationChanged(self):
         self._problem.setExecutable(self._ui.lineEditExecutable.text())
 
+    def _executableChooserClicked(self):
+        sender = self.sender()
+        line_edit = self._map_chooser_to_line_edit[sender]
+        text = line_edit.text()
+        location = os.path.dirname(text) if text else self._location if self._location is not None else os.path.expanduser("~")
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose executable ...', dir=location,
+                                                        filter="Executable (*.exe *);;All (*.* *)")
+        if filename:
+            self._location = os.path.dirname(filename)
+            self._problem.setExecutable(filename)
+            line_edit.setText(filename)
+
     def _chooserClicked(self):
         sender = self.sender()
         line_edit = self._map_chooser_to_line_edit[sender]
@@ -254,10 +276,10 @@ class Ventilation(BaseProblem):
         location = os.path.dirname(text) if text else self._location if self._location is not None else os.path.expanduser("~")
         if self._isOutputFile(key):
             filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=location,
-                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.*)")
+                                                            filter="Iron, Zinc Files (*.exnode *.exelem);;All (*.* *)")
         else:
             filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=location,
-                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.*)")
+                                                            filter="Iron, Zinc Files (*.exnode *.exelem *.ipelem *.ipnode *.ipfiel);;All (*.* *)")
         if filename:
             self._location = os.path.dirname(filename)
             self._problem.updateFileInputOutputs({key: filename})
@@ -273,24 +295,24 @@ class Ventilation(BaseProblem):
         sender = self.sender()
         key = self._map_ui_to_keys[sender]
         if self._isEnumParameter(key):
-            self._problem.updateFlowParameters({key: self._map_expiration_index_to_string[sender.value()]})
+            self._problem.updateFlowParameters({key: self._map_expiration_index_to_string[sender.currentIndex()]})
         else:
             self._problem.updateFlowParameters({key: sender.value()})
 
-    def serialise(self):
+    def serialize(self):
         d = {}
         d['location'] = self._location
         d['active_tab'] = self._ui.tabWidget.currentIndex()
-        d['problem'] = self._problem.serialise()
+        d['problem'] = self._problem.serialize()
 
         return json.dumps(d)
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         d = json.loads(string)
         self._location = d['location'] if 'location' in d else None
         self._ui.tabWidget.setCurrentIndex(d['active_tab'] if 'active_tab' in d else 2)
         if 'problem' in d:
-            self._problem.deserialise(d['problem'])
+            self._problem.deserialize(d['problem'])
 
         self.updateUi()
 
@@ -299,6 +321,3 @@ class Ventilation(BaseProblem):
         self._updateFileInputOutputs()
         self._updateMainParameters()
         self._updateFlowParameters()
-
-    def validate(self):
-        return self._problems.validate()

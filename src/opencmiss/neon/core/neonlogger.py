@@ -16,45 +16,55 @@
 
 import sys
 import logging
+
 from PySide import QtCore
+
 from opencmiss.zinc.logger import Logger
+
+ENABLE_STD_STREAM_CAPTURE = True
+
 
 class CustomStream(QtCore.QObject):
     _stdout = None
     _stderr = None
     messageWritten = QtCore.Signal([str, str])
-    
-    def flush( self ):
+
+    def flush(self):
         pass
-    
-    def fileno( self ):
+
+    def fileno(self):
         return -1
-    
-    def write( self, msg, level = "INFORMATION"):
-        if ( not self.signalsBlocked() ):
+
+    def write(self, msg, level="INFORMATION"):
+        if (not self.signalsBlocked()):
             self.messageWritten.emit(msg, level)
-    
+
     @staticmethod
     def stdout():
-        if ( not CustomStream._stdout ):
+        if (not CustomStream._stdout):
             CustomStream._stdout = CustomStream()
-            sys.stdout = CustomStream._stdout
+            sys.stdout = CustomStream._stdout if ENABLE_STD_STREAM_CAPTURE else sys.stdout
         return CustomStream._stdout
-    
+
     @staticmethod
     def stderr():
-        if ( not CustomStream._stderr ):
+        if (not CustomStream._stderr):
             CustomStream._stderr = CustomStream()
-            sys.stderr = CustomStream._stderr
+            sys.stderr = CustomStream._stderr if ENABLE_STD_STREAM_CAPTURE else sys.stderr
         return CustomStream._stderr
 
+
 class LogsToWidgetHandler(logging.Handler):
+
     def __init__(self):
         logging.Handler.__init__(self)
+
     def emit(self, record):
         levelString = record.levelname
         record = self.format(record)
-        if record: CustomStream.stdout().write('%s\n'%record, levelString)
+        if record:
+            CustomStream.stdout().write('%s\n' % record, levelString)
+
 
 def setup_custom_logger(name):
 
@@ -67,30 +77,31 @@ def setup_custom_logger(name):
     neonLogger.setLevel(logging.DEBUG)
     neonLogger.addHandler(handler)
     return neonLogger
-    
-class NeonLogger():
+
+
+class NeonLogger(object):
     _logger = None
     _zincLogger = None
     _loggerNotifier = None
-    
+
     @staticmethod
     def getLogger():
-        if ( not NeonLogger._logger ):
+        if (not NeonLogger._logger):
             NeonLogger._logger = setup_custom_logger("Neon")
         return NeonLogger._logger
 
     @staticmethod
     def writeErrorMessage(string):
         NeonLogger.getLogger().error(string)
-        
+
     @staticmethod
     def writeWarningMessage(string):
         NeonLogger.getLogger().warning(string)
-    
+
     @staticmethod
     def writeInformationMessage(string):
         NeonLogger.getLogger().info(string)
-    
+
     @staticmethod
     def loggerCallback(event):
         if event.getChangeFlags() == Logger.CHANGE_FLAG_NEW_MESSAGE:
@@ -101,7 +112,7 @@ class NeonLogger():
                 NeonLogger.writeWarningMessage(text)
             elif event.getMessageType() == Logger.MESSAGE_TYPE_INFORMATION:
                 NeonLogger.writeInformationMessage(text)
-    
+
     @staticmethod
     def setZincContext(zincContext):
         if NeonLogger._loggerNotifier:

@@ -16,19 +16,19 @@
 from PySide import QtCore
 
 
-class ProblemModel(QtCore.QAbstractListModel):
+class ProjectModel(QtCore.QAbstractListModel):
 
     def __init__(self, parent=None):
-        super(ProblemModel, self).__init__(parent)
-        self._problems = []
+        super(ProjectModel, self).__init__(parent)
+        self._projects = []
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._problems)
+        return len(self._projects)
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role == QtCore.Qt.DisplayRole:
             if orientation == QtCore.Qt.Orientation.Horizontal:
-                return 'Problem'
+                return 'Project'
             else:
                 return str(section)
 
@@ -39,16 +39,39 @@ class ProblemModel(QtCore.QAbstractListModel):
             return None
 
         if role == QtCore.Qt.DisplayRole:
-            return self._problems[index.row()].getName()
+            return self._projects[index.row()].getName()
 
         return None
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
-        self._problems[index.row()] = value
+        self._projects[index.row()] = value
 
     def insertRow(self, row, parent_index=None):
-        self._problems.insert(row, None)
+        self._projects.insert(row, None)
         return True
 
-    def getProblem(self, index):
-        return self._problems[index]
+    def getProject(self, index):
+        if not index.isValid():
+            return None
+        return self._projects[index.row()]
+
+    def getProjectName(self, index):
+        if not index.isValid():
+            return ''
+
+        return self._projects[index.row()].getName()
+
+    def getProjectIdentifier(self, index):
+        if not index.isValid():
+            return None
+
+        return self._projects[index.row()].getIdentifier()
+
+    def getIndex(self, project):
+        for r in range(self.rowCount()):
+            index = self.index(r, 0)
+            if project.getIdentifier() == self.getProjectIdentifier(index):
+                return index
+
+        index = self.index(-1, 0)
+        return index

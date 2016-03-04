@@ -14,6 +14,9 @@
    limitations under the License.
 '''
 
-
-names = ['Ventilation',
-         ]
+active_project_names = [
+    'Generic',
+    'Ventilation',
+    'Biomeng321Lab1',
+    'Biomeng321Lab2',
+]

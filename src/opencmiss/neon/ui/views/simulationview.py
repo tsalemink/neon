@@ -16,49 +16,51 @@
 from PySide import QtCore
 
 from opencmiss.neon.ui.views.base import BaseView
-from opencmiss.neon.ui.misc.factory import generateRelatedClasses
+from opencmiss.neon.ui.misc.factory import instantiateRelatedClasses
 
 from opencmiss.neon.ui.views.ui_simulationview import Ui_SimulationView
 
 
 class SimulationView(BaseView):
 
-    runClicked = QtCore.Signal()
-
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(SimulationView, self).__init__(parent)
         self._name = 'Simulation'
 
         self._ui = Ui_SimulationView()
         self._ui.setupUi(self)
+        self._ui.shared_opengl_widget = shared_opengl_widget
 
         self._makeConnections()
 
     def _makeConnections(self):
-        self._ui.pushButtonRun.clicked.connect(self.runClicked)
-
-    def _setupSimulations(self, model):
-        classes = generateRelatedClasses(model, 'simulations')
-        for c in classes:
-            c.setParent(self._ui.stackedWidgetSimulationView)
-            self._ui.stackedWidgetSimulationView.addWidget(c)
-
-    def selectionChanged(self, current_index, previous_index):
-        self._ui.stackedWidgetSimulationView.setCurrentIndex(current_index)
-
-    def setModel(self, model):
-        self._setupSimulations(model)
-
-    def setZincContext(self, zincContext):
         pass
 
+    def setCurrentIndex(self, index):
+        self._ui.stackedWidgetSimulationView.setCurrentIndex(index)
+
+    def setupSimulations(self, model):
+        swsv = self._ui.stackedWidgetSimulationView
+        classes = instantiateRelatedClasses(model, 'simulations', self._ui.shared_opengl_widget, self)
+        for c in classes:
+            c.setParent(swsv)
+            project = model.getProject(model.index(swsv.count(), 0))
+            c.setProblem(project.getProblem())
+            swsv.addWidget(c)
+
     def setProblem(self, problem):
-        simulation = self._ui.stackedWidgetSimulationView.currentWidget()
-        simulation.setProblem(problem)
+        widget = self._ui.stackedWidgetSimulationView.currentWidget()
+        widget.setProblem(problem)
 
     def setPreferences(self, preferences):
-        simulation = self._ui.stackedWidgetSimulationView.currentWidget()
-        simulation.setPreferences(preferences)
+        pass
+
+    def getSimulation(self):
+        widget = self._ui.stackedWidgetSimulationView.currentWidget()
+        return widget.getSimulation()
+
+    def setZincContext(self, zinc_context):
+        pass
 
     def run(self):
         simulation = self._ui.stackedWidgetSimulationView.currentWidget()

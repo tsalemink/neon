@@ -20,6 +20,9 @@ from opencmiss.zinc.sceneviewerinput import Sceneviewerinput
 
 button_map = {QtCore.Qt.LeftButton: Sceneviewerinput.BUTTON_TYPE_LEFT,
               QtCore.Qt.MidButton: Sceneviewerinput.BUTTON_TYPE_MIDDLE,
+              QtCore.Qt.MiddleButton: Sceneviewerinput.BUTTON_TYPE_MIDDLE,
+              QtCore.Qt.XButton1: Sceneviewerinput.BUTTON_TYPE_SCROLL_DOWN,
+              QtCore.Qt.XButton2: Sceneviewerinput.BUTTON_TYPE_SCROLL_UP,
               QtCore.Qt.RightButton: Sceneviewerinput.BUTTON_TYPE_RIGHT}
 
 

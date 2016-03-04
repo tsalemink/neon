@@ -26,14 +26,14 @@ class BaseProblem(QtGui.QWidget):
         self._problem = problem
         self.updateUi()
 
+    def updateUi(self):
+        pass
+
     def getName(self):
         return self._problem.getName()
 
-    def serialise(self):
+    def serialize(self):
         return ''
 
-    def deserialise(self, string):
+    def deserialize(self, string):
         pass
-
-    def validate(self):
-        return False

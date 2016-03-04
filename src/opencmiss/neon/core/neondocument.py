@@ -13,6 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import json
+
+from opencmiss.neon.core.neonsceneviewer import NeonSceneviewer
 from opencmiss.neon.settings import mainsettings
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonspectrums import NeonSpectrums
@@ -20,10 +23,20 @@ from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
 from opencmiss.zinc.material import Material
 from opencmiss.neon.core.neonlogger import NeonLogger
+from opencmiss.neon.core.neonproject import NeonProject
+
 
 class NeonDocument(object):
 
     def __init__(self):
+        self._project = None
+        self._zincContext = None
+        self._rootRegion = None
+        self._spectrums = None
+        self._tessellations = None
+        self._sceneviewer = None
+
+    def initialiseVisualisationContents(self):
         self._zincContext = Context("Neon")
 
         sceneviewermodule = self._zincContext.getSceneviewermodule()
@@ -47,19 +60,28 @@ class NeonDocument(object):
         zincRootRegion = self._zincContext.getDefaultRegion()
         self._rootRegion = NeonRegion(name=None, zincRegion=zincRootRegion, parent=None)
         self._rootRegion.connectRegionChange(self._regionChange)
-        self._rootRegion._document = self
 
         self._spectrums = NeonSpectrums(self._zincContext)
         self._tessellations = NeonTessellations(self._zincContext)
+        self._sceneviewer = NeonSceneviewer(self._zincContext)
         NeonLogger.setZincContext(self._zincContext)
 
-    def freeContents(self):
+    def freeVisualisationContents(self):
         """
         Deletes subobjects of document to help free memory held by Zinc objects earlier.
         """
         self._rootRegion.freeContents()
+        del self._sceneviewer
+        del self._tessellations
+        del self._spectrums
         del self._rootRegion
         del self._zincContext
+
+    def initialiseProject(self):
+        self._project = NeonProject()
+
+    def freeProject(self):
+        self._project = None
 
     def _regionChange(self, changedRegion, treeChange):
         """
@@ -71,24 +93,31 @@ class NeonDocument(object):
             zincRootRegion = changedRegion.getZincRegion()
             self._zincContext.setDefaultRegion(zincRootRegion)
 
-    def deserialize(self, dictInput):
+    def deserialize(self, state):
         '''
         :param dictInput: Python dict of Neon serialization
         :return: True on success, False on failure
         '''
-        if not (("OpenCMISS-Neon Version" in dictInput) and ("RootRegion" in dictInput)):
+        d = json.loads(state)
+        if not (("OpenCMISS-Neon Version" in d) and ("RootRegion" in d)):
             NeonLogger.getLogger().error("Invalid format for Neon")
             return False
-        _ = dictInput["OpenCMISS-Neon Version"]
+        neon_version = d["OpenCMISS-Neon Version"]
         # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
         # zincRegion.beginHierarchicalChange()
         result = True
         try:
-            if "Tessellations" in dictInput:
-                self._tessellations.deserialize(dictInput["Tessellations"])
-            if "Spectrums" in dictInput:
-                self._spectrums.deserialize(dictInput["Spectrums"])
-            self._rootRegion.deserialize(dictInput["RootRegion"])
+            if "Project" in d:
+                self._project.deserialize(d["Project"])
+            if "Tessellations" in d:
+                self._tessellations.deserialize(d["Tessellations"])
+            if "Spectrums" in d:
+                self._spectrums.deserialize(d["Spectrums"])
+            if "Sceneviewer" in d:
+                self._sceneviewer.deserialize(d["Sceneviewer"])
+            self._rootRegion.deserialize(d["RootRegion"])
+            if neon_version == '0.1.0':
+                self._problem.setName('Generic')
         except:
             NeonLogger.getLogger().error("Exception in NeonDocument.deserialize")
             result = False
@@ -101,10 +130,12 @@ class NeonDocument(object):
         outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
         dictOutput["OpenCMISS-Neon Version"] = outputVersion
+        dictOutput["Project"] = self._project.serialize()
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()
         dictOutput["RootRegion"] = self._rootRegion.serialize(basePath)
-        return dictOutput
+        dictOutput["Sceneviewer"] = self._sceneviewer.serialize()
+        return json.dumps(dictOutput, default=lambda o: o.__dict__, sort_keys=True, indent=2)
 
     def getZincContext(self):
         return self._zincContext
@@ -117,3 +148,12 @@ class NeonDocument(object):
 
     def getTessellations(self):
         return self._tessellations
+
+    def setProject(self, project):
+        self._project = project
+
+    def getProject(self):
+        return self._project
+
+    def getSceneviewer(self):
+        return self._sceneviewer

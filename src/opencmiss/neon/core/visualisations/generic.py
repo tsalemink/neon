@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,15 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
+from opencmiss.neon.core.visualisations.base import BaseVisualisation
 
 
-class BaseSerialiser(object):
+class Generic(BaseVisualisation):
 
     def __init__(self):
-        pass
+        super(Generic, self).__init__()
+        self.setName('Generic Visualisation')
 
-    def serialise(self, parameters):
-        '''
-        Takes a dictionary of parameters and serialisers them.
-        '''
-        raise NotImplementedError()
+    def visualise(self, document):
+        pass

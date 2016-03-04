@@ -78,7 +78,7 @@ class SnapshotDialog(QtGui.QDialog):
     def setScene(self, scene):
         self._ui.widgetPreview.getSceneviewer().setScene(scene)
 
-    def serialise(self):
+    def serialize(self):
         state = {}
         state['filename'] = self.getFilename()
         state['wysiwyg'] = self.getWYSIWYG()
@@ -87,7 +87,7 @@ class SnapshotDialog(QtGui.QDialog):
         state['height'] = self.getHeight()
         return json.dumps(state)
 
-    def deserialise(self, state):
+    def deserialize(self, state):
         try:
             d = json.loads(state)
             self.setFilename(d['filename'])

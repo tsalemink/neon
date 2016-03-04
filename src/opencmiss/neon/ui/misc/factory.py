@@ -15,18 +15,17 @@
 '''
 import importlib
 
-from PySide import QtCore
 
-
-def generateRelatedClasses(model, view):
+def instantiateRelatedClasses(model, view, shared_gl_widget, parent):
     classes = []
     for row in range(model.rowCount()):
-        index = model.index(row)
-        name = model.data(index, QtCore.Qt.DisplayRole)
-        module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.ui.' + view)
-        class_ = getattr(module_name, name)
-        classes.append(class_())
-#         view = class_(self._ui.stackedWidgetProblemView)
-#         self._ui.stackedWidgetProblemView.addWidget(view)
+        index = model.index(row, 0)
+        project = model.getProject(index)
+        module = project.__module__.replace('core.neonproject', 'ui.' + view)
+        identifier = project.getIdentifier()
+
+        module_name = importlib.import_module(module + '.' + identifier.lower())
+        class_ = getattr(module_name, identifier)
+        classes.append(class_(shared_gl_widget, parent))
 
     return classes
