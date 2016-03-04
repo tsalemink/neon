@@ -26,12 +26,13 @@ class ProblemView(BaseView):
 
     runClicked = QtCore.Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(ProblemView, self).__init__(parent)
         self._name = 'Problem View'
 
         self._ui = Ui_ProblemView()
         self._ui.setupUi(self)
+        self._ui.shared_opengl_widget = shared_opengl_widget
 
         self._makeConnections()
 
@@ -42,7 +43,7 @@ class ProblemView(BaseView):
         pass
 
     def setupProblems(self, model):
-        classes = instantiateRelatedClasses(model, 'problems')
+        classes = instantiateRelatedClasses(model, 'problems', self._ui.shared_opengl_widget, self)
         for c in classes:
             c.setParent(self._ui.stackedWidgetProblemView)
             project = model.getProject(model.index(self._ui.stackedWidgetProblemView.count(), 0))

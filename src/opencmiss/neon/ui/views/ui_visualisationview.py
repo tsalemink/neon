@@ -10,13 +10,13 @@
 from PySide import QtCore, QtGui
 
 class Ui_VisualisationView(object):
-    def setupUi(self, VisualisationView):
+    def setupUi(self, shared_opengl_widget, VisualisationView):
         VisualisationView.setObjectName("VisualisationView")
         VisualisationView.resize(477, 336)
         self.horizontalLayout = QtGui.QHBoxLayout(VisualisationView)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.widget = SceneviewerWidget(VisualisationView)
+        self.widget = SceneviewerWidget(VisualisationView, shared_opengl_widget)
         self.widget.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.widget.setObjectName("widget")
         self.horizontalLayout.addWidget(self.widget)

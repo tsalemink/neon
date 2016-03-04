@@ -29,7 +29,7 @@ except ImportError:
 
 class Ventilation(BaseSimulationView):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_gl_widget, parent=None):
         super(Ventilation, self).__init__(parent)
         self._ui = Ui_VentilationWidget()
         self._ui.setupUi(self)

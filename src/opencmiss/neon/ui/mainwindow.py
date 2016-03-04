@@ -15,7 +15,7 @@
 '''
 import os.path
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtOpenGL
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
@@ -47,14 +47,16 @@ class MainWindow(QtGui.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
+        self._ui.one_gl_widget_to_rule_them_all = QtOpenGL.QGLWidget()
+
         self._visualisation_view_state_update_pending = False
 
         # List of possible views
-        self._visualisation_view = VisualisationView(self)
+        self._visualisation_view = VisualisationView(self._ui.one_gl_widget_to_rule_them_all, self)
         self._visualisation_view_ready = False
-        self._problem_view = ProblemView(self)
+        self._problem_view = ProblemView(self._ui.one_gl_widget_to_rule_them_all, self)
         self._problem_view.setupProblems(model.getProjectModel())
-        self._simulation_view = SimulationView(self)
+        self._simulation_view = SimulationView(self._ui.one_gl_widget_to_rule_them_all, self)
         self._simulation_view.setupSimulations(model.getProjectModel())
 
         self._view_states = {}
@@ -63,7 +65,6 @@ class MainWindow(QtGui.QMainWindow):
         self._view_states[self._simulation_view] = ''
 
         view_list = [self._problem_view, self._simulation_view, self._visualisation_view]
-        self._shared_gl_widget = self._visualisation_view.getShareGLWidget()
 
         self._location = None  # The last location/directory used by the application
         self._current_view = None
@@ -184,7 +185,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetSpectrumEditor = QtGui.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
         self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
-        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._shared_gl_widget)
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._ui.one_gl_widget_to_rule_them_all)
         self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         self.dockWidgetSpectrumEditor.setHidden(True)
@@ -239,7 +240,7 @@ class MainWindow(QtGui.QMainWindow):
         return action
 
     def _createDialogs(self):
-        self._snapshot_dialog = SnapshotDialog(self, self._shared_gl_widget)
+        self._snapshot_dialog = SnapshotDialog(self, self._ui.one_gl_widget_to_rule_them_all)
         self._snapshot_dialog.setZincContext(self._model.getZincContext())
 
         self._preferences_dialog = PreferencesDialog(self)

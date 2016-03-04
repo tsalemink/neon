@@ -13,7 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+import json
+
 from PySide import QtGui
+
+from opencmiss.zinc.context import Context
 
 from opencmiss.neon.ui.simulations.base import BaseSimulationView
 from opencmiss.neon.core.simulations.biomeng321lab1 import Biomeng321Lab1 as Biomeng321Lab1Simulation
@@ -22,13 +26,17 @@ from opencmiss.neon.ui.simulations.ui_biomeng321lab1 import Ui_Biomeng321Lab1
 from opencmiss.neon.ui.misc.utils import set_wait_cursor
 from opencmiss.neon.core.problems.biomeng321lab1 import BOUNDARY_CONDITIONS
 
+from opencmiss.neon.core.visualisations.biomeng321lab1 import default_visualisation
+
 
 class Biomeng321Lab1(BaseSimulationView):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_gl_widget, parent=None):
         super(Biomeng321Lab1, self).__init__(parent)
         self._ui = Ui_Biomeng321Lab1()
-        self._ui.setupUi(self)
+        self._ui.setupUi(shared_gl_widget, self)
+
+        self._zinc_context = None
 
         self._map_name_ui = self._createNameUiMap()
 
@@ -62,6 +70,32 @@ class Biomeng321Lab1(BaseSimulationView):
             ui.resizeColumnsToContents()
             ui.resizeRowsToContents()
 
+    def _displayGraphics(self):
+        if self._zinc_context is not None:
+            del self._zinc_context
+            self._zinc_context = None
+
+        self._zinc_context = Context('Lab1')
+        materialmodule = self._zinc_context.getMaterialmodule()
+        materialmodule.defineStandardMaterials()
+        glyphmodule = self._zinc_context.getGlyphmodule()
+        glyphmodule.defineStandardGlyphs()
+        # tessellation_module = self._zinc_context.getTessellationmodule()
+        # tessellation_module.readDescription(json.dumps(default_visualisation['Tessellations']))
+        self.setZincContext(self._zinc_context)
+
+        node_filename = self._simulation.getNodeFilename()
+        element_filename = self._simulation.getElementFilename()
+        root_region = self._zinc_context.getDefaultRegion()
+        root_region.readFile(node_filename)
+        root_region.readFile(element_filename)
+        field_module = root_region.getFieldmodule()
+        field_module.defineAllFaces()
+        scene = root_region.getScene()
+        scene.readDescription(json.dumps(default_visualisation['RootRegion']['Scene']), True)
+        self._ui.widgetSceneviewer.getSceneviewer().readDescription(json.dumps(default_visualisation['Sceneviewer']))
+        self._ui.widgetSceneviewer.getSceneviewer().viewAll()
+
     def setZincContext(self, context):
         self._ui.widgetSceneviewer.setContext(context)
 
@@ -81,6 +115,7 @@ class Biomeng321Lab1(BaseSimulationView):
 
     def cleanup(self):
         self._simulation.cleanup()
+        self._displayGraphics()
 
     def validate(self):
         return True

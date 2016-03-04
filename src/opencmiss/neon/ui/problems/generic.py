@@ -19,7 +19,7 @@ from opencmiss.neon.ui.problems.ui_generic import Ui_Generic
 
 class Generic(BaseProblem):
 
-    def __init__(self, parent=None):
+    def __init__(self, shared_opengl_widget, parent=None):
         super(Generic, self).__init__(parent)
         self._ui = Ui_Generic()
         self._ui.setupUi(self)
