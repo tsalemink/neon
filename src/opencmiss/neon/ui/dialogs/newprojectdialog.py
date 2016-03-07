@@ -41,6 +41,7 @@ class NewProjectDialog(QtGui.QDialog):
 
     def _makeConnections(self):
         self._ui.toolButtonRecent.clicked.connect(self._recentClicked)
+        self._ui.listViewProjects.doubleClicked.connect(self._itemDoubleClicked)
         if BIOMENG321:
             self._proxy_model.setFilterFixedString('Biomeng')
         else:
@@ -51,6 +52,9 @@ class NewProjectDialog(QtGui.QDialog):
         self._ui.listViewProjects.setModel(self._proxy_model)
         selection_model = self._ui.listViewProjects.selectionModel()
         selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtGui.QItemSelectionModel.Select)
+
+    def _itemDoubleClicked(self, index):
+        self.accept()
 
     def setRecentActions(self, actions):
         self._ui.toolButtonRecent.addActions(actions)

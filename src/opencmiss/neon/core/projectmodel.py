@@ -50,6 +50,15 @@ class ProjectModel(QtCore.QAbstractListModel):
         self._projects.insert(row, None)
         return True
 
+    def getDefaultProject(self):
+        '''
+        :return Project of the default 'Generic' type or None if not found
+        '''
+        for project in self._projects:
+            if project.getIdentifier() == 'Generic':
+                return project;
+        return None
+
     def getProject(self, index):
         if not index.isValid():
             return None
