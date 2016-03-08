@@ -102,7 +102,7 @@ class NeonDocument(object):
         if not (("OpenCMISS-Neon Version" in d) and ("RootRegion" in d)):
             raise NeonError("Invalid Neon file")
         neon_version = d["OpenCMISS-Neon Version"]
-        if cmp(neon_version, mainsettings.VERSION_LIST) > 0:
+        if neon_version > mainsettings.VERSION_LIST:
             raise NeonError("File version is greater than this version of Neon (" + mainsettings.VERSION_STRING + "). Please update your Neon application.")
         # Ideally would enclose following in:
         # try: zincRegion.beginHierarchicalChange() ... finally: zincRegion.endHierarchicalChange()
