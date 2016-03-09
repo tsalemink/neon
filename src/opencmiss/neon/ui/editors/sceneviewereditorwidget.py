@@ -269,14 +269,14 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         except:
             print "Invalid background colour"
         self.backgroundColourDisplay()
-        
+
     def antialiasDisplay(self):
         '''
         Display the current scene viewer antialias
         '''
         antialiasValue = self._sceneviewer.getAntialiasSampling()
         self._ui.antialias.setText(str(antialiasValue))
-        
+
     def antialiasEntered(self):
         '''
         Set scene viewer diagonal view angle from value in the view angle widget
@@ -288,25 +288,23 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         except:
             print "Invalid antialias"
         self.antialiasDisplay()
-    
+
     def lightBothSidesDisplay(self):
         flag = self._sceneviewer.getLightingTwoSided(state)
         self._ui.light_both_sides_checkbox.setCheckState()
-        
+
     def lightBothSidesStateChanged(self, state):
         '''
         Set scene viewer lighting two sided value
         '''
         self._sceneviewer.setLightingTwoSided(state)
-        self.lightBothSidesDisplay(QtCore.Checked)
-        
+
     def perturbLineDisplay(self):
-        flag = self._sceneviewer.getPerturbLineFlag(state)
+        flag = self._sceneviewer.getPerturbLinesFlag(state)
         self._ui.perturbline_checkbox.setCheckState()
-        
+
     def perturbLineStateChanged(self, state):
         '''
-        Set scene viewer perturbline value
+        Set scene viewer perturb lines value
         '''
-        self._sceneviewer.setPerturbLineFlag(state)
-        self.perturbLineDisplay(QtCore.Checked)
+        self._sceneviewer.setPerturbLinesFlag(state)
