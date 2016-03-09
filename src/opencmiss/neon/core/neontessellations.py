@@ -16,7 +16,7 @@
 import json
 
 from opencmiss.zinc.status import OK as ZINC_OK
-from opencmiss.neon.core.neonlogger import NeonLogger
+from opencmiss.neon.core.misc.neonerror import NeonError
 
 
 class NeonTessellations(object):
@@ -35,7 +35,7 @@ class NeonTessellations(object):
         tessellationsDescription = json.dumps(dictInput)
         result = self._tessellationmodule.readDescription(tessellationsDescription)
         if result != ZINC_OK:
-            NeonLogger.getLogger().error("Failed to read tessellations")
+             raise NeonError("Failed to read tessellations")
 
     def serialize(self):
         tessellationsDescription = self._tessellationmodule.writeDescription()
