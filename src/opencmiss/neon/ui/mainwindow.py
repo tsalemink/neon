@@ -29,6 +29,7 @@ from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
 from opencmiss.neon.ui.editors.modelsourceseditorwidget import ModelSourcesEditorWidget
+from opencmiss.neon.ui.editors.sceneviewereditorwidget import SceneviewerEditorWidget
 from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
@@ -138,6 +139,7 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
+        self.tabifyDockWidget(self.dockWidgetRegionEditor, self.dockWidgetSceneviewerEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.BottomDockWidgetArea), self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
@@ -181,6 +183,16 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsSceneEditor.setObjectName("dockWidgetContentsSceneEditor")
         self.dockWidgetSceneEditor.setWidget(self.dockWidgetContentsSceneEditor)
         self.dockWidgetSceneEditor.setHidden(True)
+        
+        self.dockWidgetSceneviewerEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSceneviewerEditor.setWindowTitle('Sceneviewer Editor')
+        self.dockWidgetSceneviewerEditor.setObjectName("dockWidgetSceneviewerEditor")
+        self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget()
+        self.dockWidgetContentsSceneviewerEditor.setObjectName("dockWidgetContentsSceneviewerEditor")
+        self.dockWidgetSceneviewerEditor.setWidget(self.dockWidgetContentsSceneviewerEditor)
+        self.dockWidgetSceneviewerEditor.setHidden(True)
+        self.dockWidgetSceneviewerEditor.visibilityChanged.connect( \
+            self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
 
         self.dockWidgetSpectrumEditor = QtGui.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
@@ -212,6 +224,7 @@ class MainWindow(QtGui.QMainWindow):
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetModelSourcesEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetSceneviewerEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTimeEditor)
@@ -508,6 +521,7 @@ class MainWindow(QtGui.QMainWindow):
         document = self._model.getDocument()
         sceneviewer_state = document.getSceneviewer().serialize()
         self._visualisation_view.setSceneviewerState(sceneviewer_state)
+        self.dockWidgetContentsSceneviewerEditor.setSceneviewer(self._visualisation_view.getSceneviewer())
         self._visualisation_view_state_update_pending = False
 
     def _recordSceneviewerState(self):
