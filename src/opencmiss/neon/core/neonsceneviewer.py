@@ -85,7 +85,7 @@ class NeonSceneviewer(object):
 
 
 default_anti_alias_sampling = 0
-default_background_colour_RGB = [0, 0, 0]
+default_background_colour_RGB = [1, 1, 1]
 default_eye_position = [0, 0, 3.88551982890656]
 default_far_clipping_plane = 7.88551982890656
 default_lighting_local_viewer = False

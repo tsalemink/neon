@@ -19,8 +19,7 @@ from opencmiss.neon.core.misc.utils import importProblem
 
 class NeonProject(object):
     """
-    Manages and serializes Zinc Spectrums within Neon.
-    Generates colour bar glyphs for spectrums, which is automatically done if if not found on loading.
+    Manages and serializes a project within Neon.
     """
 
     def __init__(self):

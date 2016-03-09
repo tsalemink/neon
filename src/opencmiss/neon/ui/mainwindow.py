@@ -263,7 +263,6 @@ class MainWindow(QtGui.QMainWindow):
         settings.beginGroup('MainWindow')
         settings.setValue('location', self._location)
         settings.setValue('geometry', self.saveGeometry())
-        settings.setValue('dock_locations', self.saveState(VERSION_MAJOR))
         settings.setValue('current_view', self._ui.viewStackedWidget.currentIndex())
 
         settings.beginWriteArray('recents')
@@ -275,6 +274,7 @@ class MainWindow(QtGui.QMainWindow):
         settings.endGroup()
 
         settings.beginGroup('views')
+        self._storeCurrentView()  # needed in case user never changed view
         for key in self._view_states:
             settings.setValue(key.getName(), self._view_states[key])
         settings.endGroup()
@@ -293,9 +293,6 @@ class MainWindow(QtGui.QMainWindow):
         geometry = settings.value('geometry')
         if geometry is not None:
             self.restoreGeometry(geometry)
-        state = settings.value('dock_locations')
-        if state is not None:
-            self.restoreState(state, VERSION_MAJOR)
         self._location = settings.value('location', QtCore.QDir.homePath())
 
         size = settings.beginReadArray('recents')
@@ -303,9 +300,7 @@ class MainWindow(QtGui.QMainWindow):
             settings.setArrayIndex(i)
             self._addRecent(settings.value('item'))
         settings.endArray()
-        # Always want to initialise with the problem view to stop Zinc from initialising to early.
-        self._preChangeView()
-        self._setCurrentView('0')  # settings.value('current_view', '0'))
+        currentViewIndex = settings.value('current_view', '0')
         settings.endGroup()
 
         settings.beginGroup('views')
@@ -313,6 +308,9 @@ class MainWindow(QtGui.QMainWindow):
             state = settings.value(key.getName(), '')
             self._view_states[key] = state
         settings.endGroup()
+
+        self._setCurrentView(currentViewIndex)
+        self._postChangeView()
 
         settings.beginGroup('SnapshotDialog')
         self._snapshot_dialog.deserialize(settings.value('state', ''))
@@ -341,6 +339,11 @@ class MainWindow(QtGui.QMainWindow):
         for action in actions:
             if action.data() == v:
                 action.setChecked(True)
+
+    def _storeCurrentView(self):
+        current_view = self._ui.viewStackedWidget.currentWidget()
+        view_state = self.saveState(VERSION_MAJOR)
+        self._view_states[current_view] = view_state
 
     def _preChangeView(self):
         current_view = self._ui.viewStackedWidget.currentWidget()
@@ -560,11 +563,18 @@ class MainWindow(QtGui.QMainWindow):
     def _doProjectCheck(self):
         document = self._model.getDocument()
         if document is None:
-            self._newTriggered()
+            # Create a default Generic project on start up
+            project_model = self._model.getProjectModel()
+            project = project_model.getDefaultProject()
+            if project is not None:
+                self._model.new(project)
+                return
+            # Alternative behaviour is to require user to select project type
+            # self._newTriggered()
         else:
             project = document.getProject()
-            if project is None:
-                self._newTriggered()
+        if project is None:
+            self._newTriggered()
 
     def _newTriggered(self):
         project_model = self._model.getProjectModel()
@@ -580,7 +590,8 @@ class MainWindow(QtGui.QMainWindow):
             if project:
                 self._model.new(project)
         else:
-            print('Not accepted')
+            # print('Not accepted')
+            pass
 #         self._onNewDocument()
 
     def _openModel(self, filename):
@@ -626,7 +637,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _quitApplication(self):
         self.confirmClose()
-        self._setCurrentView('0')
+        # self._setCurrentView('0')
         self._writeSettings()
 
     def closeEvent(self, event):
