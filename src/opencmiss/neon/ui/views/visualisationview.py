@@ -36,6 +36,9 @@ class VisualisationView(BaseView):
 
     def _makeConnections(self):
         self._ui.widget.graphicsInitialized.connect(self.graphicsInitialized.emit)
+        
+    def getSceneviewer(self):
+        return self._ui.widget.getSceneviewer()
 
     def setZincContext(self, zincContext):
         self._ui.widget.setContext(zincContext)
