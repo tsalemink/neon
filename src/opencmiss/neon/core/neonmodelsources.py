@@ -46,7 +46,7 @@ class NeonModelSourceFile(object):
         if not self._fileName:
             self._edit = True
             return
-        resource = streamInfo.createStreamresourceFile(str(self._fileName))
+        resource = streamInfo.createStreamresourceFile(self._fileName)
         self._loaded = True
         if self._time is not None:
             streamInfo.setResourceAttributeReal(resource, StreaminformationRegion.ATTRIBUTE_TIME, self._time)

@@ -187,7 +187,7 @@ class NeonRegion(object):
         zincChildRef = self._zincRegion.getFirstChild()
         if "ChildRegions" in dictInput:
             for dictChild in dictInput["ChildRegions"]:
-                childName = str(dictChild["Name"])
+                childName = dictChild["Name"]
                 # see if zinc child with this name created by model source here or in ancestor region
                 ancestorModelSourceCreated = True
                 zincChild = self._zincRegion.findChildByName(childName)

@@ -201,7 +201,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
             self._ui.lineEditTime.setText(text)
 
     def _fileTimeEntered(self):
-        timeText = str(self._ui.lineEditTime.text()).strip()
+        timeText = self._ui.lineEditTime.text().strip()
         try:
             if timeText == "":
                 time = None
@@ -212,4 +212,3 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
         except:
              NeonLogger.getLogger().error("Invalid time", timeText)
         self._fileTimeDisplay()
-        pass

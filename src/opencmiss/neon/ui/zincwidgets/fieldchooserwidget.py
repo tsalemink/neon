@@ -111,7 +111,7 @@ class FieldChooserWidget(QtGui.QComboBox):
         '''
         Must call this from currentIndexChanged() slot to get/update current field
         '''
-        fieldName = str(self.currentText())
+        fieldName = self.currentText()
         if self._nullObjectName and (fieldName == self._nullObjectName):
             self._field = None
         else:

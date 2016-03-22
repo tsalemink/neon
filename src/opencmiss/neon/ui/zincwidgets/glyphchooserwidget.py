@@ -98,7 +98,7 @@ class GlyphChooserWidget(QtGui.QComboBox):
         '''
         Must call this from currentIndexChanged() slot to get/update current glyph
         '''
-        glyphName = str(self.currentText())
+        glyphName = self.currentText()
         if self._nullObjectName and (glyphName == self._nullObjectName):
             self._glyph = None
         else:

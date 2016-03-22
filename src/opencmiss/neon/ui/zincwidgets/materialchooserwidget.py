@@ -77,7 +77,7 @@ class MaterialChooserWidget(QtGui.QComboBox):
         '''
         Must call this from currentIndexChanged() slot to get/update current material
         '''
-        materialName = str(self.currentText())
+        materialName = self.currentText()
         if self._nullObjectName and (materialName == self._nullObjectName):
             self._material = None
         else:
