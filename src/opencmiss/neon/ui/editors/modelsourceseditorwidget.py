@@ -181,7 +181,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
     def _fileNameDisplay(self):
         if self._currentModelSource:
             fileName = self._currentModelSource.getFileName()
-            self._ui.lineEditFileName.setText(unicode(fileName))
+            self._ui.lineEditFileName.setText(fileName)
 
     def _fileBrowseClicked(self):
         fileNameTuple = QtGui.QFileDialog.getOpenFileName(self, "Select Model Source", "", "Model Files (*.ex* *.fieldml)")
@@ -198,7 +198,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
         if self._currentModelSource:
             time = self._currentModelSource.getTime()
             text = "{:.5g}".format(time) if time is not None else ""
-            self._ui.lineEditTime.setText(unicode(text))
+            self._ui.lineEditTime.setText(text)
 
     def _fileTimeEntered(self):
         timeText = str(self._ui.lineEditTime.text()).strip()

@@ -98,7 +98,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         '''
         Display real value in a widget
         '''
-        newText = unicode('{:.5g}'.format(value))
+        newText = '{:.5g}'.format(value)
         widget.setText(newText)
 
     def _displayVector(self, widget, values, numberFormat = '{:.5g}'):
@@ -153,7 +153,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setViewAngle(viewAngleRadians):
                 raise
         except:
-            print "Invalid view angle"
+            print("Invalid view angle")
         self.viewAngleDisplay()
 
     def setLookatParametersNonSkew(self):
@@ -180,7 +180,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid eye position"
+            print("Invalid eye position")
             self.eyePositionDisplay()
 
     def lookatPositionDisplay(self):
@@ -197,7 +197,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid lookat position"
+            print("Invalid lookat position")
             self.lookatPositionDisplay()
 
     def upVectorDisplay(self):
@@ -214,7 +214,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid up vector"
+            print("Invalid up vector")
             self.upVectorDisplay()
 
     def nearClippingDisplay(self):
@@ -267,7 +267,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setBackgroundColourRGB(colourRGB):
                 raise
         except:
-            print "Invalid background colour"
+            print("Invalid background colour")
         self.backgroundColourDisplay()
 
     def antialiasDisplay(self):
@@ -286,7 +286,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setAntialiasSampling(antialiasValue):
                 raise
         except:
-            print "Invalid antialias"
+            print("Invalid antialias")
         self.antialiasDisplay()
 
     def lightBothSidesDisplay(self):
