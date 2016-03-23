@@ -119,9 +119,9 @@ class NeonSpectrums(object):
         :return True on success, otherwise False (means name not set)
         """
         colourBar = self.findOrCreateSpectrumGlyphColourBar(spectrum)
-        result = spectrum.setName(str(name))
+        result = spectrum.setName(name)
         if result == ZINC_OK:
-            glyphName = SPECTRUM_GLYPH_NAME_FORMAT.format(str(name))
+            glyphName = SPECTRUM_GLYPH_NAME_FORMAT.format(name)
             tmpName = glyphName
             i = 1
             while (colourBar.setName(tmpName) != ZINC_OK):

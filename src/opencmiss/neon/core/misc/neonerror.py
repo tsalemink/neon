@@ -14,8 +14,6 @@
    limitations under the License.
 '''
 
-from exceptions import Exception
-
 class NeonError(Exception):
 
     def __init__(self, message):

@@ -55,8 +55,6 @@ class VisualisationView(BaseView):
 
     def saveImage(self, filename, wysiwyg, width, height):
         sv = self._ui.widget.getSceneviewer()
-        if isinstance(filename, unicode):
-            filename = str(filename)
         if wysiwyg:
             width = self._ui.widget.width()
             height = self._ui.widget.height()

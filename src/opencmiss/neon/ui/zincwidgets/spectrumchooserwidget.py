@@ -98,7 +98,7 @@ class SpectrumChooserWidget(QtGui.QComboBox):
         '''
         Must call this from currentIndexChanged() slot to get/update current spectrum
         '''
-        spectrumName = str(self.currentText())
+        spectrumName = self.currentText()
         if self._nullObjectName and (spectrumName == self._nullObjectName):
             self._spectrum = None
         else:

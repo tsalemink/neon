@@ -17,6 +17,8 @@ import importlib
 
 
 def importProblem(name):
+    # Require import of problems module before relative import can be done in Python 3.
+    importlib.import_module('opencmiss.neon.core.problems')
     module_name = importlib.import_module('.' + name.lower(), 'opencmiss.neon.core.problems')
     class_ = getattr(module_name, name)
 
