@@ -93,6 +93,8 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         self.nearClippingDisplay()
         self.farClippingDisplay()
         self.antialiasDisplay()
+        self.lightBothSidesDisplay()
+        self.perturbLineDisplay()
 
     def _displayReal(self, widget, value):
         '''
