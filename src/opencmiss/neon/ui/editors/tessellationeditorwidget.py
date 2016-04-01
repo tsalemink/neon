@@ -90,7 +90,7 @@ class TessellationEditorWidget(QtGui.QWidget):
             t = first_item.data(TESSELLATION_DATA_ROLE)
 
         if item_column == 0:
-            if ZINC_OK != t.setName(str(item.data(QtCore.Qt.DisplayRole))):
+            if ZINC_OK != t.setName(item.data(QtCore.Qt.DisplayRole)):
                 item.setData(QtCore.Qt.DisplayRole, t.getName())
         elif item_column == 1 or item_column == 2:
             item_data = item.data(QtCore.Qt.DisplayRole)

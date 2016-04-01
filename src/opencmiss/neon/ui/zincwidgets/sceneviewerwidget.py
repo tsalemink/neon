@@ -224,19 +224,15 @@ class SceneviewerWidget(QtOpenGL.QGLWidget):
         '''
         Inform the scene viewer of a mouse press event.
         '''
-        if not event.modifiers():
-            scene_input = self._sceneviewer.createSceneviewerinput()
-            scene_input.setPosition(event.x(), event.y())
-            scene_input.setEventType(Sceneviewerinput.EVENT_TYPE_BUTTON_PRESS)
-            scene_input.setButtonType(button_map[event.button()])
-            scene_input.setModifierFlags(modifier_map(event.modifiers()))
+        scene_input = self._sceneviewer.createSceneviewerinput()
+        scene_input.setPosition(event.x(), event.y())
+        scene_input.setEventType(Sceneviewerinput.EVENT_TYPE_BUTTON_PRESS)
+        scene_input.setButtonType(button_map[event.button()])
+        scene_input.setModifierFlags(modifier_map(event.modifiers()))
 
-            self._sceneviewer.processSceneviewerinput(scene_input)
+        self._sceneviewer.processSceneviewerinput(scene_input)
 
-            self._handle_mouse_events = True
-        else:
-            self._handle_mouse_events = False
-            event.ignore()
+        self._handle_mouse_events = True
 
     def mouseReleaseEvent(self, event):
         '''

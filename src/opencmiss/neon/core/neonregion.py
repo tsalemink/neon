@@ -17,7 +17,7 @@ import json
 
 from opencmiss.neon.core.neonmodelsources import deserializeNeonModelSource
 from opencmiss.zinc.status import OK as ZINC_OK
-from opencmiss.neon.core.neonlogger import NeonLogger
+from opencmiss.neon.core.misc.neonerror import NeonError
 
 
 class NeonRegion(object):
@@ -100,25 +100,21 @@ class NeonRegion(object):
         fieldmodule = self._zincRegion.getFieldmodule()
         fieldmodule.defineAllFaces()
         self._zincRegion.endHierarchicalChange()
-        return result
+        if result != ZINC_OK:
+            raise NeonError("Failed to load model sources into region " + self.getPath())
 
     def _loadModelSource(self, modelSource):
         streamInfo = self._zincRegion.createStreaminformationRegion()
         modelSource.addToZincStreaminformationRegion(streamInfo)
-        result = self._loadModelSourceStreams(streamInfo)
-        if result != ZINC_OK:
-            NeonLogger.getLogger().error("Failed to read model source")
-        else:
-            newRegionCount = self._discoverNewZincRegions()
-            self._informRegionChange(newRegionCount > 0)
+        self._loadModelSourceStreams(streamInfo)
+        newRegionCount = self._discoverNewZincRegions()
+        self._informRegionChange(newRegionCount > 0)
 
     def _loadModelSources(self):
         streamInfo = self._zincRegion.createStreaminformationRegion()
         for modelSource in self._modelSources:
             modelSource.addToZincStreaminformationRegion(streamInfo)
-        result = self._loadModelSourceStreams(streamInfo)
-        if result != ZINC_OK:
-            NeonLogger.getLogger().error("Failed to read model sources")
+        self._loadModelSourceStreams(streamInfo)
 
     def _reload(self):
         """
@@ -172,24 +168,26 @@ class NeonRegion(object):
         if "Model" in dictInput:
             model = dictInput["Model"]
             if "Sources" in model:
-                for dictModelSource in model["Sources"]:
-                    modelSource = deserializeNeonModelSource(dictModelSource)
-                    if modelSource:
-                        self._modelSources.append(modelSource)
+                try:
+                    for dictModelSource in model["Sources"]:
+                        modelSource = deserializeNeonModelSource(dictModelSource)
+                        if modelSource:
+                            self._modelSources.append(modelSource)
+                except NeonError as neonError:
+                    raise NeonError(neonError.getMessage() + " in region " + self.getPath())
                 self._loadModelSources()
         if "Scene" in dictInput:
             scene = self._zincRegion.getScene()
             sceneDescription = json.dumps(dictInput["Scene"])
             result = scene.readDescription(sceneDescription, True)
             if result != ZINC_OK:
-                NeonLogger.getLogger().error("Failed to read scene")
-
+                 raise NeonError("Failed to read scene description into region " + self.getPath())
         # following assumes no neon child regions exist, i.e. we are deserializing into a blank region
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
         zincChildRef = self._zincRegion.getFirstChild()
         if "ChildRegions" in dictInput:
             for dictChild in dictInput["ChildRegions"]:
-                childName = str(dictChild["Name"])
+                childName = dictChild["Name"]
                 # see if zinc child with this name created by model source here or in ancestor region
                 ancestorModelSourceCreated = True
                 zincChild = self._zincRegion.findChildByName(childName)

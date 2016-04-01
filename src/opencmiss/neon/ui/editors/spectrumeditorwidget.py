@@ -88,7 +88,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         currentItem = self._ui.listWidgetSpectrums.currentItem()
         if not currentItem:
             return None
-        name = str(currentItem.text())
+        name = currentItem.text()
         sm = self._zincContext.getSpectrummodule()
         spectrum = sm.findSpectrumByName(name)
         if spectrum.isValid():
@@ -130,7 +130,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         if not selectedItem:
             if lws.count() > 0:
                 selectedItem = lws.item(0)
-                self._currentSpectrumName = str(selectedItem.text())
+                self._currentSpectrumName = selectedItem.text()
             else:
                 self._currentSpectrumName = None
         if selectedItem:
@@ -252,7 +252,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
             active_spectrum_component.setText(getComponentString(sc, row + 1))
 
     def _spectrumChanged(self, item):
-        newName = str(item.text())
+        newName = item.text()
         sm = self._zincContext.getSpectrummodule()
         spectrum = sm.findSpectrumByName(self._currentSpectrumName)
         # spectrum = item.data(SPECTRUM_DATA_ROLE)
@@ -263,7 +263,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
 
     def _spectrumItemClicked(self, item):
         item.setSelected(True)
-        self._currentSpectrumName = str(item.text())
+        self._currentSpectrumName = item.text()
         self._selected_spectrum_row = self._ui.listWidgetSpectrums.row(item)
         self._updateUi()
 
@@ -286,7 +286,7 @@ class SpectrumEditorWidget(QtGui.QWidget):
         lws = self._ui.listWidgetSpectrums
         for row in range(lws.count()):
             item = lws.item(row)
-            if str(item.text()) == name:
+            if item.text() == name:
                 item.setSelected(True)
                 self._currentSpectrumName = name
                 self._updateUi()

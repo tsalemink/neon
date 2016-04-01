@@ -98,7 +98,7 @@ class TessellationChooserWidget(QtGui.QComboBox):
         '''
         Must call this from currentIndexChanged() slot to get/update current tessellation
         '''
-        tessellationName = str(self.currentText())
+        tessellationName = self.currentText()
         if self._nullObjectName and (tessellationName == self._nullObjectName):
             self._tessellation = None
         else:

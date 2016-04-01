@@ -564,11 +564,8 @@ class MainWindow(QtGui.QMainWindow):
         document = self._model.getDocument()
         if document is None:
             # Create a default Generic project on start up
-            project_model = self._model.getProjectModel()
-            project = project_model.getDefaultProject()
-            if project is not None:
-                self._model.new(project)
-                return
+            self._model.new()
+            return
             # Alternative behaviour is to require user to select project type
             # self._newTriggered()
         else:
@@ -592,13 +589,14 @@ class MainWindow(QtGui.QMainWindow):
         else:
             # print('Not accepted')
             pass
-#         self._onNewDocument()
 
     def _openModel(self, filename):
-        self._location = os.path.dirname(filename)
-        self._model.load(filename)
-        self._addRecent(filename)
-#         self._onNewDocument()
+        success = self._model.load(filename)
+        if success:
+            self._location = os.path.dirname(filename)
+            self._addRecent(filename)
+        else:
+            QtGui.QMessageBox.warning(self, "Load failure", "Failed to load file " + filename + ". Refer to logger window for more details", QtGui.QMessageBox.Ok)
 
         self._updateUi()
 
@@ -617,6 +615,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print('find sender with text', filename)
         self._ui.menu_Open_recent.removeAction(self.sender())
+        self._model.removeRecent(filename)
         self._openModel(filename)
 
     def _clearTriggered(self):

@@ -100,7 +100,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         '''
         Display real value in a widget
         '''
-        newText = unicode('{:.5g}'.format(value))
+        newText = '{:.5g}'.format(value)
         widget.setText(newText)
 
     def _displayVector(self, widget, values, numberFormat = '{:.5g}'):
@@ -155,7 +155,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setViewAngle(viewAngleRadians):
                 raise
         except:
-            print "Invalid view angle"
+            print("Invalid view angle")
         self.viewAngleDisplay()
 
     def setLookatParametersNonSkew(self):
@@ -182,7 +182,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid eye position"
+            print("Invalid eye position")
             self.eyePositionDisplay()
 
     def lookatPositionDisplay(self):
@@ -199,7 +199,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid lookat position"
+            print("Invalid lookat position")
             self.lookatPositionDisplay()
 
     def upVectorDisplay(self):
@@ -216,7 +216,7 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         try:
             self.setLookatParametersNonSkew()
         except:
-            print "Invalid up vector"
+            print("Invalid up vector")
             self.upVectorDisplay()
 
     def nearClippingDisplay(self):
@@ -269,16 +269,16 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setBackgroundColourRGB(colourRGB):
                 raise
         except:
-            print "Invalid background colour"
+            print("Invalid background colour")
         self.backgroundColourDisplay()
-        
+
     def antialiasDisplay(self):
         '''
         Display the current scene viewer antialias
         '''
         antialiasValue = self._sceneviewer.getAntialiasSampling()
         self._ui.antialias.setText(str(antialiasValue))
-        
+
     def antialiasEntered(self):
         '''
         Set scene viewer diagonal view angle from value in the view angle widget
@@ -288,27 +288,25 @@ class SceneviewerEditorWidget(QtGui.QWidget):
             if ZINC_OK != self._sceneviewer.setAntialiasSampling(antialiasValue):
                 raise
         except:
-            print "Invalid antialias"
+            print("Invalid antialias")
         self.antialiasDisplay()
-    
+
     def lightBothSidesDisplay(self):
         flag = self._sceneviewer.getLightingTwoSided(state)
         self._ui.light_both_sides_checkbox.setCheckState()
-        
+
     def lightBothSidesStateChanged(self, state):
         '''
         Set scene viewer lighting two sided value
         '''
         self._sceneviewer.setLightingTwoSided(state)
-        self.lightBothSidesDisplay(QtCore.Checked)
-        
+
     def perturbLineDisplay(self):
-        flag = self._sceneviewer.getPerturbLineFlag(state)
+        flag = self._sceneviewer.getPerturbLinesFlag(state)
         self._ui.perturbline_checkbox.setCheckState()
-        
+
     def perturbLineStateChanged(self, state):
         '''
-        Set scene viewer perturbline value
+        Set scene viewer perturb lines value
         '''
-        self._sceneviewer.setPerturbLineFlag(state)
-        self.perturbLineDisplay(QtCore.Checked)
+        self._sceneviewer.setPerturbLinesFlag(state)

@@ -22,6 +22,7 @@ from opencmiss.neon.core.neonspectrums import NeonSpectrums
 from opencmiss.neon.core.neontessellations import NeonTessellations
 from opencmiss.zinc.context import Context
 from opencmiss.zinc.material import Material
+from opencmiss.neon.core.misc.neonerror import NeonError
 from opencmiss.neon.core.neonlogger import NeonLogger
 from opencmiss.neon.core.neonproject import NeonProject
 
@@ -95,41 +96,32 @@ class NeonDocument(object):
 
     def deserialize(self, state):
         '''
-        :param dictInput: Python dict of Neon serialization
-        :return: True on success, False on failure
+        :param  state: string serialisation of Neon JSON document
         '''
         d = json.loads(state)
         if not (("OpenCMISS-Neon Version" in d) and ("RootRegion" in d)):
-            NeonLogger.getLogger().error("Invalid format for Neon")
-            return False
+            raise NeonError("Invalid Neon file")
         neon_version = d["OpenCMISS-Neon Version"]
-        # Not doing following here since issue 3924 prevents computed field wrappers being created, and graphics can't find fields
-        # zincRegion.beginHierarchicalChange()
-        result = True
-        try:
-            if "Project" in d:
-                self._project.deserialize(d["Project"])
-            if "Tessellations" in d:
-                self._tessellations.deserialize(d["Tessellations"])
-            if "Spectrums" in d:
-                self._spectrums.deserialize(d["Spectrums"])
-            if "Sceneviewer" in d:
-                self._sceneviewer.deserialize(d["Sceneviewer"])
-            self._rootRegion.deserialize(d["RootRegion"])
-            if neon_version == '0.1.0':
-                self._problem.setName('Generic')
-        except:
-            NeonLogger.getLogger().error("Exception in NeonDocument.deserialize")
-            result = False
-        finally:
-            # zincRegion.endHierarchicalChange() - see above why this can't be done yet
-            pass
-        return result
+        if neon_version > mainsettings.VERSION_LIST:
+            raise NeonError("File version is greater than this version of Neon (" + mainsettings.VERSION_STRING + "). Please update your Neon application.")
+        # Ideally would enclose following in:
+        # try: zincRegion.beginHierarchicalChange() ... finally: zincRegion.endHierarchicalChange()
+        # Can't do this due to Zinc issue 3924 which prevents computed field wrappers being created, so graphics can't find fields
+        if "Project" in d:
+            self._project.deserialize(d["Project"])
+        if "Tessellations" in d:
+            self._tessellations.deserialize(d["Tessellations"])
+        if "Spectrums" in d:
+            self._spectrums.deserialize(d["Spectrums"])
+        if "Sceneviewer" in d:
+            self._sceneviewer.deserialize(d["Sceneviewer"])
+        self._rootRegion.deserialize(d["RootRegion"])
+        if neon_version == '0.1.0':
+            self._problem.setName('Generic')
 
     def serialize(self, basePath=None):
-        outputVersion = [mainsettings.VERSION_MAJOR, mainsettings.VERSION_MINOR, mainsettings.VERSION_PATCH]
         dictOutput = {}
-        dictOutput["OpenCMISS-Neon Version"] = outputVersion
+        dictOutput["OpenCMISS-Neon Version"] = mainsettings.VERSION_LIST
         dictOutput["Project"] = self._project.serialize()
         dictOutput["Spectrums"] = self._spectrums.serialize()
         dictOutput["Tessellations"] = self._tessellations.serialize()

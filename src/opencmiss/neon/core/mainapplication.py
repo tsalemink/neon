@@ -24,6 +24,7 @@ from opencmiss.neon.core.misc.utils import getMatchingVisualisationClass, \
 from opencmiss.neon.core.neonlogger import NeonLogger
 from opencmiss.neon.core.projectmodel import ProjectModel
 from opencmiss.neon.core.neonproject import NeonProject
+from opencmiss.neon.core.misc.neonerror import NeonError
 
 
 class MainApplication(QtCore.QObject):
@@ -77,15 +78,22 @@ class MainApplication(QtCore.QObject):
     def getLocation(self):
         return self._location
 
-    def new(self, project):
-        # create a blank document
+    def new(self, project=None):
+        """
+        Create a blank document with the supplied project, or default project if not supplied
+        """
         if self._document is not None:
             self._document.freeVisualisationContents()
+            self._document.freeProject()
 
         self._document = NeonDocument()
-        self._document.setProject(project)
-        self._document.initialiseVisualisationContents()
+        if project:
+            self._document.setProject(project)
+        else:
+            defaultProject = self._project_model.getDefaultProject()
+            self._document.setProject(defaultProject)
 
+        self._document.initialiseVisualisationContents()
         self.documentChanged.emit()
 
     def save(self):
@@ -97,31 +105,50 @@ class MainApplication(QtCore.QObject):
             f.write(state)
 
     def load(self, filename):
-        self._location = filename
-        with open(filename, 'r') as f:
-            if self._document is not None:
-                self._document.freeVisualisationContents()
-                self._document.freeProject()
-
-            self._document = NeonDocument()
-            self._document.initialiseVisualisationContents()
-            self._document.initialiseProject()
-            # set current directory to path from file, to support scripts and fieldml with external resources
-            path = os.path.dirname(filename)
-            os.chdir(path)
-            if not self._document.deserialize(f.read()):
-                NeonLogger.getLogger().error("Failed to load " + filename)
-                # create a blank document
-                self._document.freeVisualisationContents()
-                self._document.freeProject()
-
-            self.documentChanged.emit()
+        """
+        Loads the named Neon file and on success sets filename as the current location.
+        Emits documentChange separately if new document loaded, including if existing document cleared due to load failure.
+        :return  True on success, otherwise False.
+        """
+        modelChanged = False
+        try:
+            with open(filename, 'r') as f:
+                state = f.read()
+                modelChanged = True
+                self._location = None
+                if self._document is not None:
+                    self._document.freeVisualisationContents()
+                    self._document.freeProject()
+                self._document = NeonDocument()
+                self._document.initialiseProject()
+                self._document.initialiseVisualisationContents()
+                # set current directory to path from file, to support scripts and fieldml with external resources
+                path = os.path.dirname(filename)
+                os.chdir(path)
+                self._document.deserialize(state)
+                self._location = filename
+                self.documentChanged.emit()
+                return True
+        except NeonError as neonError:
+            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + neonError.getMessage())
+        except IOError:
+            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": IO error; file not found?")
+        except ValueError:
+            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": Value error; bad Neon document JSON format?")
+        except:
+            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": Unknown error")
+        if modelChanged:
+            self.new()  # in case document half constructed; emits documentChanged
+        return False
 
     def addRecent(self, recent):
+        self.removeRecent(recent)
+        self._recents.append(recent)
+
+    def removeRecent(self, recent):
         if recent in self._recents:
             index = self._recents.index(recent)
             del self._recents[index]
-        self._recents.append(recent)
 
     def getRecents(self):
         return self._recents

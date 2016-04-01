@@ -156,7 +156,7 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
 
     def setData(self, index, value, role):
         item = index.internalPointer()
-        result = item.getRegion().setName(str(value))
+        result = item.getRegion().setName(value)
         return result
 
     def getRegionAtIndex(self, index):
