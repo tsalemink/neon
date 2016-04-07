@@ -176,12 +176,32 @@ class NeonRegion(object):
                 except NeonError as neonError:
                     raise NeonError(neonError.getMessage() + " in region " + self.getPath())
                 self._loadModelSources()
+
+        if "Fieldmodule" in dictInput:
+            # must define fields before scene otherwise referenced fields won't exist
+            fieldmodule = self._zincRegion.getFieldmodule()
+            fieldmoduleDescription = json.dumps(dictInput["Fieldmodule"])
+            result = fieldmodule.readDescription(fieldmoduleDescription)
+            if result != ZINC_OK:
+                 raise NeonError("Failed to read field module description into region " + self.getPath())
+
         if "Scene" in dictInput:
             scene = self._zincRegion.getScene()
             sceneDescription = json.dumps(dictInput["Scene"])
             result = scene.readDescription(sceneDescription, True)
             if result != ZINC_OK:
                  raise NeonError("Failed to read scene description into region " + self.getPath())
+
+        if ("Fieldmodule" in dictInput) and ("Fields" in dictInput["Fieldmodule"]):
+            # clear IsManaged flags for fields so marked; do last otherwise fields in use by scene may be destroyed
+            fieldsDict = dictInput["Fieldmodule"]["Fields"]
+            for fieldDict in fieldsDict:
+                isManaged = fieldDict["IsManaged"]
+                if not isManaged:
+                    field = fieldmodule.findFieldByName(fieldDict["Name"])
+                    if field.isValid():
+                        field.setManaged(False)
+
         # following assumes no neon child regions exist, i.e. we are deserializing into a blank region
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
         zincChildRef = self._zincRegion.getFirstChild()
@@ -218,6 +238,10 @@ class NeonRegion(object):
         if not dictOutput["Model"]:
             dictOutput.pop("Model")
         if self._zincRegion:
+            fieldmodule = self._zincRegion.getFieldmodule()
+            fieldmoduleDescription = fieldmodule.writeDescription()
+            dictOutput["Fieldmodule"] = json.loads(fieldmoduleDescription)
+
             scene = self._zincRegion.getScene()
             sceneDescription = scene.writeDescription()
             dictOutput["Scene"] = json.loads(sceneDescription)
