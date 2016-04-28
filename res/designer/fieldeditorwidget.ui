@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FieldEditorWidget</class>
+ <widget class="QWidget" name="FieldEditorWidget">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>298</width>
+    <height>1030</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>180</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Field Editor</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="field_type_label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>27</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Field type:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="FieldTypeChooserWidget" name="field_type_chooser">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QGroupBox" name="sourcefields_groupbox">
+     <property name="title">
+      <string>Source fields:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <property name="margin">
+       <number>7</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="number_of_source_fields_label">
+        <property name="text">
+         <string>Number of source fields:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="number_of_source_fields_lineedit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="0">
+    <widget class="QGroupBox" name="create_group">
+     <property name="minimumSize">
+      <size>
+       <width>180</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="create_button">
+        <property name="text">
+         <string>Create</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="coordinate_system_groupbox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Coordinate System:</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="coordinate_system_type_label">
+        <property name="text">
+         <string>Coordinate system type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="FieldChooserWidget" name="coordinate_system_type_chooser">
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>Rectangular Cartesian</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cylindrial Polar</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Spherical Polar</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Prolate Spheroidal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Oblate Spheroidal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fibre</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="coordinate_system_focus_label">
+        <property name="text">
+         <string>Coordinate system focus:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="coordinate_system_focus_lineedit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QGroupBox" name="derived_groupbox">
+     <property name="title">
+      <string>Derived Parameters:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_9">
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="derived_values_lineedit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="derived_chooser_1"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="derived_values_label">
+        <property name="text">
+         <string>Constant Values:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="derived_combo_label_1">
+        <property name="text">
+         <string>Derived combo1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="derived_combo_label_2">
+        <property name="text">
+         <string>Derived combo2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="derived_chooser_2"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="general_groupbox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="type_coordinate_checkbox">
+        <property name="text">
+         <string>Type Coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="managed_checkbox">
+        <property name="text">
+         <string>Managed</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FieldChooserWidget</class>
+   <extends>QComboBox</extends>
+   <header>opencmiss/neon/ui/zincwidgets/fieldchooserwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FieldTypeChooserWidget</class>
+   <extends>QComboBox</extends>
+   <header>opencmiss/neon/ui/zincwidgets/fieldtypechooserwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>materialChanged(int)</slot>
+  <slot>dataFieldChanged(int)</slot>
+  <slot>glyphChanged(int)</slot>
+  <slot>pointOrientationScaleFieldChanged(int)</slot>
+  <slot>labelFieldChanged(int)</slot>
+  <slot>pointBaseSizeEntered()</slot>
+  <slot>pointScaleFactorsEntered()</slot>
+  <slot>exteriorClicked(bool)</slot>
+  <slot>isoscalarFieldChanged(int)</slot>
+  <slot>faceChanged(int)</slot>
+  <slot>wireframeClicked(bool)</slot>
+  <slot>isovaluesEntered()</slot>
+  <slot>lineShapeChanged(int)</slot>
+  <slot>lineScaleFactorsEntered()</slot>
+  <slot>lineOrientationScaleFieldChanged(int)</slot>
+  <slot>lineBaseSizeEntered()</slot>
+  <slot>streamVectorFieldChanged(int)</slot>
+  <slot>streamlinesTrackLengthEntered()</slot>
+  <slot>streamlinesTrackDirectionChanged(int)</slot>
+  <slot>coordinateFieldChanged(int)</slot>
+  <slot>samplingModeChanged(int)</slot>
+  <slot>samplingDivisionsEntered()</slot>
+  <slot>streamlinesColourDataTypeChanged(int)</slot>
+  <slot>spectrumChanged(int)</slot>
+  <slot>scenecoordinatesystemChanged(int)</slot>
+  <slot>tessellationChanged(int)</slot>
+ </slots>
+</ui>

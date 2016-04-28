@@ -26,61 +26,10 @@ from opencmiss.zinc.spectrum import Spectrum
 from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.neon.core.neonlogger import NeonLogger
 
+from opencmiss.neon.ui.zincwidgets.fieldconditions import *
 from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEditorWidget
 
 STRING_FLOAT_FORMAT = '{:.5g}'
-
-
-def FieldIsRealValued(field):
-    '''
-    Conditional function returning true if the field has real values
-    '''
-    return field.getValueType() == Field.VALUE_TYPE_REAL
-
-
-def FieldIsScalar(field):
-    '''
-    Conditional function returning true if the field is real with 1 component
-    '''
-    return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() == 1)
-
-
-def FieldIsCoordinateCapable(field):
-    '''
-    Conditional function returning true if the field can be used as a coordinate
-    field, i.e. is real valued with up to 3 component
-    '''
-    return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() <= 3)
-
-
-def FieldIsOrientationScaleCapable(field):
-    '''
-    Conditional function returning true if the field can be used to orient or scale
-    glyphs. Generally, this means it has 1,2,3,4,6 or 9 components, where:
-    1 = scalar (no vector, isotropic scaling).
-    2 = 1 2-D vector (2nd axis is normal in plane, 3rd is out of 2-D plane);
-    3 = 1 3-D vector (orthogonal 2nd and 3rd axes are arbitrarily chosen);
-    4 = 2 2-D vectors (3rd axis taken as out of 2-D plane);
-    6 = 2 3-D vectors (3rd axis found from cross product);
-    9 = 3 3-D vectors = complete definition of 3 axes.
-    '''
-    return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() in [1, 2, 3, 4, 6, 9])
-
-
-def FieldIsStreamVectorCapable(field):
-    '''
-    Conditional function returning true if the field can be used as a
-    streamline stream vector field.
-    For a 3-D domain with a 3-D coordinate field, can have 3, 6 or 9 components;
-    extra components set the lateral axes for extruded profiles.
-    For a 2-D domain the stream vector may have 2 components.
-    '''
-    return (field.getValueType() == Field.VALUE_TYPE_REAL) and \
-           (field.getNumberOfComponents() in [2, 3, 6, 9])
-
 
 class GraphicsEditorWidget(QtGui.QWidget):
 
