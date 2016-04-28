@@ -292,8 +292,11 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         self.antialiasDisplay()
 
     def lightBothSidesDisplay(self):
-        flag = self._sceneviewer.getLightingTwoSided(state)
-        self._ui.light_both_sides_checkbox.setCheckState()
+        flag = self._sceneviewer.isLightingTwoSided()
+        if flag:
+            self._ui.light_both_sides_checkbox.setCheckState(QtCore.Qt.Checked)
+        else:
+            self._ui.light_both_sides_checkbox.setCheckState(QtCore.Qt.Unchecked)
 
     def lightBothSidesStateChanged(self, state):
         '''
@@ -302,9 +305,12 @@ class SceneviewerEditorWidget(QtGui.QWidget):
         self._sceneviewer.setLightingTwoSided(state)
 
     def perturbLineDisplay(self):
-        flag = self._sceneviewer.getPerturbLinesFlag(state)
-        self._ui.perturbline_checkbox.setCheckState()
-
+        flag = self._sceneviewer.getPerturbLinesFlag()
+        if flag:
+            self._ui.perturbline_checkbox.setCheckState(QtCore.Qt.Checked)
+        else:
+            self._ui.perturbline_checkbox.setCheckState(QtCore.Qt.Unchecked)
+            
     def perturbLineStateChanged(self, state):
         '''
         Set scene viewer perturb lines value
