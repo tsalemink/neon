@@ -290,6 +290,10 @@ class NeonRegion(object):
     def addFieldTypeToDict(self, field, fieldType):
         if field and field.isValid():
             self._fieldTypeDict[field.getName()] = fieldType
+            
+    def replaceFieldTypeKey(self, oldName, newName):
+        if oldName in self._fieldTypeDict:
+            self._fieldTypeDict[newName] = self._fieldTypeDict.pop(oldName)
     
     def clear(self):
         """

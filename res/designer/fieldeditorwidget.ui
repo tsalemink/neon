@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>298</width>
+    <width>310</width>
     <height>1030</height>
    </rect>
   </property>
@@ -100,28 +100,6 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0">
-    <widget class="QGroupBox" name="create_group">
-     <property name="minimumSize">
-      <size>
-       <width>180</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="create_button">
-        <property name="text">
-         <string>Create</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="coordinate_system_groupbox">
      <property name="maximumSize">
@@ -140,7 +118,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="coordinate_system_type_label">
         <property name="text">
-         <string>Coordinate system type:</string>
+         <string>Type:</string>
         </property>
        </widget>
       </item>
@@ -187,7 +165,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="coordinate_system_focus_label">
         <property name="text">
-         <string>Coordinate system focus:</string>
+         <string>Focus:</string>
         </property>
        </widget>
       </item>
@@ -261,7 +239,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="type_coordinate_checkbox">
         <property name="text">
-         <string>Type Coordinate</string>
+         <string>Is Coordinate</string>
         </property>
        </widget>
       </item>
@@ -271,6 +249,38 @@
          <string>Managed</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QGroupBox" name="create_group">
+     <property name="minimumSize">
+      <size>
+       <width>180</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="name_label">
+        <property name="text">
+         <string>Name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QPushButton" name="create_button">
+        <property name="text">
+         <string>Create</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="name_lineedit"/>
       </item>
      </layout>
     </widget>

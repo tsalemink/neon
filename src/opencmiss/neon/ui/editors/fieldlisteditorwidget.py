@@ -111,8 +111,11 @@ class FieldListEditorWidget(QtGui.QWidget):
         field = item.data()
         if field and field.isValid():
             newName = item.text()
-            if field.setName(newName) != ZINC_OK:
-                item.setText(field.getName())
+            oldName = field.getName()
+            if newName != oldName:
+                if field.setName(newName) != ZINC_OK:
+                    item.setText(field.getName())
+                self._neonRegion.replaceFieldTypeKey(oldName, newName)
         
     def _buildFieldsList(self):
         '''

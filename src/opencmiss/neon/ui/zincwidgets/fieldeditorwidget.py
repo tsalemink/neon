@@ -80,8 +80,8 @@ class FieldEditorWidget(QtGui.QWidget):
         self.ui.coordinate_system_type_chooser.currentIndexChanged.connect(self.coordinateSystemTypeChanged)
         self.ui.coordinate_system_focus_lineedit.editingFinished.connect(self.coordinateSystemFocusEntered)
         self.ui.number_of_source_fields_lineedit.editingFinished.connect(self.numberOfSourceFieldsEntered)
-        self.ui.type_coordinate_checkbox.clicked.connect(self.typeCoordinateClicked)
-        self.ui.managed_checkbox.clicked.connect(self.managedClicked)
+        self.ui.type_coordinate_checkbox.stateChanged.connect(self.typeCoordinateClicked)
+        self.ui.managed_checkbox.stateChanged.connect(self.managedClicked)
         self.ui.derived_chooser_1.currentIndexChanged.connect(self.derivedChooser1Changed)
         self.ui.field_type_chooser.currentIndexChanged.connect(self.fieldTypeChanged)
         self.ui.create_button.clicked.connect(self.createFieldPressed)
@@ -104,9 +104,17 @@ class FieldEditorWidget(QtGui.QWidget):
                     for i in range(1, 1 + numberOfComponents):
                         values.append(derivedField.getSourceComponentIndex(i))
             self._displayVectorInteger(self.ui.derived_values_lineedit, values)
-        elif self._fieldType == 'FieldMatrixMultiply' or self._fieldType == 'FieldTranspose': 
-            value = int(self.ui.derived_values_lineedit.text())
-            self.ui.derived_values_lineedit.setText(value)
+        elif self._fieldType == 'FieldMatrixMultiply' or self._fieldType == 'FieldTranspose' \
+        or self._fieldType == "FieldFiniteElement" or self._fieldType == "FieldNodeValue":
+            try:
+                value = int(self.ui.derived_values_lineedit.text())
+            except:
+                value = 0
+            if 1 > value:
+                self.ui.derived_values_lineedit.setText("")
+                NeonLogger.getLogger().error("Value must be a positive integer")
+            else:
+                self.ui.derived_values_lineedit.setText(str(value))
         elif self._fieldType == 'FieldStringConstant':
             if self._field and self._field.isValid():
                 text = self.ui.derived_values_lineedit.text()
@@ -114,11 +122,6 @@ class FieldEditorWidget(QtGui.QWidget):
                 self._field.assignString(fieldcache, text)
                 text = self._field.evaluateString(fieldcache)
                 self.ui.derived_values_lineedit.setText(text)
-        elif self._fieldType == "FieldNodeValue":
-            number = int(self.ui.derived_values_lineedit.text())
-            if 1 > number:
-                number = 1
-            self.ui.derived_values_lineedit.setText(str(number))
         elif self._fieldType == "FieldConstant":
             values = self._parseVector(self.ui.derived_values_lineedit)
             if self._field and self._field.isValid():
@@ -131,11 +134,6 @@ class FieldEditorWidget(QtGui.QWidget):
                     returnedValues = self._field.evaluateReal(fieldcache, numberOfComponents)
                     values = returnedValues[1]
             self._displayVector(self.ui.derived_values_lineedit, values)
-        elif self._fieldType == "FieldFiniteElement":
-            number = int(self.ui.derived_values_lineedit.text())
-            if 1 > number:
-                number = 1
-            self.ui.derived_values_lineedit.setText(str(number))
             
     def createField(self):
         returnedField = None
@@ -301,17 +299,25 @@ class FieldEditorWidget(QtGui.QWidget):
         
     def createFieldPressed(self):
         if self._createMode and self._fieldmodule:
-            self._fieldmodule.beginChange()
-            returnedField = self.createField()
-            if returnedField and returnedField.isValid():
-                text, ok = QtGui.QInputDialog.getText(self, 'Field Name Dialog', 'Enter field name:')
-                if ok:
-                    returnedField.setName(text)
-                    self._fieldCreated.emit(returnedField, self._fieldType)
-                else:
-                    returnedField.setManaged(False)
-                    returnedField = None
-            self._fieldmodule.endChange()
+            if self._fieldType:
+                self._fieldmodule.beginChange()
+                returnedField = self.createField()
+                if returnedField and returnedField.isValid():
+                    if 0:
+                        text, ok = QtGui.QInputDialog.getText(self, 'Field Name Dialog', 'Enter field name:')
+                        if ok:
+                            returnedField.setName(text)
+                            self._fieldCreated.emit(returnedField, self._fieldType)
+                        else:
+                            returnedField.setManaged(False)
+                            returnedField = None
+                    else:
+                        if returnedField.getName() != self.ui.name_lineedit.text():
+                            returnedField.setName(self.ui.name_lineedit.text())
+                        self._fieldCreated.emit(returnedField, self._fieldType)
+                self._fieldmodule.endChange()
+            else:
+                NeonLogger.getLogger().error("Must select a field type.")
                     
     def getDerivedChooser1Value(self):
         index = self.ui.derived_chooser_1.currentIndex()
@@ -671,7 +677,17 @@ class FieldEditorWidget(QtGui.QWidget):
             self.ui.coordinate_system_type_chooser.blockSignals(False)
             self.ui.coordinate_system_groupbox.show() 
         else:
-            self.ui.coordinate_system_groupbox.hide() 
+            self.ui.coordinate_system_groupbox.hide()
+            
+    def _getNumberOfFields(self):
+        numberOfFields = 0
+        if self._fieldmodule and self._fieldmodule.isValid():
+            iterator = self._fieldmodule.createFielditerator()
+            field = iterator.next()
+            while field.isValid():
+                numberOfFields += 1
+                field = iterator.next()
+        return numberOfFields
 
     def _updateWidgets(self):
         # base graphics attributes
@@ -683,8 +699,12 @@ class FieldEditorWidget(QtGui.QWidget):
             isManaged = self._field.isManaged()
             isTypeCoordinate = self._field.isTypeCoordinate()
         if self._fieldType or self._field:
+            self.ui.managed_checkbox.blockSignals(True)
             self.ui.managed_checkbox.setCheckState(QtCore.Qt.Checked if isManaged else QtCore.Qt.Unchecked)
+            self.ui.managed_checkbox.blockSignals(False)
+            self.ui.type_coordinate_checkbox.blockSignals(True)
             self.ui.type_coordinate_checkbox.setCheckState(QtCore.Qt.Checked if isTypeCoordinate else QtCore.Qt.Unchecked)
+            self.ui.type_coordinate_checkbox.blockSignals(False)
             self.displaySourceFields()
             self._coordinateSystemDisplay()
             self.ui.general_groupbox.show()
@@ -700,9 +720,16 @@ class FieldEditorWidget(QtGui.QWidget):
         if self._createMode == True:
             self.ui.create_button.show()
             self.ui.field_type_chooser.setEnabled(True)
+            self.ui.name_label.show()
+            self.ui.name_lineedit.show()
+            numberOfFields = self._getNumberOfFields()
+            tempname = "temp" + str(numberOfFields+1)
+            self.ui.name_lineedit.setText(tempname)
         else:
             self.ui.field_type_chooser.setEnabled(False)
             self.ui.create_button.hide()
+            self.ui.name_label.hide()
+            self.ui.name_lineedit.hide()
             
     def setTimekeeper(self, timekeeper):
         '''
@@ -717,6 +744,7 @@ class FieldEditorWidget(QtGui.QWidget):
         self._fieldmodule = fieldmodule
         for i in range(0, len(self._sourceFieldChoosers)):
             self._sourceFieldChoosers[i][1].setRegion(self._fieldmodule.getRegion())
+        self._updateWidgets()
 
     def getField(self):
         '''
@@ -753,7 +781,11 @@ class FieldEditorWidget(QtGui.QWidget):
         Return integer vector from comma separated text in line edit widget
         '''
         text = widget.text()
-        values = [int(value) for value in text.split(',')]
+        try:
+            values = [int(value) for value in text.split(',')]
+        except:
+            NeonLogger.getLogger().error("Value must be one or more integers")
+            values = []
         return values
 
     def _displayVector(self, widget, values, numberFormat=STRING_FLOAT_FORMAT):
@@ -771,7 +803,11 @@ class FieldEditorWidget(QtGui.QWidget):
         Return real vector from comma separated text in line edit widget
         '''
         text = widget.text()
-        values = [float(value) for value in text.split(',')]
+        try:
+            values = [float(value) for value in text.split(',')]
+        except:
+            NeonLogger.getLogger().error("Value must be one or more real numbers")
+            values = []
         return values
 
     def coordinateSystemTypeChanged(self, index):
@@ -783,14 +819,14 @@ class FieldEditorWidget(QtGui.QWidget):
         The managed radio button was clicked
         '''
         if self._field:
-            self.field.setManaged(isChecked)
+            self._field.setManaged(isChecked)
 
-    def typeCoordinateClicked(self):
+    def typeCoordinateClicked(self, isChecked):
         '''
         type coordinate clicked 
         '''
         if self._field:
-            self._field.setTypeCoordiante(isChecked)
+            self._field.setTypeCoordinate(isChecked)
 
     def coordinateSystemFocusEntered(self):
         '''
