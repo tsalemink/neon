@@ -36,6 +36,7 @@ from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEdito
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
 from opencmiss.neon.ui.editors.problemeditorwidget import ProblemEditorWidget
 from opencmiss.neon.ui.editors.simulationeditorwidget import SimulationEditorWidget
+from opencmiss.neon.ui.editors.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
 
@@ -140,6 +141,7 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.tabifyDockWidget(self.dockWidgetRegionEditor, self.dockWidgetSceneviewerEditor)
+        self.tabifyDockWidget(self.dockWidgetSceneviewerEditor, self.dockWidgetFieldEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.BottomDockWidgetArea), self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
@@ -217,6 +219,14 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
+        
+        self.dockWidgetFieldEditor = QtGui.QDockWidget(self)
+        self.dockWidgetFieldEditor.setWindowTitle('Field Editor')
+        self.dockWidgetFieldEditor.setObjectName("dockWidgetFieldEditor")
+        self.dockWidgetContentsFieldEditor = FieldListEditorWidget()
+        self.dockWidgetContentsFieldEditor.setObjectName("dockWidgetContentsFieldEditor")
+        self.dockWidgetFieldEditor.setWidget(self.dockWidgetContentsFieldEditor)
+        self.dockWidgetFieldEditor.setHidden(True)
 
     def _registerEditors(self):
         self._registerEditor(self._problem_view, self.dockWidgetProblemEditor)
@@ -228,6 +238,7 @@ class MainWindow(QtGui.QMainWindow):
         self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetTimeEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetFieldEditor)
 
         self._ui.menu_View.addSeparator()
 
@@ -479,6 +490,9 @@ class MainWindow(QtGui.QMainWindow):
         zincRootRegion = rootRegion.getZincRegion()
         scene = zincRootRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
+        self.dockWidgetContentsFieldEditor.setFieldmodule(zincRootRegion.getFieldmodule())
+        self.dockWidgetContentsFieldEditor.setNeonRegion(rootRegion)
+        self.dockWidgetContentsFieldEditor.setTimekeeper(zincContext.getTimekeepermodule().getDefaultTimekeeper())
 
         if self._visualisation_view_ready:
             self._restoreSceneviewerState()
@@ -496,6 +510,8 @@ class MainWindow(QtGui.QMainWindow):
         zincRegion = region.getZincRegion()
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
+        self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
+        self.dockWidgetContentsFieldEditor.setNeonRegion(rootRegion)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True

@@ -33,6 +33,8 @@ class NeonRegion(object):
         # callback class, only for root region
         if not parent:
             self._regionChangeCallbacks = []
+        
+        self._fieldTypeDict = {}
 
     # def __del__(self):
     #    print("NeonRegion.__del__ " + self.getDisplayName())
@@ -201,6 +203,9 @@ class NeonRegion(object):
                     field = fieldmodule.findFieldByName(fieldDict["Name"])
                     if field.isValid():
                         field.setManaged(False)
+                for currentKey in fieldDict.keys():
+                    if currentKey.find('Field') != -1:
+                        self._fieldTypeDict[fieldDict["Name"]] = currentKey
 
         # following assumes no neon child regions exist, i.e. we are deserializing into a blank region
         # for each neon region, ensure there is a matching zinc region in the same order, and recurse
@@ -278,7 +283,18 @@ class NeonRegion(object):
 
     def getChild(self, index):
         return self._children[index]
-
+    
+    def getFieldTypeDict(self):
+        return self._fieldTypeDict
+    
+    def addFieldTypeToDict(self, field, fieldType):
+        if field and field.isValid():
+            self._fieldTypeDict[field.getName()] = fieldType
+            
+    def replaceFieldTypeKey(self, oldName, newName):
+        if oldName in self._fieldTypeDict:
+            self._fieldTypeDict[newName] = self._fieldTypeDict.pop(oldName)
+    
     def clear(self):
         """
         Clear all contents of region. Can be called for root region

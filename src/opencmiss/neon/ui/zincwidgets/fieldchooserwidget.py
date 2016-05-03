@@ -17,7 +17,6 @@ from PySide import QtGui
 
 from opencmiss.zinc.field import Field
 
-
 class FieldChooserWidget(QtGui.QComboBox):
 
     def __init__(self, parent=None):
@@ -29,6 +28,7 @@ class FieldChooserWidget(QtGui.QComboBox):
         self._region = None
         self._conditional = None
         self._field = None
+        self._allowUnmanagedField = False
 
     def _fieldmoduleCallback(self, fieldmoduleevent):
         '''
@@ -53,7 +53,7 @@ class FieldChooserWidget(QtGui.QComboBox):
             field = fielditer.next()
             while field.isValid():
                 name = field.getName()
-                if field.isManaged() and ((self._conditional is None) or self._conditional(field)):
+                if (self._allowUnmanagedField or field.isManaged()) and ((self._conditional is None) or self._conditional(field)):
                     self.addItem(name)
                 field = fielditer.next()
         self.blockSignals(False)
@@ -117,6 +117,9 @@ class FieldChooserWidget(QtGui.QComboBox):
         else:
             self._field = self._region.getFieldmodule().findFieldByName(fieldName)
         return self._field
+    
+    def allowUnmanagedField(self, flag):
+        self._allowUnmanagedField = flag
 
     def setField(self, field):
         '''
@@ -124,7 +127,7 @@ class FieldChooserWidget(QtGui.QComboBox):
         '''
         if not field or not field.isValid():
             self._field = None
-        elif not field.isManaged():
+        elif not self._allowUnmanagedField and not field.isManaged():
             print("Field chooser cannot set unmanaged field")
             self._field = None
         elif self._conditional and not self._conditional(field):
