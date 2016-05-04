@@ -129,12 +129,8 @@ class MainApplication(QtCore.QObject):
                 self._location = filename
                 self.documentChanged.emit()
                 return True
-        except NeonError as neonError:
-            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + neonError.getMessage())
-        except IOError:
-            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": IO error; file not found?")
-        except ValueError:
-            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": Value error; bad Neon document JSON format?")
+        except (NeonError, IOError, ValueError) as e:
+            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + str(e))
         except:
             NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": Unknown error")
         if modelChanged:
