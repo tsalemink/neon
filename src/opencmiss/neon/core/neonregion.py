@@ -194,7 +194,8 @@ class NeonRegion(object):
             if result != ZINC_OK:
                  raise NeonError("Failed to read scene description into region " + self.getPath())
 
-        if ("Fieldmodule" in dictInput) and ("Fields" in dictInput["Fieldmodule"]):
+        if ("Fieldmodule" in dictInput) and isinstance(dictInput["Fieldmodule"], dict) and \
+                ("Fields" in dictInput["Fieldmodule"]):
             # clear IsManaged flags for fields so marked; do last otherwise fields in use by scene may be destroyed
             fieldsDict = dictInput["Fieldmodule"]["Fields"]
             for fieldDict in fieldsDict:

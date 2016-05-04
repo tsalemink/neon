@@ -24,10 +24,13 @@ from opencmiss.zinc.logger import Logger
 ENABLE_STD_STREAM_CAPTURE = True
 
 
-class CustomStream(QtCore.QObject):
-    _stdout = None
-    _stderr = None
-    messageWritten = QtCore.Signal([str, str])
+class CustomStreamImpl(QtCore.QObject):
+    # Signal is a class variable; PySide creates per-instance SignalInstance object of same name
+    messageWritten = QtCore.Signal(str, str)
+
+    # Note: if implementing __init__ you must call super __init__ for Signals to work.
+    # def __init__(self):
+    #     super(CustomStreamImpl, self).__init__()
 
     def flush(self):
         pass
@@ -39,18 +42,25 @@ class CustomStream(QtCore.QObject):
         if (not self.signalsBlocked()):
             self.messageWritten.emit(msg, level)
 
+
+class CustomStream(object):
+    _stdout = None
+    _stderr = None
+
     @staticmethod
     def stdout():
-        if (not CustomStream._stdout):
-            CustomStream._stdout = CustomStream()
-            sys.stdout = CustomStream._stdout if ENABLE_STD_STREAM_CAPTURE else sys.stdout
+        if CustomStream._stdout is None:
+            CustomStream._stdout = CustomStreamImpl()
+            if ENABLE_STD_STREAM_CAPTURE:
+                sys.stdout = CustomStream._stdout
         return CustomStream._stdout
 
     @staticmethod
     def stderr():
-        if (not CustomStream._stderr):
-            CustomStream._stderr = CustomStream()
-            sys.stderr = CustomStream._stderr if ENABLE_STD_STREAM_CAPTURE else sys.stderr
+        if CustomStream._stderr is None:
+            CustomStream._stderr = CustomStreamImpl()
+            if ENABLE_STD_STREAM_CAPTURE:
+                sys.stderr = CustomStream._stderr
         return CustomStream._stderr
 
 

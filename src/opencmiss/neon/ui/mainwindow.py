@@ -511,7 +511,7 @@ class MainWindow(QtGui.QMainWindow):
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setNeonRegion(rootRegion)
+        self.dockWidgetContentsFieldEditor.setNeonRegion(region)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
