@@ -43,6 +43,8 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui = Ui_GraphicsEditorWidget()
         self.ui.setupUi(self)
         # base graphics attributes
+        self.ui.subgroup_field_chooser.setNullObjectName('-')
+        self.ui.subgroup_field_chooser.setConditional(FieldIsScalar)
         self.ui.coordinate_field_chooser.setNullObjectName('-')
         self.ui.coordinate_field_chooser.setConditional(FieldIsCoordinateCapable)
         self.ui.data_field_chooser.setNullObjectName('-')
@@ -65,6 +67,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
 
     def _updateWidgets(self):
         # base graphics attributes
+        subgroupField = None
         coordinateField = None
         material = None
         dataField = None
@@ -78,6 +81,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         contours = None
         streamlines = None
         if self._graphics:
+            subgroupField = self._graphics.getSubgroupField()
             coordinateField = self._graphics.getCoordinateField()
             material = self._graphics.getMaterial()
             dataField = self._graphics.getDataField()
@@ -93,6 +97,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
             self.ui.general_groupbox.show()
         else:
             self.ui.general_groupbox.hide()
+        self.ui.subgroup_field_chooser.setField(subgroupField)
         self.ui.coordinate_field_chooser.setField(coordinateField)
         self._scenecoordinatesystemDisplay()
         self.ui.material_chooser.setMaterial(material)
@@ -175,6 +180,7 @@ class GraphicsEditorWidget(QtGui.QWidget):
         self.ui.spectrum_chooser.setSpectrummodule(scene.getSpectrummodule())
         self.ui.tessellation_chooser.setTessellationmodule(scene.getTessellationmodule())
         region = scene.getRegion()
+        self.ui.subgroup_field_chooser.setRegion(region)
         self.ui.coordinate_field_chooser.setRegion(region)
         self.ui.data_field_chooser.setRegion(region)
         self.ui.isoscalar_field_chooser.setRegion(region)
@@ -246,6 +252,17 @@ class GraphicsEditorWidget(QtGui.QWidget):
         text = widget.text()
         values = [float(value) for value in text.split(',')]
         return values
+
+    def subgroupFieldChanged(self, index):
+        '''
+        An item was selected at index in subgroup field chooser widget
+        '''
+        if self._graphics:
+            subgroupField = self.ui.subgroup_field_chooser.getField()
+            if subgroupField:
+                self._graphics.setSubgroupField(subgroupField)
+            else:
+                self._graphics.setSubgroupField(Field())
 
     def coordinateFieldChanged(self, index):
         '''
