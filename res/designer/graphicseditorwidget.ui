@@ -68,28 +68,28 @@
       <property name="margin">
        <number>7</number>
       </property>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="coordinate_field_label">
         <property name="text">
          <string>Coordinates:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="FieldChooserWidget" name="coordinate_field_chooser">
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="scenecoordinatesystem_label">
         <property name="text">
          <string>Coord System:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QComboBox" name="scenecoordinatesystem_combobox">
         <item>
          <property name="text">
@@ -143,21 +143,21 @@
         </item>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QCheckBox" name="exterior_checkbox">
         <property name="text">
          <string>Exterior</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="face_label">
         <property name="text">
          <string>Face:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="6" column="1">
        <widget class="QComboBox" name="face_combobox">
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
@@ -209,28 +209,28 @@
         </item>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="material_label">
         <property name="text">
          <string>Material:</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <widget class="MaterialChooserWidget" name="material_chooser">
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
+      <item row="11" column="0">
        <widget class="QLabel" name="data_field_label">
         <property name="text">
          <string>Data field:</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="11" column="1">
        <widget class="FieldChooserWidget" name="data_field_chooser">
         <property name="editable">
          <bool>false</bool>
@@ -240,32 +240,42 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="0">
+      <item row="12" column="0">
        <widget class="QLabel" name="spectrum_label">
         <property name="text">
          <string>Spectrum:</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
+      <item row="12" column="1">
        <widget class="SpectrumChooserWidget" name="spectrum_chooser"/>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QCheckBox" name="wireframe_checkbox">
         <property name="text">
          <string>Wireframe</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="1">
+      <item row="13" column="1">
        <widget class="TessellationChooserWidget" name="tessellation_chooser"/>
       </item>
-      <item row="12" column="0">
+      <item row="13" column="0">
        <widget class="QLabel" name="tessellation_label">
         <property name="text">
          <string>Tessellation:</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="subgroup_field_label">
+        <property name="text">
+         <string>Subgroup:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="FieldChooserWidget" name="subgroup_field_chooser"/>
       </item>
      </layout>
     </widget>
@@ -1068,6 +1078,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>subgroup_field_chooser</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GraphicsEditorWidget</receiver>
+   <slot>subgroupFieldChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>148</x>
+     <y>481</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>materialChanged(int)</slot>
@@ -1096,5 +1122,6 @@
   <slot>spectrumChanged(int)</slot>
   <slot>scenecoordinatesystemChanged(int)</slot>
   <slot>tessellationChanged(int)</slot>
+  <slot>subgroupFieldChanged(int)</slot>
  </slots>
 </ui>

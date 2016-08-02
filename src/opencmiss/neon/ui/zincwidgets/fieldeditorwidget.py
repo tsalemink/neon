@@ -105,7 +105,8 @@ class FieldEditorWidget(QtGui.QWidget):
                         values.append(derivedField.getSourceComponentIndex(i))
             self._displayVectorInteger(self.ui.derived_values_lineedit, values)
         elif self._fieldType == 'FieldMatrixMultiply' or self._fieldType == 'FieldTranspose' \
-        or self._fieldType == "FieldFiniteElement" or self._fieldType == "FieldNodeValue":
+        or self._fieldType == "FieldFiniteElement" or self._fieldType == "FieldNodeValue" \
+        or self._fieldType == "FieldDerivative":
             try:
                 value = int(self.ui.derived_values_lineedit.text())
             except:
@@ -221,10 +222,16 @@ class FieldEditorWidget(QtGui.QWidget):
                     value, sourceFields[0], sourceFields[1])
             else:
                 errorMessage = " Missing source field(s)."
-        elif self._fieldType == "FieldTranspose" or self._fieldType == "FieldDerivative":
+        elif self._fieldType == "FieldDerivative":
             if sourceFields[0] and sourceFields[0].isValid():
-                methodToCall = getattr(self._fieldmodule, "create" + self._fieldType)
-                returnedField = methodToCall()(value, sourceFields[0])
+                value = int(self.ui.derived_values_lineedit.text())
+                returnedField = self._fieldmodule.createFieldDerivative(sourceFields[0], value)
+            else:
+                errorMessage = " Missing source field(s)."   
+        elif self._fieldType == "FieldTranspose":
+            if sourceFields[0] and sourceFields[0].isValid():
+                value = int(self.ui.derived_values_lineedit.text())
+                returnedField = self._fieldmodule.createFieldTranspose(value, sourceFields[0])
             else:
                 errorMessage = " Missing source field(s)."   
         elif self._fieldType == "FieldFiniteElement":
@@ -456,6 +463,17 @@ class FieldEditorWidget(QtGui.QWidget):
             self.ui.derived_chooser_1.show()
             self.ui.derived_groupbox.show()
             self.ui.derived_groupbox.show()
+        elif self._fieldType == 'FieldDerivative':
+            self.ui.derived_values_label.setText(QtGui.QApplication.translate("FieldEditorWidget", "Xi Index:", None, QtGui.QApplication.UnicodeUTF8))
+            self.ui.derived_values_lineedit.show()
+            self.ui.derived_values_label.show()
+            self.ui.derived_groupbox.show()
+            if not self._field or not self._field.isValid():
+                self._sourceFieldChoosers[0][1].setConditional(FieldIsRealValued)
+                self.ui.derived_values_lineedit.setEnabled(True)
+                self.ui.derived_values_lineedit.setText("")
+            else:
+                self.ui.derived_values_lineedit.setEnabled(False)
         elif self._fieldType == 'FieldMatrixMultiply' or self._fieldType == 'FieldTranspose':
             self.ui.derived_values_label.setText(QtGui.QApplication.translate("FieldEditorWidget", "Number of Rows:", None, QtGui.QApplication.UnicodeUTF8))
             self.ui.derived_values_lineedit.show()
@@ -463,7 +481,8 @@ class FieldEditorWidget(QtGui.QWidget):
             self.ui.derived_groupbox.show()
             if not self._field or not self._field.isValid():
                 self._sourceFieldChoosers[0][1].setConditional(FieldIsRealValued)
-                self._sourceFieldChoosers[1][1].setConditional(FieldIsRealValued)  
+                if self._fieldType == 'FieldMatrixMultiply':
+                    self._sourceFieldChoosers[1][1].setConditional(FieldIsRealValued)
                 self.ui.derived_values_lineedit.setEnabled(True)
                 self.ui.derived_values_lineedit.setText("")
             else:
