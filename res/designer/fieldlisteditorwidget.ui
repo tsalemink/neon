@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>725</height>
+    <width>304</width>
+    <height>729</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
     <number>2</number>
    </property>
    <item>
@@ -45,15 +54,24 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>294</width>
-        <height>719</height>
+        <width>298</width>
+        <height>723</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
         <number>0</number>
        </property>
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -120,28 +138,11 @@
   <customwidget>
    <class>FieldEditorWidget</class>
    <extends>QWidget</extends>
-   <header>fieldeditorwidget.h</header>
+   <header>opencmiss/neon/ui/zincwidgets/fieldeditorwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>field_listview</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>FieldListEditorWidget</receiver>
-   <slot>fieldsListItemClicked(QModelIndex)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>60</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>122</x>
-     <y>218</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>fieldsListItemClicked(QModelIndex)</slot>
   <slot>addFieldEntered(QString)</slot>

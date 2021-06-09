@@ -15,17 +15,17 @@
 '''
 import os.path
 
-from PySide import QtCore, QtGui, QtOpenGL
+from PySide2 import QtCore, QtWidgets, QtOpenGL
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.visualisationview import VisualisationView
-from opencmiss.neon.ui.views.problemview import ProblemView
-from opencmiss.neon.ui.views.simulationview import SimulationView
-from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
-from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
-from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
+# from opencmiss.neon.ui.views.problemview import ProblemView
+# from opencmiss.neon.ui.views.simulationview import SimulationView
+# from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
+# from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+# from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
+# from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
 from opencmiss.neon.ui.editors.modelsourceseditorwidget import ModelSourcesEditorWidget
@@ -34,13 +34,13 @@ from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
 from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
-from opencmiss.neon.ui.editors.problemeditorwidget import ProblemEditorWidget
-from opencmiss.neon.ui.editors.simulationeditorwidget import SimulationEditorWidget
+# from opencmiss.neon.ui.editors.problemeditorwidget import ProblemEditorWidget
+# from opencmiss.neon.ui.editors.simulationeditorwidget import SimulationEditorWidget
 from opencmiss.neon.ui.editors.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, model):
         super(MainWindow, self).__init__()
@@ -56,32 +56,31 @@ class MainWindow(QtGui.QMainWindow):
         # List of possible views
         self._visualisation_view = VisualisationView(self._ui.one_gl_widget_to_rule_them_all, self)
         self._visualisation_view_ready = False
-        self._problem_view = ProblemView(self._ui.one_gl_widget_to_rule_them_all, self)
-        self._problem_view.setupProblems(model.getProjectModel())
-        self._simulation_view = SimulationView(self._ui.one_gl_widget_to_rule_them_all, self)
-        self._simulation_view.setupSimulations(model.getProjectModel())
+        # self._problem_view = ProblemView(self._ui.one_gl_widget_to_rule_them_all, self)
+        # self._problem_view.setupProblems(model.getProjectModel())
+        # self._simulation_view = SimulationView(self._ui.one_gl_widget_to_rule_them_all, self)
+        # self._simulation_view.setupSimulations(model.getProjectModel())
 
         self._view_states = {}
         self._view_states[self._visualisation_view] = ''
-        self._view_states[self._problem_view] = ''
-        self._view_states[self._simulation_view] = ''
+        # self._view_states[self._problem_view] = ''
+        # self._view_states[self._simulation_view] = ''
 
-        view_list = [self._problem_view, self._simulation_view, self._visualisation_view]
+        view_list = [self._visualisation_view]
 
         self._location = None  # The last location/directory used by the application
         self._current_view = None
 
-        self._undoRedoStack = QtGui.QUndoStack(self)
+        self._undoRedoStack = QtWidgets.QUndoStack(self)
 
         # Pre-create dialogs
-        self._createDialogs()
+        #self._createDialogs()
 
         self._setupEditors()
 
         self._registerEditors()
 
         self._setupViews(view_list)
-
         self._setupOtherWindows()
 
         self._registerOtherWindows()
@@ -117,12 +116,12 @@ class MainWindow(QtGui.QMainWindow):
 
         self._visualisation_view.graphicsInitialized.connect(self._visualisationViewReady)
 
-        self._snapshot_dialog.sceneviewerInitialized.connect(self._snapshotDialogReady)
+        # self._snapshot_dialog.sceneviewerInitialized.connect(self._snapshotDialogReady)
 
         self.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
 
-        self.dockWidgetContentsProblemEditor.runClicked.connect(self._runSimulationClicked)
-        self.dockWidgetContentsSimulationEditor.visualiseClicked.connect(self._visualiseSimulationClicked)
+        # self.dockWidgetContentsProblemEditor.runClicked.connect(self._runSimulationClicked)
+        # self.dockWidgetContentsSimulationEditor.visualiseClicked.connect(self._visualiseSimulationClicked)
 
         self._model.documentChanged.connect(self._onDocumentChanged)
 
@@ -133,8 +132,8 @@ class MainWindow(QtGui.QMainWindow):
         self._ui.action_Clear.setEnabled(len(recents))
 
     def _addDockWidgets(self):
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetProblemEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetSimulationEditor)
+        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetProblemEditor)
+        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetSimulationEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
         self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
@@ -142,27 +141,27 @@ class MainWindow(QtGui.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.tabifyDockWidget(self.dockWidgetRegionEditor, self.dockWidgetSceneviewerEditor)
         self.tabifyDockWidget(self.dockWidgetSceneviewerEditor, self.dockWidgetFieldEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.BottomDockWidgetArea), self.dockWidgetLoggerEditor)
+        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.BottomDockWidgetArea), self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
-        self.dockWidgetProblemEditor = QtGui.QDockWidget(self)
-        self.dockWidgetProblemEditor.setWindowTitle('Problem Editor')
-        self.dockWidgetProblemEditor.setObjectName("dockWidgetProblemEditor")
-        self.dockWidgetContentsProblemEditor = ProblemEditorWidget()
-        self.dockWidgetContentsProblemEditor.setObjectName("dockWidgetContentsProblemEditor")
-        self.dockWidgetProblemEditor.setWidget(self.dockWidgetContentsProblemEditor)
-        self.dockWidgetProblemEditor.setHidden(True)
+        # self.dockWidgetProblemEditor = QtGui.QDockWidget(self)
+        # self.dockWidgetProblemEditor.setWindowTitle('Problem Editor')
+        # self.dockWidgetProblemEditor.setObjectName("dockWidgetProblemEditor")
+        # self.dockWidgetContentsProblemEditor = ProblemEditorWidget()
+        # self.dockWidgetContentsProblemEditor.setObjectName("dockWidgetContentsProblemEditor")
+        # self.dockWidgetProblemEditor.setWidget(self.dockWidgetContentsProblemEditor)
+        # self.dockWidgetProblemEditor.setHidden(True)
 
-        self.dockWidgetSimulationEditor = QtGui.QDockWidget(self)
-        self.dockWidgetSimulationEditor.setWindowTitle('Simulation Editor')
-        self.dockWidgetSimulationEditor.setObjectName("dockWidgetSimulationEditor")
-        self.dockWidgetContentsSimulationEditor = SimulationEditorWidget()
-        self.dockWidgetContentsSimulationEditor.setObjectName("dockWidgetContentsSimulationEditor")
-        self.dockWidgetSimulationEditor.setWidget(self.dockWidgetContentsSimulationEditor)
-        self.dockWidgetSimulationEditor.setHidden(True)
+        # self.dockWidgetSimulationEditor = QtGui.QDockWidget(self)
+        # self.dockWidgetSimulationEditor.setWindowTitle('Simulation Editor')
+        # self.dockWidgetSimulationEditor.setObjectName("dockWidgetSimulationEditor")
+        # self.dockWidgetContentsSimulationEditor = SimulationEditorWidget()
+        # self.dockWidgetContentsSimulationEditor.setObjectName("dockWidgetContentsSimulationEditor")
+        # self.dockWidgetSimulationEditor.setWidget(self.dockWidgetContentsSimulationEditor)
+        # self.dockWidgetSimulationEditor.setHidden(True)
 
-        self.dockWidgetRegionEditor = QtGui.QDockWidget(self)
+        self.dockWidgetRegionEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetRegionEditor.setWindowTitle('Region Editor')
         self.dockWidgetRegionEditor.setObjectName("dockWidgetRegionEditor")
         self.dockWidgetContentsRegionEditor = RegionEditorWidget()
@@ -170,7 +169,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetRegionEditor.setWidget(self.dockWidgetContentsRegionEditor)
         self.dockWidgetRegionEditor.setHidden(True)
 
-        self.dockWidgetModelSourcesEditor = QtGui.QDockWidget(self)
+        self.dockWidgetModelSourcesEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetModelSourcesEditor.setWindowTitle('Model Sources Editor')
         self.dockWidgetModelSourcesEditor.setObjectName("dockWidgetModelSourcesEditor")
         self.dockWidgetContentsModelSourcesEditor = ModelSourcesEditorWidget()
@@ -178,7 +177,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetModelSourcesEditor.setWidget(self.dockWidgetContentsModelSourcesEditor)
         self.dockWidgetModelSourcesEditor.setHidden(True)
 
-        self.dockWidgetSceneEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSceneEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneEditor.setWindowTitle('Scene Editor')
         self.dockWidgetSceneEditor.setObjectName("dockWidgetSceneEditor")
         self.dockWidgetContentsSceneEditor = SceneEditorWidget()
@@ -186,7 +185,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetSceneEditor.setWidget(self.dockWidgetContentsSceneEditor)
         self.dockWidgetSceneEditor.setHidden(True)
         
-        self.dockWidgetSceneviewerEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSceneviewerEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneviewerEditor.setWindowTitle('Sceneviewer Editor')
         self.dockWidgetSceneviewerEditor.setObjectName("dockWidgetSceneviewerEditor")
         self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget()
@@ -196,7 +195,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetSceneviewerEditor.visibilityChanged.connect( \
             self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
 
-        self.dockWidgetSpectrumEditor = QtGui.QDockWidget(self)
+        self.dockWidgetSpectrumEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
         self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
         self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._ui.one_gl_widget_to_rule_them_all)
@@ -204,7 +203,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         self.dockWidgetSpectrumEditor.setHidden(True)
 
-        self.dockWidgetTessellationEditor = QtGui.QDockWidget(self)
+        self.dockWidgetTessellationEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetTessellationEditor.setWindowTitle('Tessellation Editor')
         self.dockWidgetTessellationEditor.setObjectName("dockWidgetTessellationEditor")
         self.dockWidgetContentsTessellationEditor = TessellationEditorWidget()
@@ -212,7 +211,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetTessellationEditor.setWidget(self.dockWidgetContentsTessellationEditor)
         self.dockWidgetTessellationEditor.setHidden(True)
 
-        self.dockWidgetTimeEditor = QtGui.QDockWidget(self)
+        self.dockWidgetTimeEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetTimeEditor.setWindowTitle('Time Editor')
         self.dockWidgetTimeEditor.setObjectName("dockWidgetTimeEditor")
         self.dockWidgetContentsTimeEditor = TimeEditorWidget()
@@ -220,7 +219,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
         
-        self.dockWidgetFieldEditor = QtGui.QDockWidget(self)
+        self.dockWidgetFieldEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetFieldEditor.setWindowTitle('Field Editor')
         self.dockWidgetFieldEditor.setObjectName("dockWidgetFieldEditor")
         self.dockWidgetContentsFieldEditor = FieldListEditorWidget()
@@ -229,8 +228,8 @@ class MainWindow(QtGui.QMainWindow):
         self.dockWidgetFieldEditor.setHidden(True)
 
     def _registerEditors(self):
-        self._registerEditor(self._problem_view, self.dockWidgetProblemEditor)
-        self._registerEditor(self._simulation_view, self.dockWidgetSimulationEditor)
+        # self._registerEditor(self._problem_view, self.dockWidgetProblemEditor)
+        # self._registerEditor(self._simulation_view, self.dockWidgetSimulationEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetModelSourcesEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
@@ -263,11 +262,11 @@ class MainWindow(QtGui.QMainWindow):
 
         return action
 
-    def _createDialogs(self):
-        self._snapshot_dialog = SnapshotDialog(self, self._ui.one_gl_widget_to_rule_them_all)
-        self._snapshot_dialog.setZincContext(self._model.getZincContext())
+    # def _createDialogs(self):
+    #     self._snapshot_dialog = SnapshotDialog(self, self._ui.one_gl_widget_to_rule_them_all)
+    #     self._snapshot_dialog.setZincContext(self._model.getZincContext())
 
-        self._preferences_dialog = PreferencesDialog(self)
+    #     self._preferences_dialog = PreferencesDialog(self)
 
     def _writeSettings(self):
         settings = QtCore.QSettings()
@@ -291,11 +290,11 @@ class MainWindow(QtGui.QMainWindow):
         settings.endGroup()
 
         settings.beginGroup('SnapshotDialog')
-        settings.setValue('state', self._snapshot_dialog.serialize())
+        # settings.setValue('state', self._snapshot_dialog.serialize())
         settings.endGroup()
 
         settings.beginGroup('Problems')
-        settings.setValue('state', self._problem_view.serialize())
+        # settings.setValue('state', self._problem_view.serialize())
         settings.endGroup()
 
     def _readSettings(self):
@@ -324,11 +323,11 @@ class MainWindow(QtGui.QMainWindow):
         self._postChangeView()
 
         settings.beginGroup('SnapshotDialog')
-        self._snapshot_dialog.deserialize(settings.value('state', ''))
+        # self._snapshot_dialog.deserialize(settings.value('state', ''))
         settings.endGroup()
 
         settings.beginGroup('Problems')
-        self._problem_view.deserialize(settings.value('state', ''))
+        # self._problem_view.deserialize(settings.value('state', ''))
         settings.endGroup()
 
         self._updateUi()
@@ -377,7 +376,7 @@ class MainWindow(QtGui.QMainWindow):
     def _postChangeView(self):
         current_view = self._ui.viewStackedWidget.currentWidget()
         view_state = self._view_states[current_view]
-        self.restoreState(view_state, VERSION_MAJOR)
+        # self.restoreState(view_state, VERSION_MAJOR)
 
         action_name = getEditorMenuName(current_view)
         action = self._getEditorAction(action_name)
@@ -386,7 +385,7 @@ class MainWindow(QtGui.QMainWindow):
             menu.setEnabled(True)
 
     def _setupOtherWindows(self):
-        self.dockWidgetLoggerEditor = QtGui.QDockWidget(self)
+        self.dockWidgetLoggerEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetLoggerEditor.setWindowTitle('Logger')
         self.dockWidgetLoggerEditor.setObjectName("dockWidgetLoggerEditor")
         self.dockWidgetContentsLoggerEditor = LoggerEditorWidget()
@@ -408,13 +407,13 @@ class MainWindow(QtGui.QMainWindow):
         menu.addAction(editor.toggleViewAction())
 
     def _setupViews(self, views):
-        action_group = QtGui.QActionGroup(self)
+        action_group = QtWidgets.QActionGroup(self)
         zincContext = self._model.getZincContext()
         for v in views:
             self._ui.viewStackedWidget.addWidget(v)
             v.setZincContext(zincContext)
 
-            action_view = QtGui.QAction(v.getName(), self)
+            action_view = QtWidgets.QAction(v.getName(), self)
             action_view.setData(v)
             action_view.setCheckable(True)
             action_view.setActionGroup(action_group)
@@ -428,7 +427,7 @@ class MainWindow(QtGui.QMainWindow):
         if sender == self.dockWidgetContentsProblemEditor:
             actions = self._ui.menu_View.actions()
             simulate_action = [a for a in actions if a.text() == self._simulation_view.getName()][0]
-            simulate_action.activate(QtGui.QAction.ActionEvent.Trigger)
+            simulate_action.activate(QtWidgets.QAction.ActionEvent.Trigger)
 
         problem = self._model.getDocument().getProject().getProblem()
         if problem.validate():
@@ -443,7 +442,7 @@ class MainWindow(QtGui.QMainWindow):
         if sender == self.dockWidgetContentsSimulationEditor:
             actions = self._ui.menu_View.actions()
             visualise_action = [a for a in actions if a.text() == self._visualisation_view.getName()][0]
-            visualise_action.activate(QtGui.QAction.ActionEvent.Trigger)
+            visualise_action.activate(QtWidgets.QAction.ActionEvent.Trigger)
 
         simulation = self._simulation_view.getSimulation()
         if simulation.validate():
@@ -476,11 +475,11 @@ class MainWindow(QtGui.QMainWindow):
         # need to pass new Zinc context to dialogs and widgets using global modules
         zincContext = document.getZincContext()
         self._visualisation_view.setZincContext(zincContext)
-        self._simulation_view.setZincContext(zincContext)
+        # self._simulation_view.setZincContext(zincContext)
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
-        self._snapshot_dialog.setZincContext(zincContext)
+        # self._snapshot_dialog.setZincContext(zincContext)
 
         # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
@@ -501,9 +500,9 @@ class MainWindow(QtGui.QMainWindow):
 
         project = document.getProject()
         index = self._model.getProjectModel().getIndex(project)
-        self._problem_view.setCurrentIndex(index.row())
-        self._simulation_view.setCurrentIndex(index.row())
-        self._problem_view.setProblem(project.getProblem())
+        # self._problem_view.setCurrentIndex(index.row())
+        # self._simulation_view.setCurrentIndex(index.row())
+        # self._problem_view.setProblem(project.getProblem())
 
     def _regionSelected(self, region):
         self.dockWidgetContentsModelSourcesEditor.setRegion(region)
@@ -526,7 +525,7 @@ class MainWindow(QtGui.QMainWindow):
             self._model.save()
 
     def _saveAsTriggered(self):
-        filename, _ = QtGui.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
         if filename:
             self._location = os.path.dirname(filename)
             self._model.setLocation(filename)
@@ -612,12 +611,12 @@ class MainWindow(QtGui.QMainWindow):
             self._location = os.path.dirname(filename)
             self._addRecent(filename)
         else:
-            QtGui.QMessageBox.warning(self, "Load failure", "Failed to load file " + filename + ". Refer to logger window for more details", QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self, "Load failure", "Failed to load file " + filename + ". Refer to logger window for more details", QtWidgets.QMessageBox.Ok)
 
         self._updateUi()
 
     def _openTriggered(self):
-        filename, _ = QtGui.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption='Choose file ...', dir=self._location, filter="Neon Files (*.neon *.json);;All (*.*)")
 
         if filename:
             self._openModel(filename)
@@ -645,9 +644,9 @@ class MainWindow(QtGui.QMainWindow):
     def confirmClose(self):
         # Check to see if the Workflow is in a saved state.
         if self._model.isModified():
-            ret = QtGui.QMessageBox.warning(self, 'Unsaved Changes', 'You have unsaved changes, would you like to save these changes now?',
-                                      QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            if ret == QtGui.QMessageBox.Yes:
+            ret = QtWidgets.QMessageBox.warning(self, 'Unsaved Changes', 'You have unsaved changes, would you like to save these changes now?',
+                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if ret == QtWidgets.QMessageBox.Yes:
                 self._saveTriggered()
 
     def _quitApplication(self):

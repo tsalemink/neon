@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
 
 
-class AboutDialog(QtGui.QDialog):
+class AboutDialog(QtWidgets.QDialog):
 
     def __init__(self, parent):
         super(AboutDialog, self).__init__(parent)

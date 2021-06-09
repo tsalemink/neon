@@ -13,18 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 from opencmiss.zinc.tessellation import Tessellation
 
 
-class TessellationChooserWidget(QtGui.QComboBox):
+class TessellationChooserWidget(QtWidgets.QComboBox):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QComboBox.__init__(self, parent)
+        QtWidgets.QComboBox.__init__(self, parent)
         self._nullObjectName = None
         self._tessellationmodule = None
         self._tessellationmodulenotifier = None

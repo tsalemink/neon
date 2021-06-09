@@ -1,76 +1,102 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'res/designer/tessellationeditorwidget.ui'
-#
-# Created: Wed Dec  9 12:55:39 2015
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'tessellationeditorwidget.ui'
+##
+## Created by: Qt User Interface Compiler version 5.15.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide import QtCore, QtGui
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
+from opencmiss.neon.ui import icons_rc
 
 class Ui_TessellationEditorWidget(object):
     def setupUi(self, TessellationEditorWidget):
-        TessellationEditorWidget.setObjectName("TessellationEditorWidget")
+        if not TessellationEditorWidget.objectName():
+            TessellationEditorWidget.setObjectName(u"TessellationEditorWidget")
         TessellationEditorWidget.resize(613, 476)
-        self.verticalLayout = QtGui.QVBoxLayout(TessellationEditorWidget)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.groupBox = QtGui.QGroupBox(TessellationEditorWidget)
-        self.groupBox.setObjectName("groupBox")
-        self.gridLayout = QtGui.QGridLayout(self.groupBox)
-        self.gridLayout.setObjectName("gridLayout")
-        self.tableWidgetTessellations = QtGui.QTableWidget(self.groupBox)
+        self.verticalLayout = QVBoxLayout(TessellationEditorWidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.groupBox = QGroupBox(TessellationEditorWidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout = QGridLayout(self.groupBox)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.tableWidgetTessellations = QTableWidget(self.groupBox)
+        self.tableWidgetTessellations.setObjectName(u"tableWidgetTessellations")
         self.tableWidgetTessellations.setAlternatingRowColors(True)
-        self.tableWidgetTessellations.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.tableWidgetTessellations.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.tableWidgetTessellations.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidgetTessellations.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidgetTessellations.setShowGrid(False)
         self.tableWidgetTessellations.setColumnCount(0)
-        self.tableWidgetTessellations.setObjectName("tableWidgetTessellations")
-        self.tableWidgetTessellations.setColumnCount(0)
-        self.tableWidgetTessellations.setRowCount(0)
         self.tableWidgetTessellations.horizontalHeader().setVisible(True)
         self.tableWidgetTessellations.horizontalHeader().setStretchLastSection(True)
         self.tableWidgetTessellations.verticalHeader().setVisible(False)
+
         self.gridLayout.addWidget(self.tableWidgetTessellations, 0, 0, 1, 3)
-        self.pushButtonAddTessellation = QtGui.QPushButton(self.groupBox)
-        self.pushButtonAddTessellation.setText("")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/neon/images/icons/list-add-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.pushButtonAddTessellation = QPushButton(self.groupBox)
+        self.pushButtonAddTessellation.setObjectName(u"pushButtonAddTessellation")
+        icon = QIcon()
+        icon.addFile(u":/neon/images/icons/list-add-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButtonAddTessellation.setIcon(icon)
-        self.pushButtonAddTessellation.setObjectName("pushButtonAddTessellation")
+
         self.gridLayout.addWidget(self.pushButtonAddTessellation, 1, 0, 1, 1)
-        self.pushButtonDeleteTessellation = QtGui.QPushButton(self.groupBox)
-        self.pushButtonDeleteTessellation.setText("")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/neon/images/icons/list-remove-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.pushButtonDeleteTessellation = QPushButton(self.groupBox)
+        self.pushButtonDeleteTessellation.setObjectName(u"pushButtonDeleteTessellation")
+        icon1 = QIcon()
+        icon1.addFile(u":/neon/images/icons/list-remove-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButtonDeleteTessellation.setIcon(icon1)
-        self.pushButtonDeleteTessellation.setObjectName("pushButtonDeleteTessellation")
+
         self.gridLayout.addWidget(self.pushButtonDeleteTessellation, 1, 1, 1, 1)
-        spacerItem = QtGui.QSpacerItem(510, 19, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 1, 2, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(510, 19, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer, 1, 2, 1, 1)
+
+
         self.verticalLayout.addWidget(self.groupBox)
-        self.groupBoxProperties = QtGui.QGroupBox(TessellationEditorWidget)
-        self.groupBoxProperties.setObjectName("groupBoxProperties")
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.groupBoxProperties)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.checkBoxDefaultTessellation = QtGui.QCheckBox(self.groupBoxProperties)
-        self.checkBoxDefaultTessellation.setObjectName("checkBoxDefaultTessellation")
+
+        self.groupBoxProperties = QGroupBox(TessellationEditorWidget)
+        self.groupBoxProperties.setObjectName(u"groupBoxProperties")
+        self.verticalLayout_2 = QVBoxLayout(self.groupBoxProperties)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.checkBoxDefaultTessellation = QCheckBox(self.groupBoxProperties)
+        self.checkBoxDefaultTessellation.setObjectName(u"checkBoxDefaultTessellation")
+
         self.verticalLayout_2.addWidget(self.checkBoxDefaultTessellation)
-        self.checkBoxDefaultPointsTessellation = QtGui.QCheckBox(self.groupBoxProperties)
-        self.checkBoxDefaultPointsTessellation.setObjectName("checkBoxDefaultPointsTessellation")
+
+        self.checkBoxDefaultPointsTessellation = QCheckBox(self.groupBoxProperties)
+        self.checkBoxDefaultPointsTessellation.setObjectName(u"checkBoxDefaultPointsTessellation")
+
         self.verticalLayout_2.addWidget(self.checkBoxDefaultPointsTessellation)
+
+
         self.verticalLayout.addWidget(self.groupBoxProperties)
 
+
         self.retranslateUi(TessellationEditorWidget)
-        QtCore.QMetaObject.connectSlotsByName(TessellationEditorWidget)
+
+        QMetaObject.connectSlotsByName(TessellationEditorWidget)
+    # setupUi
 
     def retranslateUi(self, TessellationEditorWidget):
-        TessellationEditorWidget.setWindowTitle(QtGui.QApplication.translate("TessellationEditorWidget", "Tessellation Editor", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("TessellationEditorWidget", "Tessellations", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButtonAddTessellation.setToolTip(QtGui.QApplication.translate("TessellationEditorWidget", "Add spectrum", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButtonDeleteTessellation.setToolTip(QtGui.QApplication.translate("TessellationEditorWidget", "Remove spectrum", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBoxProperties.setTitle(QtGui.QApplication.translate("TessellationEditorWidget", "Properties", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxDefaultTessellation.setText(QtGui.QApplication.translate("TessellationEditorWidget", "Default Tessellation", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxDefaultPointsTessellation.setText(QtGui.QApplication.translate("TessellationEditorWidget", "Default Points Tessellation",
-                                                                                    None, QtGui.QApplication.UnicodeUTF8))
+        TessellationEditorWidget.setWindowTitle(QCoreApplication.translate("TessellationEditorWidget", u"Tessellation Editor", None))
+        self.groupBox.setTitle(QCoreApplication.translate("TessellationEditorWidget", u"Tessellations", None))
+#if QT_CONFIG(tooltip)
+        self.pushButtonAddTessellation.setToolTip(QCoreApplication.translate("TessellationEditorWidget", u"Add spectrum", None))
+#endif // QT_CONFIG(tooltip)
+        self.pushButtonAddTessellation.setText("")
+#if QT_CONFIG(tooltip)
+        self.pushButtonDeleteTessellation.setToolTip(QCoreApplication.translate("TessellationEditorWidget", u"Remove spectrum", None))
+#endif // QT_CONFIG(tooltip)
+        self.pushButtonDeleteTessellation.setText("")
+        self.groupBoxProperties.setTitle(QCoreApplication.translate("TessellationEditorWidget", u"Properties", None))
+        self.checkBoxDefaultTessellation.setText(QCoreApplication.translate("TessellationEditorWidget", u"Default Tessellation", None))
+        self.checkBoxDefaultPointsTessellation.setText(QCoreApplication.translate("TessellationEditorWidget", u"Default Points Tessellation", None))
+    # retranslateUi
+

@@ -15,7 +15,7 @@
 '''
 import sys
 
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 from opencmiss.neon.core.mainapplication import MainApplication
 from opencmiss.neon.ui.mainwindow import MainWindow
@@ -25,7 +25,7 @@ from opencmiss.neon.settings.mainsettings import setApplicationSettings
 def main():
     argv = sys.argv[:]
 
-    app = QtGui.QApplication(argv)
+    app = QtWidgets.QApplication(argv)
 
     setApplicationSettings(app)
 

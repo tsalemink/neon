@@ -13,16 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 
-class SpinBoxDelegate(QtGui.QStyledItemDelegate):
+class SpinBoxDelegate(QtWidgets.QStyledItemDelegate):
 
     def __init__(self, parent=None):
         super(SpinBoxDelegate, self).__init__(parent)
 
     def createEditor(self, parent, option, index):
-        editor = QtGui.QSpinBox(parent)
+        editor = QtWidgets.QSpinBox(parent)
         editor.setFrame(False)
         editor.setMinimum(3)
         editor.setMaximum(9999)

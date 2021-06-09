@@ -23,7 +23,7 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-from PySide import QtGui
+from PySide2 import QtGui,QtWidgets
 
 # from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonmodelsources import NeonModelSourceFile
@@ -32,13 +32,13 @@ from opencmiss.neon.ui.editors.ui_modelsourceseditorwidget import Ui_ModelSource
 from opencmiss.neon.core.neonlogger import NeonLogger
 
 
-class ModelSourcesEditorWidget(QtGui.QWidget):
+class ModelSourcesEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._region = None
         self._currentModelSource = None
         self._itemModel = None
@@ -46,10 +46,10 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
         self._ui = Ui_ModelSourcesEditorWidget()
         self._ui.setupUi(self)
         # Extra UI code not possible with Designer
-        self._ui.action_Hello = QtGui.QAction(self)
+        self._ui.action_Hello = QtWidgets.QAction(self)
         self._ui.action_Hello.setText("Hello")
 
-        self._ui.addMenu = QtGui.QMenu(self._ui.frame)
+        self._ui.addMenu = QtWidgets.QMenu(self._ui.frame)
         self._ui.addMenu.setTitle("Bob")
         self._ui.addMenu.addAction(self._ui.action_Hello)
         self._ui.addMenu.show()
@@ -148,14 +148,14 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
 
     def _deleteSourceClicked(self):
         if self._region and self._currentModelSource:
-            msgBox = QtGui.QMessageBox()
+            msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle("Neon: Please confirm")
             msgBox.setText("Delete model data source?")
             # msgBox.setInformativeText("Please confirm action.")
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
             result = msgBox.exec_()
-            if result == QtGui.QMessageBox.Ok:
+            if result == QtWidgets.QMessageBox.Ok:
                 self._region.removeModelSource(self._currentModelSource)
 
     def _setCurrentModelSource(self, modelSource):
@@ -184,7 +184,7 @@ class ModelSourcesEditorWidget(QtGui.QWidget):
             self._ui.lineEditFileName.setText(fileName)
 
     def _fileBrowseClicked(self):
-        fileNameTuple = QtGui.QFileDialog.getOpenFileName(self, "Select Model Source", "", "Model Files (*.ex* *.fieldml)")
+        fileNameTuple = QtWidgets.QFileDialog.getOpenFileName(self, "Select Model Source", "", "Model Files (*.ex* *.fieldml)")
         fileName = fileNameTuple[0]
         # fileFilter = fileNameTuple[1]
         if not fileName:

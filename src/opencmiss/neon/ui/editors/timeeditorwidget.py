@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.ui.editors.ui_timeeditorwidget import Ui_TimeEditorWidget
 from opencmiss.neon.settings.mainsettings import FLOAT_STRING_FORMAT
 
 
-class TimeEditorWidget(QtGui.QWidget):
+class TimeEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(TimeEditorWidget, self).__init__(parent)

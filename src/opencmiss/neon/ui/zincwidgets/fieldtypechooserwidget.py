@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 FieldTypes = ['FieldAbs', 'FieldAcos', 'FieldAdd', 'FieldAlias', 'FieldAnd', 'FieldAsin', \
               'FieldAtan', 'FieldAtan2', 'FieldComponent', 'FieldConcatenate', 'FieldConstant', \
@@ -31,13 +31,13 @@ FieldTypes = ['FieldAbs', 'FieldAcos', 'FieldAdd', 'FieldAlias', 'FieldAnd', 'Fi
               'FieldVectorCoordinateTransformation', 'FieldXor']
 
 
-class FieldTypeChooserWidget(QtGui.QComboBox):
+class FieldTypeChooserWidget(QtWidgets.QComboBox):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QComboBox.__init__(self, parent)
+        QtWidgets.QComboBox.__init__(self, parent)
         self._nullObjectName = "-"
         self._currentFieldType = None
         self._buildFieldTypeList()

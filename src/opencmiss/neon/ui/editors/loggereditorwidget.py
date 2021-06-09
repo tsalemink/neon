@@ -13,22 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtGui, QtWidgets
 
 from opencmiss.neon.ui.editors.ui_loggereditorwidget import Ui_LoggerEditorWidget
 from opencmiss.neon.core.neonlogger import CustomStream
 
 
-class LoggerEditorWidget(QtGui.QWidget):
+class LoggerEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._ui = Ui_LoggerEditorWidget()
         self._ui.setupUi(self)
 
         self._logger = None
         self._loggerNotifier = None
-        self._makeConnections()
+        # self._makeConnections()
 
     def writeMessage(self, message, levelstring):
         if levelstring == "ERROR":
@@ -48,7 +48,7 @@ class LoggerEditorWidget(QtGui.QWidget):
             stderr.messageWritten.connect(self.writeMessage)
 
     def copyToClipboard(self):
-        QtGui.QApplication.clipboard().setText(self._ui.logText.toPlainText())
+        QtGui.QGuiApplication.clipboard().setText(self._ui.logText.toPlainText())
 
     def clearAll(self):
         self._ui.logText.clear()

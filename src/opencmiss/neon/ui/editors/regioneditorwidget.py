@@ -19,7 +19,7 @@ OpenCMISS-Neon Region Editor Widget
 Displays and allows editing of the the Neon region tree.
 """
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.ui.editors.ui_regioneditorwidget import Ui_RegionEditorWidget
@@ -172,23 +172,23 @@ class RegionTreeModel(QtCore.QAbstractItemModel):
         return QtCore.QModelIndex()
 
 
-class RegionEditorWidget(QtGui.QWidget):
+class RegionEditorWidget(QtWidgets.QWidget):
 
     regionSelected = QtCore.Signal(object)
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._rootRegion = None
         self._regionItems = None
         # Using composition to include the visual element of the GUI.
         self._ui = Ui_RegionEditorWidget()
         self._ui.setupUi(self)
-        self._ui.contextMenu = QtGui.QMenu(self)
-        self._ui.action_AddChildRegion = QtGui.QAction('Add child region', self._ui.contextMenu)
+        self._ui.contextMenu = QtWidgets.QMenu(self)
+        self._ui.action_AddChildRegion = QtWidgets.QAction('Add child region', self._ui.contextMenu)
         self._ui.contextMenu.addAction(self._ui.action_AddChildRegion)
-        self._ui.action_ClearRegion = QtGui.QAction('Clear region', self._ui.contextMenu)
+        self._ui.action_ClearRegion = QtWidgets.QAction('Clear region', self._ui.contextMenu)
         self._ui.contextMenu.addAction(self._ui.action_ClearRegion)
-        self._ui.action_RemoveRegion = QtGui.QAction('Remove region', self._ui.contextMenu)
+        self._ui.action_RemoveRegion = QtWidgets.QAction('Remove region', self._ui.contextMenu)
         self._ui.contextMenu.addAction(self._ui.action_RemoveRegion)
         self._makeConnections()
 
@@ -209,24 +209,24 @@ class RegionEditorWidget(QtGui.QWidget):
 
     def _clearRegion(self):
         region = self.getCurrentRegion()
-        msgBox = QtGui.QMessageBox()
+        msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("Neon: Please confirm")
         msgBox.setText("Clear region " + region.getDisplayName() + " and remove its sub-regions?")
-        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
         result = msgBox.exec_()
-        if result == QtGui.QMessageBox.Ok:
+        if result == QtWidgets.QMessageBox.Ok:
             region.clear()
 
     def _removeRegion(self):
         region = self.getCurrentRegion()
-        msgBox = QtGui.QMessageBox()
+        msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("Neon: Please confirm")
         msgBox.setText("Remove region " + region.getDisplayName() + " and all its sub-regions?")
-        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+        msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
         result = msgBox.exec_()
-        if result == QtGui.QMessageBox.Ok:
+        if result == QtWidgets.QMessageBox.Ok:
             region.remove()
 
     def contextMenuEvent(self, event):

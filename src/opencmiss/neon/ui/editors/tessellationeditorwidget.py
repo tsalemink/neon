@@ -15,7 +15,7 @@
 '''
 import json
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.neon.ui.editors.ui_tessellationeditorwidget import Ui_TessellationEditorWidget
@@ -25,20 +25,20 @@ TESSELLATION_NAME_FORMAT = 'tessellation{0}'
 TESSELLATION_DATA_ROLE = QtCore.Qt.UserRole + 1
 
 
-class TessellationEditorWidget(QtGui.QWidget):
+class TessellationEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(TessellationEditorWidget, self).__init__(parent)
         self._ui = Ui_TessellationEditorWidget()
         self._ui.setupUi(self)
         self._ui.tableWidgetTessellations.setColumnCount(4)
-        h1 = QtGui.QTableWidgetItem('Name')
+        h1 = QtWidgets.QTableWidgetItem('Name')
         self._ui.tableWidgetTessellations.setHorizontalHeaderItem(0, h1)
-        h2 = QtGui.QTableWidgetItem('Minimum\nDivisions')
+        h2 = QtWidgets.QTableWidgetItem('Minimum\nDivisions')
         self._ui.tableWidgetTessellations.setHorizontalHeaderItem(1, h2)
-        h3 = QtGui.QTableWidgetItem('Refinement\nFactors')
+        h3 = QtWidgets.QTableWidgetItem('Refinement\nFactors')
         self._ui.tableWidgetTessellations.setHorizontalHeaderItem(2, h3)
-        h4 = QtGui.QTableWidgetItem('Circle\nDivisions')
+        h4 = QtWidgets.QTableWidgetItem('Circle\nDivisions')
         self._ui.tableWidgetTessellations.setHorizontalHeaderItem(3, h4)
         self._ui.tableWidgetTessellations.resizeColumnsToContents()
         spin_box_delegate = SpinBoxDelegate(self._ui.tableWidgetTessellations)
@@ -223,16 +223,16 @@ def addRow(table, tessellation, div, ref, circ):
     rows = table.rowCount()
     table.insertRow(rows)
 
-    name_item = QtGui.QTableWidgetItem(tessellation.getName())
+    name_item = QtWidgets.QTableWidgetItem(tessellation.getName())
     name_item.setData(TESSELLATION_DATA_ROLE, tessellation)
     table.setItem(rows, 0, name_item)
 
-    div_item = QtGui.QTableWidgetItem(str(div))
+    div_item = QtWidgets.QTableWidgetItem(str(div))
     table.setItem(rows, 1, div_item)
 
-    ref_item = QtGui.QTableWidgetItem(str(ref))
+    ref_item = QtWidgets.QTableWidgetItem(str(ref))
     table.setItem(rows, 2, ref_item)
 
-    circ_div_item = QtGui.QTableWidgetItem()
+    circ_div_item = QtWidgets.QTableWidgetItem()
     circ_div_item.setData(0, circ)
     table.setItem(rows, 3, circ_div_item)

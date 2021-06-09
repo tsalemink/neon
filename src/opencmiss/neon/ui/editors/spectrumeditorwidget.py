@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.zinc.sceneviewer import Sceneviewer
 from opencmiss.zinc.spectrum import Spectrum, Spectrumcomponent
@@ -27,12 +27,12 @@ COMPONENT_NAME_FORMAT = '{:d}. '
 SPECTRUM_DATA_ROLE = QtCore.Qt.UserRole + 1
 
 
-class SpectrumEditorWidget(QtGui.QWidget):
+class SpectrumEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None, shared_context=None):
         super(SpectrumEditorWidget, self).__init__(parent)
         self._ui = Ui_SpectrumEditorWidget()
-        self._ui.setupUi(self, shared_context)
+        self._ui.setupUi(shared_context)
 
         self._ui.comboBoxColourMap.addItems(extractColourMappingEnum())
         self._ui.comboBoxScale.addItems(extractScaleTypeEnum())
@@ -532,14 +532,14 @@ PRIVATE_SPECTRUM_FORMAT = 'spectrum_{0}'
 
 
 def createSpectrumListItem(name):
-    i = QtGui.QListWidgetItem(name)
+    i = QtWidgets.QListWidgetItem(name)
     i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)
 
     return i
 
 
 def createItem(name, data, editable=False):
-    i = QtGui.QListWidgetItem(name)
+    i = QtWidgets.QListWidgetItem(name)
     i.setData(SPECTRUM_DATA_ROLE, data)
     if editable:
         i.setFlags(i.flags() | QtCore.Qt.ItemIsEditable)

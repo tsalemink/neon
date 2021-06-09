@@ -15,7 +15,7 @@
 '''
 import sys
 
-from PySide import QtCore
+from PySide2 import QtCore
 import os.path
 
 

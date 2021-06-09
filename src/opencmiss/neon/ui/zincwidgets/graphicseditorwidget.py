@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from numbers import Number
 
@@ -31,13 +31,13 @@ from opencmiss.neon.ui.zincwidgets.ui_graphicseditorwidget import Ui_GraphicsEdi
 
 STRING_FLOAT_FORMAT = '{:.5g}'
 
-class GraphicsEditorWidget(QtGui.QWidget):
+class GraphicsEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._graphics = None
         # Using composition to include the visual element of the GUI.
         self.ui = Ui_GraphicsEditorWidget()

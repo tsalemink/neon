@@ -17,7 +17,7 @@
 import sys
 import logging
 
-from PySide import QtCore
+from PySide2 import QtCore
 
 from opencmiss.zinc.logger import Logger
 

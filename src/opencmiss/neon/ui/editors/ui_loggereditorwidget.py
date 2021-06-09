@@ -1,47 +1,69 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'res\designer\editors\loggereditorwidget.ui'
-#
-# Created: Thu Mar 03 13:47:15 2016
-#      by: pyside-uic 0.2.14 running on PySide 1.1.2
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'loggereditorwidget.ui'
+##
+## Created by: Qt User Interface Compiler version 5.15.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide import QtCore, QtGui
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+
+from  opencmiss.neon import icons_rc
 
 class Ui_LoggerEditorWidget(object):
     def setupUi(self, LoggerEditorWidget):
-        LoggerEditorWidget.setObjectName("LoggerEditorWidget")
+        if not LoggerEditorWidget.objectName():
+            LoggerEditorWidget.setObjectName(u"LoggerEditorWidget")
         LoggerEditorWidget.resize(851, 186)
-        self.gridLayout = QtGui.QGridLayout(LoggerEditorWidget)
-        self.gridLayout.setObjectName("gridLayout")
-        self.groupBox = QtGui.QGroupBox(LoggerEditorWidget)
-        self.groupBox.setObjectName("groupBox")
-        self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.logText = QtGui.QTextBrowser(self.groupBox)
-        self.logText.setObjectName("logText")
+        self.gridLayout = QGridLayout(LoggerEditorWidget)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.groupBox = QGroupBox(LoggerEditorWidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout_2 = QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.logText = QTextBrowser(self.groupBox)
+        self.logText.setObjectName(u"logText")
+
         self.gridLayout_2.addWidget(self.logText, 1, 0, 1, 1)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.clearAllButton = QtGui.QPushButton(self.groupBox)
-        self.clearAllButton.setObjectName("clearAllButton")
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.clearAllButton = QPushButton(self.groupBox)
+        self.clearAllButton.setObjectName(u"clearAllButton")
+
         self.horizontalLayout.addWidget(self.clearAllButton)
-        self.copyButton = QtGui.QPushButton(self.groupBox)
-        self.copyButton.setObjectName("copyButton")
+
+        self.copyButton = QPushButton(self.groupBox)
+        self.copyButton.setObjectName(u"copyButton")
+
         self.horizontalLayout.addWidget(self.copyButton)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+
         self.gridLayout_2.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+
+
         self.gridLayout.addWidget(self.groupBox, 0, 1, 1, 1)
 
+
         self.retranslateUi(LoggerEditorWidget)
-        QtCore.QObject.connect(self.clearAllButton, QtCore.SIGNAL("clicked()"), LoggerEditorWidget.clearAll)
-        QtCore.QObject.connect(self.copyButton, QtCore.SIGNAL("clicked()"), LoggerEditorWidget.copyToClipboard)
-        QtCore.QMetaObject.connectSlotsByName(LoggerEditorWidget)
+        self.clearAllButton.clicked.connect(LoggerEditorWidget.clearAll)
+        self.copyButton.clicked.connect(LoggerEditorWidget.copyToClipboard)
+
+        QMetaObject.connectSlotsByName(LoggerEditorWidget)
+    # setupUi
 
     def retranslateUi(self, LoggerEditorWidget):
-        LoggerEditorWidget.setWindowTitle(QtGui.QApplication.translate("LoggerEditorWidget", "Log viewer", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("LoggerEditorWidget", "Logger", None, QtGui.QApplication.UnicodeUTF8))
-        self.clearAllButton.setText(QtGui.QApplication.translate("LoggerEditorWidget", "Clear All", None, QtGui.QApplication.UnicodeUTF8))
-        self.copyButton.setText(QtGui.QApplication.translate("LoggerEditorWidget", "Copy To Clipboard", None, QtGui.QApplication.UnicodeUTF8))
+        LoggerEditorWidget.setWindowTitle(QCoreApplication.translate("LoggerEditorWidget", u"Log viewer", None))
+        self.groupBox.setTitle(QCoreApplication.translate("LoggerEditorWidget", u"Logger", None))
+        self.clearAllButton.setText(QCoreApplication.translate("LoggerEditorWidget", u"Clear All", None))
+        self.copyButton.setText(QCoreApplication.translate("LoggerEditorWidget", u"Copy To Clipboard", None))
+    # retranslateUi
+

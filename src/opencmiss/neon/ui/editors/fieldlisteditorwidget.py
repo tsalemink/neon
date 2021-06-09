@@ -23,7 +23,7 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.zinc.field import Field
@@ -31,13 +31,13 @@ from opencmiss.zinc.field import Field
 from opencmiss.neon.ui.editors.ui_fieldlisteditorwidget import Ui_FieldListEditorWidget
 
 
-class FieldListEditorWidget(QtGui.QWidget):
+class FieldListEditorWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self._fieldmodule = None
         # Using composition to include the visual element of the GUI.
         self.ui = Ui_FieldListEditorWidget()

@@ -13,10 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 
-class BaseView(QtGui.QWidget):
+class BaseView(QtWidgets.QWidget):
 
     def __init__(self, parent):
         super(BaseView, self).__init__(parent)

@@ -15,7 +15,7 @@
 '''
 import os
 
-from PySide import QtCore
+from PySide2 import QtCore
 
 from opencmiss.neon.core.neondocument import NeonDocument
 from opencmiss.neon.core.preferences import Preferences

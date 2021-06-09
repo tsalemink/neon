@@ -13,17 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtGui
+from PySide2 import QtWidgets
 
 from opencmiss.zinc.field import Field
 
-class FieldChooserWidget(QtGui.QComboBox):
+class FieldChooserWidget(QtWidgets.QComboBox):
 
     def __init__(self, parent=None):
         '''
         Call the super class init functions
         '''
-        QtGui.QComboBox.__init__(self, parent)
+        QtWidgets.QComboBox.__init__(self, parent)
         self._nullObjectName = None
         self._region = None
         self._conditional = None

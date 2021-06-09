@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from PySide import QtCore, QtOpenGL
+from PySide2 import QtCore, QtOpenGL
 
 from opencmiss.zinc.scene import Scene
 from opencmiss.zinc.sceneviewer import Sceneviewer, Sceneviewerevent

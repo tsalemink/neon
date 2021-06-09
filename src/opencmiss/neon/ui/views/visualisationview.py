@@ -15,7 +15,7 @@
 '''
 import json
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.ui.views.base import BaseView
 from opencmiss.neon.ui.views.ui_visualisationview import Ui_VisualisationView
@@ -62,7 +62,7 @@ class VisualisationView(BaseView):
 
     def contextMenuEvent(self, event):
         if event.modifiers() & QtCore.Qt.CTRL:
-            menu = QtGui.QMenu()
+            menu = QtWidgets.QMenu()
             menu.addAction("View All")
             action = menu.exec_(self.mapToGlobal(event.pos()))
             if action:
