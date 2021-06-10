@@ -155,6 +155,7 @@ class SceneEditorWidget(QtWidgets.QWidget):
             return
         graphicsType = Graphics.TYPE_INVALID
         fieldDomainType = Field.DOMAIN_TYPE_INVALID
+        #name = str(combobox1.currentText())
         if name == "point":
             graphicsType = Graphics.TYPE_POINTS
             fieldDomainType = Field.DOMAIN_TYPE_POINT

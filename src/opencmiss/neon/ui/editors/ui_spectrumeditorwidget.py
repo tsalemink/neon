@@ -14,10 +14,10 @@ from PySide2.QtWidgets import *
 
 from opencmiss.neon.ui.zincwidgets.sceneviewerwidget import SceneviewerWidget
 
-from opencmiss.neon.ui import icons_rc
+from  opencmiss.neon.ui import icons_rc
 
 class Ui_SpectrumEditorWidget(object):
-    def setupUi(self, SpectrumEditorWidget):
+    def setupUi(self, shared_opengl_widget, SpectrumEditorWidget):
         if not SpectrumEditorWidget.objectName():
             SpectrumEditorWidget.setObjectName(u"SpectrumEditorWidget")
         SpectrumEditorWidget.resize(300, 875)
@@ -82,7 +82,7 @@ class Ui_SpectrumEditorWidget(object):
 
         self.verticalLayout_2.addWidget(self.groupBox)
 
-        self.sceneviewerWidgetPreview = SceneviewerWidget(self.scrollAreaWidgetContents)
+        self.sceneviewerWidgetPreview = SceneviewerWidget(self.scrollAreaWidgetContents, shared_opengl_widget)
         self.sceneviewerWidgetPreview.setObjectName(u"sceneviewerWidgetPreview")
         sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(1)

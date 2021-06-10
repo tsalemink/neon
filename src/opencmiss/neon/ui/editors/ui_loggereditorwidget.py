@@ -12,13 +12,13 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
-from  opencmiss.neon import icons_rc
+from  opencmiss.neon.ui import icons_rc
 
 class Ui_LoggerEditorWidget(object):
     def setupUi(self, LoggerEditorWidget):
         if not LoggerEditorWidget.objectName():
             LoggerEditorWidget.setObjectName(u"LoggerEditorWidget")
-        LoggerEditorWidget.resize(851, 186)
+        LoggerEditorWidget.resize(670, 384)
         self.gridLayout = QGridLayout(LoggerEditorWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.groupBox = QGroupBox(LoggerEditorWidget)

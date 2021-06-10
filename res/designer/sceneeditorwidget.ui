@@ -211,7 +211,7 @@
   </connection>
   <connection>
    <sender>add_graphics_combobox</sender>
-   <signal>currentIndexChanged(QString)</signal>
+   <signal>currentTextChanged(QString)</signal>
    <receiver>SceneEditorWidget</receiver>
    <slot>addGraphicsEntered(QString)</slot>
    <hints>

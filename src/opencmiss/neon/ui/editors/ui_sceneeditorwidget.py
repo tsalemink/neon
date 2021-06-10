@@ -108,7 +108,7 @@ class Ui_SceneEditorWidget(object):
 
         self.retranslateUi(SceneEditorWidget)
         self.graphics_listview.clicked.connect(SceneEditorWidget.graphicsListItemClicked)
-        self.add_graphics_combobox.currentIndexChanged.connect(SceneEditorWidget.addGraphicsEntered)
+        self.add_graphics_combobox.currentTextChanged.connect(SceneEditorWidget.addGraphicsEntered)
         self.delete_graphics_button.clicked.connect(SceneEditorWidget.deleteGraphicsClicked)
 
         QMetaObject.connectSlotsByName(SceneEditorWidget)

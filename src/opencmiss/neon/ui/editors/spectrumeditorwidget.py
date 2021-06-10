@@ -32,7 +32,7 @@ class SpectrumEditorWidget(QtWidgets.QWidget):
     def __init__(self, parent=None, shared_context=None):
         super(SpectrumEditorWidget, self).__init__(parent)
         self._ui = Ui_SpectrumEditorWidget()
-        self._ui.setupUi(shared_context)
+        self._ui.setupUi(shared_context,self)
 
         self._ui.comboBoxColourMap.addItems(extractColourMappingEnum())
         self._ui.comboBoxScale.addItems(extractScaleTypeEnum())

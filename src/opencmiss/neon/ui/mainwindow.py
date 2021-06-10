@@ -22,7 +22,7 @@ from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.visualisationview import VisualisationView
 # from opencmiss.neon.ui.views.problemview import ProblemView
 # from opencmiss.neon.ui.views.simulationview import SimulationView
-# from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
+from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
 # from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 # from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 # from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog

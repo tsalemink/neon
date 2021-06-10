@@ -41,7 +41,7 @@ class NeonDocument(object):
         self._zincContext = Context("Neon")
 
         sceneviewermodule = self._zincContext.getSceneviewermodule()
-        sceneviewermodule.setDefaultBackgroundColourRGB([1.0, 1.0, 1.0])
+        sceneviewermodule.setDefaultBackgroundColourRGB([1.0, 0.0, 1.0])
 
         # set up standard materials and glyphs
         materialmodule = self._zincContext.getMaterialmodule()

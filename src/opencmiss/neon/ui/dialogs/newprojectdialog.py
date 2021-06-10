@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.ui.dialogs.ui_newprojectdialog import Ui_NewProjectDialog
 
@@ -21,7 +21,7 @@ from opencmiss.neon.ui.dialogs.ui_newprojectdialog import Ui_NewProjectDialog
 BIOMENG321 = False
 
 
-class NewProjectDialog(QtGui.QDialog):
+class NewProjectDialog(QtWidgets.QDialog):
 
     openClicked = QtCore.Signal()
     recentClicked = QtCore.Signal([str])
@@ -32,7 +32,7 @@ class NewProjectDialog(QtGui.QDialog):
         self._ui = Ui_NewProjectDialog()
         self._ui.setupUi(self)
 
-        self._proxy_model = QtGui.QSortFilterProxyModel()
+        self._proxy_model = QtCore.QSortFilterProxyModel()
         self._proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
         self._setupProjects(project_model)
@@ -51,7 +51,7 @@ class NewProjectDialog(QtGui.QDialog):
         self._proxy_model.setSourceModel(model)
         self._ui.listViewProjects.setModel(self._proxy_model)
         selection_model = self._ui.listViewProjects.selectionModel()
-        selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtGui.QItemSelectionModel.Select)
+        selection_model.setCurrentIndex(self._proxy_model.index(0, 0), QtCore.QItemSelectionModel.Select)
 
     def _itemDoubleClicked(self, index):
         self.accept()
