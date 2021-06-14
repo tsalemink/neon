@@ -96,6 +96,7 @@ class ModelSourcesEditorWidget(QtWidgets.QWidget):
                 if modelSource == self._currentModelSource:
                     currentIndex = self._itemModel.indexFromItem(item)
         self._ui.listViewModelSources.setModel(self._itemModel)
+        print(self._itemModel)
         if currentIndex is None:
             if len(modelSources) > 0:
                 modelSource = modelSources[0]
@@ -104,7 +105,10 @@ class ModelSourcesEditorWidget(QtWidgets.QWidget):
                 modelSource = None
             self._setCurrentModelSource(modelSource)
         if currentIndex is not None:
+            print(currentIndex)
+            print(self._ui.listViewModelSources)
             self._ui.listViewModelSources.setCurrentIndex(currentIndex)
+            print("currentIndex")
         self._ui.listViewModelSources.show()
 
     def _refreshCurrentItem(self):

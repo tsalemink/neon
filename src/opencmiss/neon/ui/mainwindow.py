@@ -336,7 +336,7 @@ class MainWindow(QtWidgets.QMainWindow):
         actions = self._ui.menu_Open_recent.actions()
         insert_before_action = actions[0]
         self._model.addRecent(recent)
-        recent_action = QtGui.QAction(self._ui.menu_Open_recent)
+        recent_action = QtWidgets.QAction(self._ui.menu_Open_recent)
         recent_action.setText(recent)
         self._ui.menu_Open_recent.insertAction(insert_before_action, recent_action)
         recent_action.triggered.connect(self._open)
