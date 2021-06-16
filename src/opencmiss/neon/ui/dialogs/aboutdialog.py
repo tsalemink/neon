@@ -1,4 +1,4 @@
-"""
+'''
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,16 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-"""
-from opencmiss.neon.core.visualisations.base import BaseVisualisation
+'''
+from PySide2 import QtWidgets
+
+from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
 
 
-class Generic(BaseVisualisation):
+class AboutDialog(QtWidgets.QDialog):
 
-    def __init__(self):
-        super(Generic, self).__init__()
-        self.setName('Generic Visualisation')
+    def __init__(self, parent):
+        super(AboutDialog, self).__init__(parent)
 
-    def visualise(self, document):
-        pass
+        self._ui = Ui_AboutDialog()
+        self._ui.setupUi(self)

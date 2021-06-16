@@ -15,15 +15,13 @@
 '''
 import os.path
 
-from PySide2 import QtCore, QtWidgets, QtOpenGL
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.zincwidgets.visualisationview import VisualisationView
-# from opencmiss.neon.ui.views.problemview import ProblemView
-# from opencmiss.neon.ui.views.simulationview import SimulationView
-from opencmiss.zincwidgets.newprojectdialog import NewProjectDialog
-# from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.views.visualisationview import VisualisationView
+from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
+from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 # from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 # from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
@@ -34,8 +32,6 @@ from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
 from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.zincwidgets.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.zincwidgets.timeeditorwidget import TimeEditorWidget
-# from opencmiss.zincwidgets.problemeditorwidget import ProblemEditorWidget
-# from opencmiss.zincwidgets.simulationeditorwidget import SimulationEditorWidget
 from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
@@ -49,17 +45,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
-        self._ui.one_gl_widget_to_rule_them_all = QtOpenGL.QGLWidget()
-
         self._visualisation_view_state_update_pending = False
 
         # List of possible views
-        self._visualisation_view = VisualisationView(self._ui.one_gl_widget_to_rule_them_all, self)
+        self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
-        # self._problem_view = ProblemView(self._ui.one_gl_widget_to_rule_them_all, self)
-        # self._problem_view.setupProblems(model.getProjectModel())
-        # self._simulation_view = SimulationView(self._ui.one_gl_widget_to_rule_them_all, self)
-        # self._simulation_view.setupSimulations(model.getProjectModel())
 
         self._view_states = {}
         self._view_states[self._visualisation_view] = ''
@@ -198,7 +188,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetSpectrumEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
         self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
-        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._ui.one_gl_widget_to_rule_them_all)
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor)
         self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         self.dockWidgetSpectrumEditor.setHidden(True)
@@ -411,7 +401,8 @@ class MainWindow(QtWidgets.QMainWindow):
         zincContext = self._model.getZincContext()
         for v in views:
             self._ui.viewStackedWidget.addWidget(v)
-            v.setZincContext(zincContext)
+            print('setting zinc context to view: ')
+            # v.setZincContext(zincContext)
 
             action_view = QtWidgets.QAction(v.getName(), self)
             action_view.setData(v)
@@ -490,7 +481,7 @@ class MainWindow(QtWidgets.QMainWindow):
         scene = zincRootRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRootRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setNeonRegion(rootRegion)
+        self.dockWidgetContentsFieldEditor.setArgonRegion(rootRegion)
         self.dockWidgetContentsFieldEditor.setTimekeeper(zincContext.getTimekeepermodule().getDefaultTimekeeper())
 
         if self._visualisation_view_ready:
@@ -498,8 +489,8 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self._visualisation_view_state_update_pending = True
 
-        project = document.getProject()
-        index = self._model.getProjectModel().getIndex(project)
+        # project = document.getProject()
+        # index = self._model.getProjectModel().getIndex(project)
         # self._problem_view.setCurrentIndex(index.row())
         # self._simulation_view.setCurrentIndex(index.row())
         # self._problem_view.setProblem(project.getProblem())
@@ -586,6 +577,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             project = document.getProject()
         if project is None:
+            print('new triggered!!!')
             self._newTriggered()
 
     def _newTriggered(self):

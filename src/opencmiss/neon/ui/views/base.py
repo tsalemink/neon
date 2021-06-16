@@ -13,28 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+from PySide2 import QtWidgets
 
 
-class BaseProblem(object):
+class BaseView(QtWidgets.QWidget):
 
-    def __init__(self):
-        self._name = 'Base Problem'
-        self._id = self.__class__.__name__
-
-    def getIdentifier(self):
-        return self._id
+    def __init__(self, parent):
+        super(BaseView, self).__init__(parent)
+        self._name = 'Base View'
+        self._dock_widgets = []
 
     def getName(self):
         return self._name
 
-    def setName(self, name):
-        self._name = name
+    def setZincContext(self, zincContext):
+        raise NotImplementedError()
+
+    def getDependentEditors(self):
+        return self._dock_widgets
+
+    def registerDependentEditor(self, editor):
+        '''
+        Add the given editor to the list of dependent editors for
+        this view.
+        '''
+        self._dock_widgets.append(editor)
 
     def serialize(self):
         return ''
 
     def deserialize(self, string):
         pass
-
-    def validate(self):
-        return False

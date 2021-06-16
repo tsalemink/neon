@@ -17,13 +17,9 @@ import os
 
 from PySide2 import QtCore
 
-from opencmiss.neon.core.neondocument import NeonDocument
+from opencmiss.argon.core.argondocument import ArgonDocument
+from opencmiss.argon.core.argonlogger import ArgonLogger
 from opencmiss.neon.core.preferences import Preferences
-from opencmiss.neon.core.misc.utils import getMatchingVisualisationClass, \
-    importProblem
-from opencmiss.neon.core.neonlogger import NeonLogger
-from opencmiss.neon.core.projectmodel import ProjectModel
-from opencmiss.neon.core.neonproject import NeonProject
 from opencmiss.neon.core.misc.neonerror import NeonError
 
 
@@ -39,23 +35,9 @@ class MainApplication(QtCore.QObject):
         self._location = None
         self._recents = []
 
-        self._document = None  # NeonDocument()
+        self._document = None  # ArgonDocument()
 
-        self._project_model = ProjectModel()
-        self._setupModel()
-
-        self._preferences = Preferences(self._project_model)
-
-    def _setupModel(self):
-        from opencmiss.neon.settings.projects import active_project_names
-
-        for name in active_project_names:
-            row = self._project_model.rowCount()
-            if self._project_model.insertRow(row):
-                index = self._project_model.index(row)
-                project = NeonProject()
-                project.setProblem(importProblem(name))
-                self._project_model.setData(index, project)
+        self._preferences = Preferences()
 
     def getZincContext(self):
         if self._document:
@@ -78,20 +60,14 @@ class MainApplication(QtCore.QObject):
     def getLocation(self):
         return self._location
 
-    def new(self, project=None):
+    def new(self):
         """
         Create a blank document with the supplied project, or default project if not supplied
         """
         if self._document is not None:
             self._document.freeVisualisationContents()
-            self._document.freeProject()
 
-        self._document = NeonDocument()
-        if project:
-            self._document.setProject(project)
-        else:
-            defaultProject = self._project_model.getDefaultProject()
-            self._document.setProject(defaultProject)
+        self._document = ArgonDocument()
 
         self._document.initialiseVisualisationContents()
         self.documentChanged.emit()
@@ -99,8 +75,8 @@ class MainApplication(QtCore.QObject):
     def save(self):
         # make model sources relative to current location if possible
         # note that sources on different windows drives have absolute paths
-        basePath = os.path.dirname(self._location)
-        state = self._document.serialize(basePath)
+        base_path = os.path.dirname(self._location)
+        state = self._document.serialize(base_path)
         with open(self._location, 'w') as f:
             f.write(state)
 
@@ -110,17 +86,15 @@ class MainApplication(QtCore.QObject):
         Emits documentChange separately if new document loaded, including if existing document cleared due to load failure.
         :return  True on success, otherwise False.
         """
-        modelChanged = False
+        model_changed = False
         try:
             with open(filename, 'r') as f:
                 state = f.read()
-                modelChanged = True
+                model_changed = True
                 self._location = None
                 if self._document is not None:
                     self._document.freeVisualisationContents()
-                    self._document.freeProject()
-                self._document = NeonDocument()
-                self._document.initialiseProject()
+                self._document = ArgonDocument()
                 self._document.initialiseVisualisationContents()
                 # set current directory to path from file, to support scripts and fieldml with external resources
                 path = os.path.dirname(filename)
@@ -130,10 +104,10 @@ class MainApplication(QtCore.QObject):
                 self.documentChanged.emit()
                 return True
         except (NeonError, IOError, ValueError) as e:
-            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + str(e))
+            ArgonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + str(e))
         except:
-            NeonLogger.getLogger().error("Failed to load Neon model " + filename + ": Unknown error")
-        if modelChanged:
+            ArgonLogger.getLogger().error("Failed to load Neon model " + filename + ": Unknown error")
+        if model_changed:
             self.new()  # in case document half constructed; emits documentChanged
         return False
 
@@ -155,17 +129,5 @@ class MainApplication(QtCore.QObject):
     def getDocument(self):
         return self._document
 
-    def getProjectModel(self):
-        return self._project_model
-
     def getPreferences(self):
         return self._preferences
-
-    def visualiseSimulation(self, simulation):
-        self._document.freeVisualisationContents()
-        self._document.initialiseVisualisationContents()
-        visualisation = getMatchingVisualisationClass(simulation)
-        visualisation.setSimulation(simulation)
-        visualisation.visualise(self._document)
-
-        self.documentChanged.emit()
