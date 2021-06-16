@@ -35,7 +35,8 @@ class MainApplication(QtCore.QObject):
         self._location = None
         self._recents = []
 
-        self._document = None  # ArgonDocument()
+        self._document = ArgonDocument()
+        self._document.initialiseVisualisationContents()
 
         self._preferences = Preferences()
 

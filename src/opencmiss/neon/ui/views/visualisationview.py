@@ -24,7 +24,7 @@ from opencmiss.neon.ui.views.ui_visualisationview import Ui_VisualisationView
 class VisualisationView(BaseView):
     graphicsInitialized = QtCore.Signal()
 
-    def __init__(self, shared_opengl_widget, parent=None):
+    def __init__(self, parent=None):
         super(VisualisationView, self).__init__(parent)
         self._name = 'Visualisation'
 

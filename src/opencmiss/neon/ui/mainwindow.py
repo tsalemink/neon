@@ -51,8 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
 
-        self._view_states = {}
-        self._view_states[self._visualisation_view] = ''
+        self._view_states = {self._visualisation_view: ''}
         # self._view_states[self._problem_view] = ''
         # self._view_states[self._simulation_view] = ''
 
@@ -87,7 +86,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._readSettings()
 
-        QtCore.QTimer.singleShot(0, self._doProjectCheck)
+        self._onDocumentChanged()
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.close)
@@ -178,12 +177,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetSceneviewerEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneviewerEditor.setWindowTitle('Sceneviewer Editor')
         self.dockWidgetSceneviewerEditor.setObjectName("dockWidgetSceneviewerEditor")
-        self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget()
+        self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget(self.dockWidgetSceneviewerEditor)
         self.dockWidgetContentsSceneviewerEditor.setObjectName("dockWidgetContentsSceneviewerEditor")
         self.dockWidgetSceneviewerEditor.setWidget(self.dockWidgetContentsSceneviewerEditor)
         self.dockWidgetSceneviewerEditor.setHidden(True)
-        self.dockWidgetSceneviewerEditor.visibilityChanged.connect( \
-            self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
+        self.dockWidgetSceneviewerEditor.visibilityChanged.connect(self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
 
         self.dockWidgetSpectrumEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
@@ -401,8 +399,7 @@ class MainWindow(QtWidgets.QMainWindow):
         zincContext = self._model.getZincContext()
         for v in views:
             self._ui.viewStackedWidget.addWidget(v)
-            print('setting zinc context to view: ')
-            # v.setZincContext(zincContext)
+            v.setZincContext(zincContext)
 
             action_view = QtWidgets.QAction(v.getName(), self)
             action_view.setData(v)
@@ -501,7 +498,7 @@ class MainWindow(QtWidgets.QMainWindow):
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setNeonRegion(region)
+        self.dockWidgetContentsFieldEditor.setArgonRegion(region)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
@@ -566,20 +563,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self._preferences_dialog.exec_():
             pass  # Save the state
 
-    def _doProjectCheck(self):
-        document = self._model.getDocument()
-        if document is None:
-            # Create a default Generic project on start up
-            self._model.new()
-            return
-            # Alternative behaviour is to require user to select project type
-            # self._newTriggered()
-        else:
-            project = document.getProject()
-        if project is None:
-            print('new triggered!!!')
-            self._newTriggered()
-
     def _newTriggered(self):
         project_model = self._model.getProjectModel()
         dlg = NewProjectDialog(project_model, parent=self)
@@ -594,7 +577,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if project:
                 self._model.new(project)
         else:
-            # print('Not accepted')
             pass
 
     def _openModel(self, filename):
@@ -620,7 +602,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if filename is None:
             filename = self.sender().text()
         else:
-            print('find sender with text', filename)
+            pass
         self._ui.menu_Open_recent.removeAction(self.sender())
         self._model.removeRecent(filename)
         self._openModel(filename)
