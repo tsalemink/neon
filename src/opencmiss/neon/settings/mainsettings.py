@@ -29,8 +29,6 @@ APPLICATION_NAME = 'Neon'
 ORGANISATION_NAME = 'OpenCMISS'
 ORGANISATION_DOMAIN = 'opencmiss.org'
 
-FLOAT_STRING_FORMAT = '{:.5g}'
-
 EXTERNAL_BINARIES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'bin'))
 EXTERNAL_DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'data'))
 

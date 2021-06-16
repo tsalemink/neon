@@ -15,15 +15,13 @@
 '''
 import os.path
 
-from PySide2 import QtCore, QtWidgets, QtOpenGL
+from PySide2 import QtCore, QtWidgets
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.zincwidgets.visualisationview import VisualisationView
-# from opencmiss.neon.ui.views.problemview import ProblemView
-# from opencmiss.neon.ui.views.simulationview import SimulationView
-from opencmiss.zincwidgets.newprojectdialog import NewProjectDialog
-# from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
+from opencmiss.neon.ui.views.visualisationview import VisualisationView
+from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
+from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 # from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 # from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
@@ -34,8 +32,6 @@ from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
 from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.zincwidgets.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.zincwidgets.timeeditorwidget import TimeEditorWidget
-# from opencmiss.zincwidgets.problemeditorwidget import ProblemEditorWidget
-# from opencmiss.zincwidgets.simulationeditorwidget import SimulationEditorWidget
 from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
@@ -49,20 +45,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
 
-        self._ui.one_gl_widget_to_rule_them_all = QtOpenGL.QGLWidget()
-
         self._visualisation_view_state_update_pending = False
 
         # List of possible views
-        self._visualisation_view = VisualisationView(self._ui.one_gl_widget_to_rule_them_all, self)
+        self._visualisation_view = VisualisationView(self)
         self._visualisation_view_ready = False
-        # self._problem_view = ProblemView(self._ui.one_gl_widget_to_rule_them_all, self)
-        # self._problem_view.setupProblems(model.getProjectModel())
-        # self._simulation_view = SimulationView(self._ui.one_gl_widget_to_rule_them_all, self)
-        # self._simulation_view.setupSimulations(model.getProjectModel())
 
-        self._view_states = {}
-        self._view_states[self._visualisation_view] = ''
+        self._view_states = {self._visualisation_view: ''}
         # self._view_states[self._problem_view] = ''
         # self._view_states[self._simulation_view] = ''
 
@@ -97,7 +86,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._readSettings()
 
-        QtCore.QTimer.singleShot(0, self._doProjectCheck)
+        self._onDocumentChanged()
 
     def _makeConnections(self):
         self._ui.action_Quit.triggered.connect(self.close)
@@ -188,17 +177,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetSceneviewerEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneviewerEditor.setWindowTitle('Sceneviewer Editor')
         self.dockWidgetSceneviewerEditor.setObjectName("dockWidgetSceneviewerEditor")
-        self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget()
+        self.dockWidgetContentsSceneviewerEditor = SceneviewerEditorWidget(self.dockWidgetSceneviewerEditor)
         self.dockWidgetContentsSceneviewerEditor.setObjectName("dockWidgetContentsSceneviewerEditor")
         self.dockWidgetSceneviewerEditor.setWidget(self.dockWidgetContentsSceneviewerEditor)
         self.dockWidgetSceneviewerEditor.setHidden(True)
-        self.dockWidgetSceneviewerEditor.visibilityChanged.connect( \
-            self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
+        self.dockWidgetSceneviewerEditor.visibilityChanged.connect(self.dockWidgetContentsSceneviewerEditor.setEnableUpdates)
 
         self.dockWidgetSpectrumEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSpectrumEditor.setWindowTitle('Spectrum Editor')
         self.dockWidgetSpectrumEditor.setObjectName("dockWidgetSpectrumEditor")
-        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor, self._ui.one_gl_widget_to_rule_them_all)
+        self.dockWidgetContentsSpectrumEditor = SpectrumEditorWidget(self.dockWidgetSpectrumEditor)
         self.dockWidgetContentsSpectrumEditor.setObjectName("dockWidgetContentsSpectrumEditor")
         self.dockWidgetSpectrumEditor.setWidget(self.dockWidgetContentsSpectrumEditor)
         self.dockWidgetSpectrumEditor.setHidden(True)
@@ -490,7 +478,7 @@ class MainWindow(QtWidgets.QMainWindow):
         scene = zincRootRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRootRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setNeonRegion(rootRegion)
+        self.dockWidgetContentsFieldEditor.setArgonRegion(rootRegion)
         self.dockWidgetContentsFieldEditor.setTimekeeper(zincContext.getTimekeepermodule().getDefaultTimekeeper())
 
         if self._visualisation_view_ready:
@@ -498,8 +486,8 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self._visualisation_view_state_update_pending = True
 
-        project = document.getProject()
-        index = self._model.getProjectModel().getIndex(project)
+        # project = document.getProject()
+        # index = self._model.getProjectModel().getIndex(project)
         # self._problem_view.setCurrentIndex(index.row())
         # self._simulation_view.setCurrentIndex(index.row())
         # self._problem_view.setProblem(project.getProblem())
@@ -510,7 +498,7 @@ class MainWindow(QtWidgets.QMainWindow):
         scene = zincRegion.getScene()
         self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setNeonRegion(region)
+        self.dockWidgetContentsFieldEditor.setArgonRegion(region)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
@@ -575,19 +563,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self._preferences_dialog.exec_():
             pass  # Save the state
 
-    def _doProjectCheck(self):
-        document = self._model.getDocument()
-        if document is None:
-            # Create a default Generic project on start up
-            self._model.new()
-            return
-            # Alternative behaviour is to require user to select project type
-            # self._newTriggered()
-        else:
-            project = document.getProject()
-        if project is None:
-            self._newTriggered()
-
     def _newTriggered(self):
         project_model = self._model.getProjectModel()
         dlg = NewProjectDialog(project_model, parent=self)
@@ -602,7 +577,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if project:
                 self._model.new(project)
         else:
-            # print('Not accepted')
             pass
 
     def _openModel(self, filename):
@@ -628,7 +602,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if filename is None:
             filename = self.sender().text()
         else:
-            print('find sender with text', filename)
+            pass
         self._ui.menu_Open_recent.removeAction(self.sender())
         self._model.removeRecent(filename)
         self._openModel(filename)

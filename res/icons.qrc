@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="neon">
+  <qresource prefix="zincwidgets">
     <file>images/icons/neon-icon-v2.png</file>
     <file>images/icons/applications-system-icon.png</file>
     <file>images/icons/mathematics-icon.png</file>

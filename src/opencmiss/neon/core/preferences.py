@@ -16,6 +16,4 @@
 
 
 class Preferences(object):
-
-    def __init__(self, problem_model):
-        self._problem_model = problem_model
+    pass
