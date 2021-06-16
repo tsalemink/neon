@@ -15,7 +15,7 @@
 '''
 from PySide import QtCore, QtGui
 
-from opencmiss.neon.ui.editors.ui_simulationeditorwidget import Ui_SimulationEditorWidget
+from opencmiss.zincwidgets.ui_simulationeditorwidget import Ui_SimulationEditorWidget
 
 
 class SimulationEditorWidget(QtGui.QWidget):

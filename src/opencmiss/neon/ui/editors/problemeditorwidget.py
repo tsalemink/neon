@@ -15,7 +15,7 @@
 '''
 from PySide import QtCore, QtGui
 
-from opencmiss.neon.ui.editors.ui_problemeditorwidget import Ui_ProblemEditorWidget
+from opencmiss.zincwidgets.ui_problemeditorwidget import Ui_ProblemEditorWidget
 
 
 class ProblemEditorWidget(QtGui.QWidget):

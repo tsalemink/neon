@@ -28,7 +28,7 @@ from PySide2 import QtGui,QtWidgets
 # from opencmiss.neon.core.neonregion import NeonRegion
 from opencmiss.neon.core.neonmodelsources import NeonModelSourceFile
 
-from opencmiss.neon.ui.editors.ui_modelsourceseditorwidget import Ui_ModelSourcesEditorWidget
+from opencmiss.zincwidgets.ui_modelsourceseditorwidget import Ui_ModelSourcesEditorWidget
 from opencmiss.neon.core.neonlogger import NeonLogger
 
 
@@ -100,13 +100,21 @@ class ModelSourcesEditorWidget(QtWidgets.QWidget):
         if currentIndex is None:
             if len(modelSources) > 0:
                 modelSource = modelSources[0]
-                currentIndex = self._itemModel.createIndex(0, 0, self._itemModel.item(0))
+                print('created my own index')
+                currentIndex = self._itemModel.createIndex(0, 0)#, self._itemModel.item(0))
             else:
                 modelSource = None
             self._setCurrentModelSource(modelSource)
         if currentIndex is not None:
-            print(currentIndex)
+            print(currentIndex.row())
             print(self._ui.listViewModelSources)
+            cI = self._ui.listViewModelSources.currentIndex()
+            print(cI.row())
+            print(cI.isValid())
+            print(currentIndex)
+            print(currentIndex.isValid())
+            print(currentIndex.model())
+            print(self._ui.listViewModelSources.model())
             self._ui.listViewModelSources.setCurrentIndex(currentIndex)
             print("currentIndex")
         self._ui.listViewModelSources.show()

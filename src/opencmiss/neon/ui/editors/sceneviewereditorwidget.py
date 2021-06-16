@@ -17,7 +17,7 @@ import math
 
 from opencmiss.zinc.sceneviewer import Sceneviewer, Sceneviewerevent
 from opencmiss.zinc.status import OK as ZINC_OK
-from opencmiss.neon.ui.editors.ui_sceneviewereditorwidget import Ui_SceneviewerEditorWidget
+from opencmiss.zincwidgets.ui_sceneviewereditorwidget import Ui_SceneviewerEditorWidget
 
 class SceneviewerEditorWidget(QtWidgets.QWidget):
 

@@ -1,6 +1,6 @@
 import unittest
 
-from opencmiss.neon.ui.editors.tessellationeditorwidget import processMultiFormatData
+from opencmiss.zincwidgets.tessellationeditorwidget import processMultiFormatData
 
 
 test_ex_01 = '1'

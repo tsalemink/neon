@@ -25,7 +25,7 @@ from opencmiss.zinc.status import OK as ZINC_OK
 from opencmiss.neon.core.neonlogger import NeonLogger
 
 from opencmiss.neon.ui.zincwidgets.fieldconditions import *
-from opencmiss.neon.ui.zincwidgets.fieldchooserwidget import FieldChooserWidget
+from opencmiss.zincwidgets.fieldchooserwidget import FieldChooserWidget
 from opencmiss.neon.ui.zincwidgets.ui_fieldeditorwidget import Ui_FieldEditorWidget
 
 STRING_FLOAT_FORMAT = '{:.5g}'

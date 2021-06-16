@@ -653,7 +653,7 @@
   <customwidget>
    <class>FieldChooserWidget</class>
    <extends>QComboBox</extends>
-   <header>opencmiss/neon/ui/zincwidgets/fieldchooserwidget.h</header>
+   <header>opencmiss/zincwidgets/fieldchooserwidget.h</header>
   </customwidget>
   <customwidget>
    <class>MaterialChooserWidget</class>

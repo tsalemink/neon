@@ -19,24 +19,24 @@ from PySide2 import QtCore, QtWidgets, QtOpenGL
 
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.neon.ui.views.visualisationview import VisualisationView
+from opencmiss.zincwidgets.visualisationview import VisualisationView
 # from opencmiss.neon.ui.views.problemview import ProblemView
 # from opencmiss.neon.ui.views.simulationview import SimulationView
-from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
+from opencmiss.zincwidgets.newprojectdialog import NewProjectDialog
 # from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 # from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
 # from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
-from opencmiss.neon.ui.editors.regioneditorwidget import RegionEditorWidget
-from opencmiss.neon.ui.editors.modelsourceseditorwidget import ModelSourcesEditorWidget
-from opencmiss.neon.ui.editors.sceneviewereditorwidget import SceneviewerEditorWidget
-from opencmiss.neon.ui.editors.sceneeditorwidget import SceneEditorWidget
-from opencmiss.neon.ui.editors.spectrumeditorwidget import SpectrumEditorWidget
-from opencmiss.neon.ui.editors.tessellationeditorwidget import TessellationEditorWidget
-from opencmiss.neon.ui.editors.timeeditorwidget import TimeEditorWidget
-# from opencmiss.neon.ui.editors.problemeditorwidget import ProblemEditorWidget
-# from opencmiss.neon.ui.editors.simulationeditorwidget import SimulationEditorWidget
-from opencmiss.neon.ui.editors.fieldlisteditorwidget import FieldListEditorWidget
+from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
+from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget
+from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
+from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
+from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
+from opencmiss.zincwidgets.tessellationeditorwidget import TessellationEditorWidget
+from opencmiss.zincwidgets.timeeditorwidget import TimeEditorWidget
+# from opencmiss.zincwidgets.problemeditorwidget import ProblemEditorWidget
+# from opencmiss.zincwidgets.simulationeditorwidget import SimulationEditorWidget
+from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
 
 

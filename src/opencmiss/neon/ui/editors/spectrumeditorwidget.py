@@ -19,7 +19,7 @@ from opencmiss.zinc.sceneviewer import Sceneviewer
 from opencmiss.zinc.spectrum import Spectrum, Spectrumcomponent
 from opencmiss.zinc.status import OK as ZINC_OK
 
-from opencmiss.neon.ui.editors.ui_spectrumeditorwidget import Ui_SpectrumEditorWidget
+from opencmiss.zincwidgets.ui_spectrumeditorwidget import Ui_SpectrumEditorWidget
 from opencmiss.neon.settings.mainsettings import FLOAT_STRING_FORMAT
 from opencmiss.neon.core.neonlogger import NeonLogger
 

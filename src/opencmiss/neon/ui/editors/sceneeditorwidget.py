@@ -28,7 +28,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 from opencmiss.zinc.field import Field
 from opencmiss.zinc.graphics import Graphics
 
-from opencmiss.neon.ui.editors.ui_sceneeditorwidget import Ui_SceneEditorWidget
+from opencmiss.zincwidgets.ui_sceneeditorwidget import Ui_SceneEditorWidget
 
 
 class SceneEditorWidget(QtWidgets.QWidget):
