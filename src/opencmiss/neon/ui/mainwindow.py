@@ -26,6 +26,7 @@ from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 # from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
+from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
 from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget
 from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
 from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
@@ -125,7 +126,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetSimulationEditor)
         self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
-        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetSceneEditor)
+        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetMaterialEditor)
+        self.tabifyDockWidget(self.dockWidgetMaterialEditor, self.dockWidgetSceneEditor)
         self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.tabifyDockWidget(self.dockWidgetRegionEditor, self.dockWidgetSceneviewerEditor)
@@ -157,6 +159,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetContentsRegionEditor.setObjectName("dockWidgetContentsRegionEditor")
         self.dockWidgetRegionEditor.setWidget(self.dockWidgetContentsRegionEditor)
         self.dockWidgetRegionEditor.setHidden(True)
+
+        self.dockWidgetMaterialEditor = QtWidgets.QDockWidget(self)
+        self.dockWidgetMaterialEditor.setWindowTitle('Material Editor')
+        self.dockWidgetMaterialEditor.setObjectName("dockWidgetMaterialEditor")
+        self.dockWidgetContentsMaterialEditor = MaterialEditorWidget()
+        self.dockWidgetContentsMaterialEditor.setObjectName("dockWidgetContentsMaterialEditor")
+        self.dockWidgetMaterialEditor.setWidget(self.dockWidgetContentsMaterialEditor)
+        self.dockWidgetMaterialEditor.setHidden(True)
 
         self.dockWidgetModelSourcesEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetModelSourcesEditor.setWindowTitle('Model Sources Editor')
@@ -219,6 +229,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self._registerEditor(self._problem_view, self.dockWidgetProblemEditor)
         # self._registerEditor(self._simulation_view, self.dockWidgetSimulationEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
+        self._registerEditor(self._visualisation_view, self.dockWidgetMaterialEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetModelSourcesEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
         self._registerEditor(self._visualisation_view, self.dockWidgetSceneviewerEditor)
@@ -465,6 +476,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._visualisation_view.setZincContext(zincContext)
         # self._simulation_view.setZincContext(zincContext)
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
+        self.dockWidgetContentsMaterialEditor.setMaterials(document.getMaterials())
         self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
         # self._snapshot_dialog.setZincContext(zincContext)

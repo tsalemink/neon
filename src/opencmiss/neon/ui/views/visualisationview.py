@@ -69,9 +69,6 @@ class VisualisationView(BaseView):
         else:
             event.ignore()
 
-    def getShareGLWidget(self):
-        return self._ui.widget
-
     def serialize(self):
         d = {}
         return json.dumps(d)
