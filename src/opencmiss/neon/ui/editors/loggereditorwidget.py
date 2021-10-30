@@ -16,7 +16,7 @@
 from PySide2 import QtGui, QtWidgets
 
 from opencmiss.neon.ui.editors.ui_loggereditorwidget import Ui_LoggerEditorWidget
-from opencmiss.argon.core.argonlogger import CustomStream
+from opencmiss.argon.argonlogger import CustomStream
 
 
 class LoggerEditorWidget(QtWidgets.QWidget):
@@ -26,9 +26,7 @@ class LoggerEditorWidget(QtWidgets.QWidget):
         self._ui = Ui_LoggerEditorWidget()
         self._ui.setupUi(self)
 
-        self._logger = None
-        self._loggerNotifier = None
-        # self._makeConnections()
+        self._make_connections()
 
     def writeMessage(self, message, levelstring):
         if levelstring == "ERROR":
@@ -39,7 +37,7 @@ class LoggerEditorWidget(QtWidgets.QWidget):
             self._ui.logText.setTextColor(QtGui.QColor(0, 0, 0))
         self._ui.logText.insertPlainText(message)
 
-    def _makeConnections(self):
+    def _make_connections(self):
         stdout = CustomStream.stdout()
         stderr = CustomStream.stderr()
         if hasattr(stdout, 'messageWritten'):

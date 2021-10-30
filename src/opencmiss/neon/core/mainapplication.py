@@ -17,8 +17,8 @@ import os
 
 from PySide2 import QtCore
 
-from opencmiss.argon.core.argondocument import ArgonDocument
-from opencmiss.argon.core.argonlogger import ArgonLogger
+from opencmiss.argon.argondocument import ArgonDocument
+from opencmiss.argon.argonlogger import ArgonLogger
 from opencmiss.neon.core.preferences import Preferences
 from opencmiss.neon.core.misc.neonerror import NeonError
 
@@ -87,11 +87,9 @@ class MainApplication(QtCore.QObject):
         Emits documentChange separately if new document loaded, including if existing document cleared due to load failure.
         :return  True on success, otherwise False.
         """
-        model_changed = False
         try:
             with open(filename, 'r') as f:
                 state = f.read()
-                model_changed = True
                 self._location = None
                 if self._document is not None:
                     self._document.freeVisualisationContents()
@@ -108,8 +106,7 @@ class MainApplication(QtCore.QObject):
             ArgonLogger.getLogger().error("Failed to load Neon model " + filename + ": " + str(e))
         except:
             ArgonLogger.getLogger().error("Failed to load Neon model " + filename + ": Unknown error")
-        if model_changed:
-            self.new()  # in case document half constructed; emits documentChanged
+
         return False
 
     def addRecent(self, recent):

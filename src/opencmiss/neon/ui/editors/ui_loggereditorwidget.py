@@ -12,32 +12,28 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
-from  opencmiss.neon.ui import icons_rc
+import icons_rc
 
 class Ui_LoggerEditorWidget(object):
     def setupUi(self, LoggerEditorWidget):
         if not LoggerEditorWidget.objectName():
             LoggerEditorWidget.setObjectName(u"LoggerEditorWidget")
-        LoggerEditorWidget.resize(670, 384)
+        LoggerEditorWidget.resize(452, 533)
         self.gridLayout = QGridLayout(LoggerEditorWidget)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.groupBox = QGroupBox(LoggerEditorWidget)
-        self.groupBox.setObjectName(u"groupBox")
-        self.gridLayout_2 = QGridLayout(self.groupBox)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.logText = QTextBrowser(self.groupBox)
+        self.logText = QTextBrowser(LoggerEditorWidget)
         self.logText.setObjectName(u"logText")
 
-        self.gridLayout_2.addWidget(self.logText, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.logText, 1, 0, 1, 1)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.clearAllButton = QPushButton(self.groupBox)
+        self.clearAllButton = QPushButton(LoggerEditorWidget)
         self.clearAllButton.setObjectName(u"clearAllButton")
 
         self.horizontalLayout.addWidget(self.clearAllButton)
 
-        self.copyButton = QPushButton(self.groupBox)
+        self.copyButton = QPushButton(LoggerEditorWidget)
         self.copyButton.setObjectName(u"copyButton")
 
         self.horizontalLayout.addWidget(self.copyButton)
@@ -47,10 +43,7 @@ class Ui_LoggerEditorWidget(object):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
 
-        self.gridLayout_2.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-
-
-        self.gridLayout.addWidget(self.groupBox, 0, 1, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
 
 
         self.retranslateUi(LoggerEditorWidget)
@@ -62,7 +55,6 @@ class Ui_LoggerEditorWidget(object):
 
     def retranslateUi(self, LoggerEditorWidget):
         LoggerEditorWidget.setWindowTitle(QCoreApplication.translate("LoggerEditorWidget", u"Log viewer", None))
-        self.groupBox.setTitle(QCoreApplication.translate("LoggerEditorWidget", u"Logger", None))
         self.clearAllButton.setText(QCoreApplication.translate("LoggerEditorWidget", u"Clear All", None))
         self.copyButton.setText(QCoreApplication.translate("LoggerEditorWidget", u"Copy To Clipboard", None))
     # retranslateUi

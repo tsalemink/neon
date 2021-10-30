@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
 import os.path
 
 from PySide2 import QtCore, QtWidgets
@@ -20,14 +20,11 @@ from PySide2 import QtCore, QtWidgets
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 from opencmiss.neon.ui.views.visualisationview import VisualisationView
-from opencmiss.neon.ui.dialogs.newprojectdialog import NewProjectDialog
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-# from opencmiss.neon.ui.dialogs.snapshotdialog import SnapshotDialog
-# from opencmiss.neon.ui.dialogs.preferencesdialog import PreferencesDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
 from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
-from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget
+from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
 from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
 from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
 from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
@@ -122,36 +119,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui.action_Clear.setEnabled(len(recents))
 
     def _addDockWidgets(self):
-        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetProblemEditor)
-        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetSimulationEditor)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.LeftDockWidgetArea), self.dockWidgetTessellationEditor)
-        self.tabifyDockWidget(self.dockWidgetTessellationEditor, self.dockWidgetSpectrumEditor)
-        self.tabifyDockWidget(self.dockWidgetSpectrumEditor, self.dockWidgetMaterialEditor)
-        self.tabifyDockWidget(self.dockWidgetMaterialEditor, self.dockWidgetSceneEditor)
-        self.tabifyDockWidget(self.dockWidgetSceneEditor, self.dockWidgetModelSourcesEditor)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockWidgetModelSourcesEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetTessellationEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSpectrumEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetMaterialEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSceneEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
-        self.tabifyDockWidget(self.dockWidgetRegionEditor, self.dockWidgetSceneviewerEditor)
-        self.tabifyDockWidget(self.dockWidgetSceneviewerEditor, self.dockWidgetFieldEditor)
-        # self.addDockWidget(QtCore.Qt.DockWidgetArea(QtCore.Qt.BottomDockWidgetArea), self.dockWidgetLoggerEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSceneviewerEditor)
+        self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetFieldEditor)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
-        # self.dockWidgetProblemEditor = QtGui.QDockWidget(self)
-        # self.dockWidgetProblemEditor.setWindowTitle('Problem Editor')
-        # self.dockWidgetProblemEditor.setObjectName("dockWidgetProblemEditor")
-        # self.dockWidgetContentsProblemEditor = ProblemEditorWidget()
-        # self.dockWidgetContentsProblemEditor.setObjectName("dockWidgetContentsProblemEditor")
-        # self.dockWidgetProblemEditor.setWidget(self.dockWidgetContentsProblemEditor)
-        # self.dockWidgetProblemEditor.setHidden(True)
-
-        # self.dockWidgetSimulationEditor = QtGui.QDockWidget(self)
-        # self.dockWidgetSimulationEditor.setWindowTitle('Simulation Editor')
-        # self.dockWidgetSimulationEditor.setObjectName("dockWidgetSimulationEditor")
-        # self.dockWidgetContentsSimulationEditor = SimulationEditorWidget()
-        # self.dockWidgetContentsSimulationEditor.setObjectName("dockWidgetContentsSimulationEditor")
-        # self.dockWidgetSimulationEditor.setWidget(self.dockWidgetContentsSimulationEditor)
-        # self.dockWidgetSimulationEditor.setHidden(True)
-
         self.dockWidgetRegionEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetRegionEditor.setWindowTitle('Region Editor')
         self.dockWidgetRegionEditor.setObjectName("dockWidgetRegionEditor")
@@ -174,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetContentsModelSourcesEditor = ModelSourcesEditorWidget()
         self.dockWidgetContentsModelSourcesEditor.setObjectName("dockWidgetContentsModelSourcesEditor")
         self.dockWidgetModelSourcesEditor.setWidget(self.dockWidgetContentsModelSourcesEditor)
-        self.dockWidgetModelSourcesEditor.setHidden(True)
+        self.dockWidgetModelSourcesEditor.setHidden(False)
 
         self.dockWidgetSceneEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneEditor.setWindowTitle('Scene Editor')
@@ -249,8 +228,23 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             menu = action.menu()
 
-        menu.addAction(editor.toggleViewAction())
+        toggle_action = editor.toggleViewAction()
+        toggle_action.triggered.connect(self._view_dock_widget)
+        menu.addAction(toggle_action)
         view.registerDependentEditor(editor)
+
+    def _view_dock_widget(self, show):
+        """
+        If we are showing the dock widget we will make it current i.e. make sure it is visible if tabbed.
+        """
+        if show:
+            sender_text = self.sender().text()
+            for tab_bar in self.findChildren(QtWidgets.QTabBar):
+                for index in range(tab_bar.count()):
+                    tab_text = tab_bar.tabText(index)
+                    if tab_text == sender_text:
+                        tab_bar.setCurrentIndex(index)
+                        return
 
     def _getEditorAction(self, action_name):
         action = None
@@ -384,12 +378,12 @@ class MainWindow(QtWidgets.QMainWindow):
             menu.setEnabled(True)
 
     def _setupOtherWindows(self):
-        self.dockWidgetLoggerEditor = QtWidgets.QDockWidget(self)
-        self.dockWidgetLoggerEditor.setWindowTitle('Logger')
+        self.dockWidgetLoggerEditor = QtWidgets.QDockWidget("Log Viewer", self)
+        # self.dockWidgetLoggerEditor.setWindowTitle('Logger')
         self.dockWidgetLoggerEditor.setObjectName("dockWidgetLoggerEditor")
-        self.dockWidgetContentsLoggerEditor = LoggerEditorWidget()
-        self.dockWidgetContentsLoggerEditor.setObjectName("dockWidgetContentsLoggerEditor")
-        self.dockWidgetLoggerEditor.setWidget(self.dockWidgetContentsLoggerEditor)
+        logger_widget = LoggerEditorWidget(self.dockWidgetLoggerEditor)
+        # logger_widget.setObjectName("dockWidgetContentsLoggerEditor")
+        self.dockWidgetLoggerEditor.setWidget(logger_widget)
         self.dockWidgetLoggerEditor.setHidden(True)
 
     def _registerOtherWindows(self):
@@ -403,7 +397,9 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             menu = action.menu()
 
-        menu.addAction(editor.toggleViewAction())
+        toggle_action = editor.toggleViewAction()
+        toggle_action.triggered.connect(self._view_dock_widget)
+        menu.addAction(toggle_action)
 
     def _setupViews(self, views):
         action_group = QtWidgets.QActionGroup(self)
@@ -470,6 +466,7 @@ class MainWindow(QtWidgets.QMainWindow):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
         rootRegion.connectRegionChange(self._regionChange)
+        zincRootRegion = rootRegion.getZincRegion()
 
         # need to pass new Zinc context to dialogs and widgets using global modules
         zincContext = document.getZincContext()
@@ -477,20 +474,18 @@ class MainWindow(QtWidgets.QMainWindow):
         # self._simulation_view.setZincContext(zincContext)
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
         self.dockWidgetContentsMaterialEditor.setMaterials(document.getMaterials())
-        self.dockWidgetContentsTessellationEditor.setZincContext(zincContext)
+        self.dockWidgetContentsTessellationEditor.setTessellations(document.getTessellations())
         self.dockWidgetContentsTimeEditor.setZincContext(zincContext)
         # self._snapshot_dialog.setZincContext(zincContext)
 
+        model_sources_model = ModelSourcesModel(document, [])
+        self.dockWidgetContentsModelSourcesEditor.setModelSourcesModel(zincRootRegion, model_sources_model)
+
         # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
-        self.dockWidgetContentsModelSourcesEditor.setRegion(rootRegion)
 
-        # need to pass new scene to the following
-        zincRootRegion = rootRegion.getZincRegion()
-        scene = zincRootRegion.getScene()
-        self.dockWidgetContentsSceneEditor.setScene(scene)
-        self.dockWidgetContentsFieldEditor.setFieldmodule(zincRootRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setArgonRegion(rootRegion)
+        self.dockWidgetContentsSceneEditor.setZincRootRegion(zincRootRegion)
+        self.dockWidgetContentsFieldEditor.setRootArgonRegion(rootRegion)
         self.dockWidgetContentsFieldEditor.setTimekeeper(zincContext.getTimekeepermodule().getDefaultTimekeeper())
 
         if self._visualisation_view_ready:
@@ -505,10 +500,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # self._problem_view.setProblem(project.getProblem())
 
     def _regionSelected(self, region):
-        self.dockWidgetContentsModelSourcesEditor.setRegion(region)
+        # self.dockWidgetContentsModelSourcesEditor.setRegion(region)
         zincRegion = region.getZincRegion()
-        scene = zincRegion.getScene()
-        self.dockWidgetContentsSceneEditor.setScene(scene)
+        # scene = zincRegion.getScene()
+        # self.dockWidgetContentsSceneEditor.setScene(scene)
         self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
         self.dockWidgetContentsFieldEditor.setArgonRegion(region)
 
@@ -576,20 +571,7 @@ class MainWindow(QtWidgets.QMainWindow):
             pass  # Save the state
 
     def _newTriggered(self):
-        project_model = self._model.getProjectModel()
-        dlg = NewProjectDialog(project_model, parent=self)
-        dlg.setModal(True)
-        dlg.setRecentActions(self._ui.menu_Open_recent.actions())
-        dlg.openClicked.connect(self._openTriggered)
-        dlg.recentClicked.connect(self._open)
-
-        if dlg.exec_():
-            index = dlg.getSelectedIndex()
-            project = project_model.getProject(index)
-            if project:
-                self._model.new(project)
-        else:
-            pass
+        self._model.new()
 
     def _openModel(self, filename):
         success = self._model.load(filename)
@@ -598,6 +580,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self._addRecent(filename)
         else:
             QtWidgets.QMessageBox.warning(self, "Load failure", "Failed to load file " + filename + ". Refer to logger window for more details", QtWidgets.QMessageBox.Ok)
+            self._model.new()  # in case document half constructed; emits documentChanged
 
         self._updateUi()
 
@@ -607,14 +590,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if filename:
             self._openModel(filename)
 
-    def _open(self, filename=None):
-        '''
-        Open a model from a recent file
-        '''
-        if filename is None:
-            filename = self.sender().text()
-        else:
-            pass
+    def _open(self):
+        """
+        Open a model from a recent file.
+        """
+        filename = self.sender().text()
         self._ui.menu_Open_recent.removeAction(self.sender())
         self._model.removeRecent(filename)
         self._openModel(filename)
