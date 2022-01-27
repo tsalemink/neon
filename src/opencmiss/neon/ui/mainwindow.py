@@ -46,14 +46,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._visualisation_view_state_update_pending = False
 
         # List of possible views
-        self._visualisation_view = VisualisationView(self)
-        self._visualisation_view_ready = False
-
-        self._view_states = {self._visualisation_view: ''}
-        # self._view_states[self._problem_view] = ''
-        # self._view_states[self._simulation_view] = ''
-
-        view_list = [self._visualisation_view]
+        # List of possible views
+        self._view_states = {}
+        view_list = self._model.getViews()
 
         self._location = None  # The last location/directory used by the application
         self._current_view = None
@@ -61,7 +56,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self._undoRedoStack = QtWidgets.QUndoStack(self)
 
         # Pre-create dialogs
-        #self._createDialogs()
 
         self._setupEditors()
 
@@ -101,14 +95,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
 
-        self._visualisation_view.graphicsInitialized.connect(self._visualisationViewReady)
-
-        # self._snapshot_dialog.sceneviewerInitialized.connect(self._snapshotDialogReady)
-
         self.dockWidgetContentsRegionEditor.regionSelected.connect(self._regionSelected)
-
-        # self.dockWidgetContentsProblemEditor.runClicked.connect(self._runSimulationClicked)
-        # self.dockWidgetContentsSimulationEditor.visualiseClicked.connect(self._visualiseSimulationClicked)
 
         self._model.documentChanged.connect(self._onDocumentChanged)
 
@@ -405,7 +392,7 @@ class MainWindow(QtWidgets.QMainWindow):
         action_group = QtWidgets.QActionGroup(self)
         zincContext = self._model.getZincContext()
         for v in views:
-            self._ui.viewStackedWidget.addWidget(v)
+            self._ui.view.addWidget(v)
             v.setZincContext(zincContext)
 
             action_view = QtWidgets.QAction(v.getName(), self)

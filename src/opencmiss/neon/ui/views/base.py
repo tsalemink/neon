@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
 from PySide2 import QtWidgets
 
 
@@ -33,10 +33,10 @@ class BaseView(QtWidgets.QWidget):
         return self._dock_widgets
 
     def registerDependentEditor(self, editor):
-        '''
+        """
         Add the given editor to the list of dependent editors for
         this view.
-        '''
+        """
         self._dock_widgets.append(editor)
 
     def serialize(self):

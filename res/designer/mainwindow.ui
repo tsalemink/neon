@@ -14,7 +14,7 @@
    <string>Neon</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icons.qrc">
+   <iconset>
     <normaloff>:/neon/images/icons/neon-icon-v2.png</normaloff>:/neon/images/icons/neon-icon-v2.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -32,7 +32,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QStackedWidget" name="viewStackedWidget"/>
+     <widget class="QTabWidget" name="viewTabWidget"/>
     </item>
    </layout>
   </widget>
@@ -42,14 +42,14 @@
      <x>0</x>
      <y>0</y>
      <width>855</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>Fi&amp;le</string>
     </property>
-    <widget class="QMenu" name="menu_Open_recent">
+    <widget class="QMenu" name="menu_Open_Recent">
      <property name="title">
       <string>Open &amp;recent</string>
      </property>
@@ -58,14 +58,14 @@
     </widget>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
-    <addaction name="menu_Open_recent"/>
+    <addaction name="menu_Open_Recent"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
     <addaction name="action_Snapshot"/>
     <addaction name="separator"/>
-    <addaction name="actionPreferences"/>
+    <addaction name="action_Preferences"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -126,7 +126,7 @@
   </widget>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/document-open.png</normaloff>:/neon/images/icons/document-open.png</iconset>
    </property>
    <property name="text">
@@ -138,7 +138,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/document-save.png</normaloff>:/neon/images/icons/document-save.png</iconset>
    </property>
    <property name="text">
@@ -155,7 +155,7 @@
   </action>
   <action name="action_Quit">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/application-exit.png</normaloff>:/neon/images/icons/application-exit.png</iconset>
    </property>
    <property name="text">
@@ -167,7 +167,7 @@
   </action>
   <action name="action_Snapshot">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/devices-camera-photo-icon.png</normaloff>:/neon/images/icons/devices-camera-photo-icon.png</iconset>
    </property>
    <property name="text">
@@ -179,7 +179,7 @@
   </action>
   <action name="action_Undo">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/edit-undo.png</normaloff>:/neon/images/icons/edit-undo.png</iconset>
    </property>
    <property name="text">
@@ -191,7 +191,7 @@
   </action>
   <action name="action_Redo">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/edit-redo.png</normaloff>:/neon/images/icons/edit-redo.png</iconset>
    </property>
    <property name="text">
@@ -203,7 +203,7 @@
   </action>
   <action name="action_About">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/help-about.png</normaloff>:/neon/images/icons/help-about.png</iconset>
    </property>
    <property name="text">
@@ -245,7 +245,7 @@
   </action>
   <action name="action_Save_As">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/document-save-as.png</normaloff>:/neon/images/icons/document-save-as.png</iconset>
    </property>
    <property name="text">
@@ -265,16 +265,16 @@
   </action>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/document-new-icon.png</normaloff>:/neon/images/icons/document-new-icon.png</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
   </action>
-  <action name="actionPreferences">
+  <action name="action_Preferences">
    <property name="icon">
-    <iconset resource="../icons.qrc">
+    <iconset>
      <normaloff>:/neon/images/icons/applications-system-icon.png</normaloff>:/neon/images/icons/applications-system-icon.png</iconset>
    </property>
    <property name="text">
