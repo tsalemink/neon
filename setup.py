@@ -45,7 +45,7 @@ Topic :: Scientific/Engineering :: Visualization
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-requires = ['opencmiss.utils >= 0.3.0', 'PySide2', 'opencmiss.zinc']
+requires = ['opencmiss.utils >= 0.3.0', 'PySide2', 'opencmiss.zinc', 'opencmiss.zincwidgets >= 2.1.0']
 
 setup(
     name='opencmiss.neon',

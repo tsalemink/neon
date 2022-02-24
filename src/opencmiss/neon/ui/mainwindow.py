@@ -401,8 +401,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 # w.graphicsReady.connect(self._view_graphics_ready)
                 w.currentChanged.connect(self._current_sceneviewer_changed)
                 w.setContext(view_manager.getZincContext())
-                # w = create_view(view_manager.getZincContext(), v.getScenes(), v.getGridSpecification())
-                # self._observe_sceneviewer_focus(w)
                 view_name = v.getName()
                 self._ui.viewTabWidget.addTab(w, view_name)
 
@@ -437,22 +435,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._changeView(v)
         self._postChangeView()
 
-    def _regionChange(self, changedRegion, treeChange):
-        """
-        Notifies sceneviewer if affected by tree change i.e. needs new scene.
-        :param changedRegion: The top region changed
-        :param treeChange: True if structure of tree, or zinc objects reconstructed
-        """
-        # following may need changing once sceneviewer can look at sub scenes, since resets to root scene:
-        if treeChange and (changedRegion is self._model.getDocument().getRootRegion()):
-            zincRootRegion = changedRegion.getZincRegion()
-            print("region change set visualisation view scene")
-            # self._visualisation_view.setScene(zincRootRegion.getScene())
-
     def _onDocumentChanged(self):
         document = self._model.getDocument()
         rootRegion = document.getRootRegion()
-        rootRegion.connectRegionChange(self._regionChange)
         zincRootRegion = rootRegion.getZincRegion()
 
         # need to pass new Zinc context to dialogs and widgets using global modules
@@ -514,7 +499,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def _recordSceneviewerState(self):
         document = self._model.getDocument()
         view_manager = document.getViewManager()
-        sceneviewer_state = []
         for index in range(self._ui.viewTabWidget.count()):
             tab = self._ui.viewTabWidget.widget(index)
             tab_layout = tab.layout()
@@ -528,17 +512,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 for c in range(columns):
                     sceneviewer_widget = tab_layout.itemAtPosition(r, c).widget()
                     view.updateSceneviewer(r, c, sceneviewer_widget.getSceneviewer())
-
-    def _observe_sceneviewer_focus(self, widget):
-        layout = widget.layout()
-
-        rows = layout.rowCount()
-        columns = layout.columnCount()
-        for r in range(rows):
-            for c in range(columns):
-                sceneviewer_widget = layout.itemAtPosition(r, c).widget()
-                print("observe:", r, c, sceneviewer_widget.getSceneviewer())
-                # sceneviewer_widget.getSceneviewer().currentChanged.connect(self._current_sceneviewer_changed)
 
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
