@@ -15,23 +15,26 @@
 """
 import os.path
 
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
-from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
-from opencmiss.neon.undoredo.commands import CommandEmpty
-from opencmiss.neon.ui.views.visualisationview import VisualisationView
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
-from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
+from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
+from opencmiss.neon.undoredo.commands import CommandEmpty
+
+from opencmiss.zincwidgets.addviewwidget import AddView
+from opencmiss.zincwidgets.editabletabbar import EditableTabBar
+from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
 from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
 from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
-from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
+from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
 from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
+from opencmiss.zincwidgets.scenelayoutchooserdialog import SceneLayoutChooserDialog
+from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
 from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
 from opencmiss.zincwidgets.tessellationeditorwidget import TessellationEditorWidget
 from opencmiss.zincwidgets.timeeditorwidget import TimeEditorWidget
-from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
-from opencmiss.neon.settings.mainsettings import VERSION_MAJOR
+from opencmiss.zincwidgets.viewwidget import ViewWidget
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -42,13 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
-
-        self._visualisation_view_state_update_pending = False
-
-        # List of possible views
-        # List of possible views
-        self._view_states = {}
-        view_list = self._model.getViews()
+        self._ui.viewTabWidget.setTabBar(EditableTabBar(self.parentWidget()))
 
         self._location = None  # The last location/directory used by the application
         self._current_view = None
@@ -56,12 +53,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self._undoRedoStack = QtWidgets.QUndoStack(self)
 
         # Pre-create dialogs
-
         self._setupEditors()
-
         self._registerEditors()
 
-        self._setupViews(view_list)
+        self._view_action_group = QtWidgets.QActionGroup(self)
+        self._view_actions = []
+        self._setup_views()
         self._setupOtherWindows()
 
         self._registerOtherWindows()
@@ -88,8 +85,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui.action_Save.triggered.connect(self._saveTriggered)
         self._ui.action_Save_As.triggered.connect(self._saveAsTriggered)
         self._ui.action_Snapshot.triggered.connect(self._snapshotTriggered)
-        self._ui.actionPreferences.triggered.connect(self._preferencesTriggered)
+        self._ui.action_Preferences.triggered.connect(self._preferencesTriggered)
         self._ui.action_Clear.triggered.connect(self._clearTriggered)
+        self._ui.viewTabWidget.tabCloseRequested.connect(self._viewTabCloseRequested)
+        self._ui.viewTabWidget.currentChanged.connect(self._currentViewChanged)
+        tab_bar = self._ui.viewTabWidget.tabBar()
+        tab_bar.tabTextEdited.connect(self._viewTabTextEdited)
+
 
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
@@ -149,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetContentsSceneEditor.setObjectName("dockWidgetContentsSceneEditor")
         self.dockWidgetSceneEditor.setWidget(self.dockWidgetContentsSceneEditor)
         self.dockWidgetSceneEditor.setHidden(True)
-        
+
         self.dockWidgetSceneviewerEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetSceneviewerEditor.setWindowTitle('Sceneviewer Editor')
         self.dockWidgetSceneviewerEditor.setObjectName("dockWidgetSceneviewerEditor")
@@ -182,7 +184,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetContentsTimeEditor.setObjectName("dockWidgetContentsTimeEditor")
         self.dockWidgetTimeEditor.setWidget(self.dockWidgetContentsTimeEditor)
         self.dockWidgetTimeEditor.setHidden(True)
-        
+
         self.dockWidgetFieldEditor = QtWidgets.QDockWidget(self)
         self.dockWidgetFieldEditor.setWindowTitle('Field Editor')
         self.dockWidgetFieldEditor.setObjectName("dockWidgetFieldEditor")
@@ -192,33 +194,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetFieldEditor.setHidden(True)
 
     def _registerEditors(self):
-        # self._registerEditor(self._problem_view, self.dockWidgetProblemEditor)
-        # self._registerEditor(self._simulation_view, self.dockWidgetSimulationEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetRegionEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetMaterialEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetModelSourcesEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetSceneEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetSceneviewerEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetSpectrumEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetTessellationEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetTimeEditor)
-        self._registerEditor(self._visualisation_view, self.dockWidgetFieldEditor)
+        self._registerEditor(self.dockWidgetRegionEditor)
+        self._registerEditor(self.dockWidgetMaterialEditor)
+        self._registerEditor(self.dockWidgetModelSourcesEditor)
+        self._registerEditor(self.dockWidgetSceneEditor)
+        self._registerEditor(self.dockWidgetSceneviewerEditor)
+        self._registerEditor(self.dockWidgetSpectrumEditor)
+        self._registerEditor(self.dockWidgetTessellationEditor)
+        self._registerEditor(self.dockWidgetTimeEditor)
+        self._registerEditor(self.dockWidgetFieldEditor)
 
         self._ui.menu_View.addSeparator()
 
-    def _registerEditor(self, view, editor):
-        action_name = getEditorMenuName(view)
-        action = self._getEditorAction(action_name)
-        if action is None:
-            menu = self._ui.menu_View.addMenu(action_name)
-            menu.setEnabled(False)
-        else:
-            menu = action.menu()
+    def _registerEditor(self, editor):
+        menu = self._ui.menu_View
 
         toggle_action = editor.toggleViewAction()
         toggle_action.triggered.connect(self._view_dock_widget)
         menu.addAction(toggle_action)
-        view.registerDependentEditor(editor)
+
+    def _add_view_clicked(self):
+        dlg = SceneLayoutChooserDialog(self)
+        dlg.setModal(True)
+        if dlg.exec_():
+            layout = dlg.selected_layout()
+            document = self._model.getDocument()
+            view_manager = document.getViewManager()
+            view_manager.addView(layout)
+            view_manager.setActiveView(layout)
+            self._views_changed(view_manager)
 
     def _view_dock_widget(self, show):
         """
@@ -253,7 +257,6 @@ class MainWindow(QtWidgets.QMainWindow):
         settings.beginGroup('MainWindow')
         settings.setValue('location', self._location)
         settings.setValue('geometry', self.saveGeometry())
-        settings.setValue('current_view', self._ui.viewStackedWidget.currentIndex())
 
         settings.beginWriteArray('recents')
         recents = self._model.getRecents()
@@ -263,18 +266,8 @@ class MainWindow(QtWidgets.QMainWindow):
         settings.endArray()
         settings.endGroup()
 
-        settings.beginGroup('views')
-        self._storeCurrentView()  # needed in case user never changed view
-        for key in self._view_states:
-            settings.setValue(key.getName(), self._view_states[key])
-        settings.endGroup()
-
         settings.beginGroup('SnapshotDialog')
         # settings.setValue('state', self._snapshot_dialog.serialize())
-        settings.endGroup()
-
-        settings.beginGroup('Problems')
-        # settings.setValue('state', self._problem_view.serialize())
         settings.endGroup()
 
     def _readSettings(self):
@@ -290,79 +283,39 @@ class MainWindow(QtWidgets.QMainWindow):
             settings.setArrayIndex(i)
             self._addRecent(settings.value('item'))
         settings.endArray()
-        currentViewIndex = settings.value('current_view', '0')
         settings.endGroup()
-
-        settings.beginGroup('views')
-        for key in self._view_states:
-            state = settings.value(key.getName(), '')
-            self._view_states[key] = state
-        settings.endGroup()
-
-        self._setCurrentView(currentViewIndex)
-        self._postChangeView()
 
         settings.beginGroup('SnapshotDialog')
         # self._snapshot_dialog.deserialize(settings.value('state', ''))
         settings.endGroup()
 
-        settings.beginGroup('Problems')
-        # self._problem_view.deserialize(settings.value('state', ''))
-        settings.endGroup()
-
         self._updateUi()
 
     def _addRecent(self, recent):
-        actions = self._ui.menu_Open_recent.actions()
+        actions = self._ui.menu_Open_Recent.actions()
         insert_before_action = actions[0]
         self._model.addRecent(recent)
-        recent_action = QtWidgets.QAction(self._ui.menu_Open_recent)
+        recent_action = QtWidgets.QAction(self._ui.menu_Open_Recent)
         recent_action.setText(recent)
-        self._ui.menu_Open_recent.insertAction(insert_before_action, recent_action)
+        self._ui.menu_Open_Recent.insertAction(insert_before_action, recent_action)
         recent_action.triggered.connect(self._open)
 
     def _setCurrentView(self, index):
-        v = self._ui.viewStackedWidget.widget(int(index))
+        v = self._ui.viewTabWidget.widget(int(index))
         self._changeView(v)
         self._postChangeView()
-        actions = self._ui.menu_View.actions()
-        for action in actions:
-            if action.data() == v:
-                action.setChecked(True)
 
     def _storeCurrentView(self):
-        current_view = self._ui.viewStackedWidget.currentWidget()
-        view_state = self.saveState(VERSION_MAJOR)
-        self._view_states[current_view] = view_state
+        pass
 
     def _preChangeView(self):
-        current_view = self._ui.viewStackedWidget.currentWidget()
-        dependent_editors = current_view.getDependentEditors()
-        view_state = self.saveState(VERSION_MAJOR)
-        self._view_states[current_view] = view_state
-
-        for ed in dependent_editors:
-            ed.setHidden(True)
-
-        action_name = getEditorMenuName(current_view)
-        action = self._getEditorAction(action_name)
-        if action is not None:
-            menu = action.menu()
-            menu.setEnabled(False)
+        pass
 
     def _changeView(self, view):
-        self._ui.viewStackedWidget.setCurrentWidget(view)
+        self._ui.viewTabWidget.setCurrentWidget(view)
 
     def _postChangeView(self):
-        current_view = self._ui.viewStackedWidget.currentWidget()
-        view_state = self._view_states[current_view]
-        # self.restoreState(view_state, VERSION_MAJOR)
-
-        action_name = getEditorMenuName(current_view)
-        action = self._getEditorAction(action_name)
-        if action is not None:
-            menu = action.menu()
-            menu.setEnabled(True)
+        pass
 
     def _setupOtherWindows(self):
         self.dockWidgetLoggerEditor = QtWidgets.QDockWidget("Log Viewer", self)
@@ -388,49 +341,95 @@ class MainWindow(QtWidgets.QMainWindow):
         toggle_action.triggered.connect(self._view_dock_widget)
         menu.addAction(toggle_action)
 
-    def _setupViews(self, views):
-        action_group = QtWidgets.QActionGroup(self)
-        zincContext = self._model.getZincContext()
-        for v in views:
-            self._ui.view.addWidget(v)
-            v.setZincContext(zincContext)
+    def _viewTabCloseRequested(self, index):
+        document = self._model.getDocument()
+        view_manager = document.getViewManager()
+        view_manager.removeView(index)
+        self._views_changed(view_manager)
 
-            action_view = QtWidgets.QAction(v.getName(), self)
-            action_view.setData(v)
-            action_view.setCheckable(True)
-            action_view.setActionGroup(action_group)
-            action_view.triggered.connect(self._viewTriggered)
-            self._ui.menu_View.addAction(action_view)
+    def _viewTabTextEdited(self, index, value):
+        document = self._model.getDocument()
+        view_manager = document.getViewManager()
+        view = view_manager.getView(index)
+        view.setName(value)
 
-        self._ui.menu_View.addSeparator()
+    def _currentViewChanged(self, index):
+        document = self._model.getDocument()
+        view_manager = document.getViewManager()
+        view_manager.setActiveView(self._ui.viewTabWidget.tabText(index))
 
-    def _runSimulationClicked(self):
-        sender = self.sender()
-        if sender == self.dockWidgetContentsProblemEditor:
-            actions = self._ui.menu_View.actions()
-            simulate_action = [a for a in actions if a.text() == self._simulation_view.getName()][0]
-            simulate_action.activate(QtWidgets.QAction.ActionEvent.Trigger)
+    def _setup_views(self):
+        icon = QtGui.QIcon(":/zincwidgets/images/icons/list-add-icon.png")
+        btn = QtWidgets.QToolButton()
+        btn.setStyleSheet("border-radius: 0.75em; border-width: 1px; border-style: solid; border-color: dark-grey;"
+                          " background-color: grey; min-width: 1.5em; min-height: 1.5em; margin-right: 1em;")
+        btn.setIcon(icon)
+        btn.setAutoFillBackground(True)
+        btn.clicked.connect(self._add_view_clicked)
 
-        problem = self._model.getDocument().getProject().getProblem()
-        if problem.validate():
-            self._simulation_view.setProblem(problem)
-            self._simulation_view.setPreferences(self._model.getPreferences())
-            self._simulation_view.run()
+        self._ui.viewTabWidget.setCornerWidget(btn)
+
+    def _current_sceneviewer_changed(self, row, col):
+        sceneviewer = self._ui.viewTabWidget.currentWidget().getSceneviewer(row, col)
+        self.dockWidgetContentsSceneviewerEditor.setSceneviewer(sceneviewer)
+
+    def _views_changed(self, view_manager):
+        views = view_manager.getViews()
+
+        # Remove existing views from menu
+        for view_action in self._view_actions:
+            self._view_action_group.removeAction(view_action)
+            self._ui.menu_View.removeAction(view_action)
+
+        self._view_actions = []
+
+        # Remove all views.
+        self._ui.viewTabWidget.clear()
+        tab_bar = self._ui.viewTabWidget.tabBar()
+
+        if views:
+            tab_bar.set_editable(True)
+            active_widget = None
+            separator_action = self._ui.menu_View.addSeparator()
+            separator_action.setActionGroup(self._view_action_group)
+            self._view_actions.append(separator_action)
+            # Instate views.
+            zincContext = self._model.getZincContext()
+            active_view = view_manager.getActiveView()
+            for v in views:
+                w = ViewWidget(v.getScenes(), v.getGridSpecification(), self._ui.viewTabWidget)
+                # w.graphicsReady.connect(self._view_graphics_ready)
+                w.currentChanged.connect(self._current_sceneviewer_changed)
+                w.setContext(view_manager.getZincContext())
+                # w = create_view(view_manager.getZincContext(), v.getScenes(), v.getGridSpecification())
+                # self._observe_sceneviewer_focus(w)
+                view_name = v.getName()
+                self._ui.viewTabWidget.addTab(w, view_name)
+
+                if active_view == view_name:
+                    active_widget = w
+
+                action_view = QtWidgets.QAction(view_name, self)
+                action_view.setData(w)
+                # action_view.setCheckable(True)
+                action_view.setActionGroup(self._view_action_group)
+                action_view.triggered.connect(self._viewTriggered)
+                action_view.setCheckable(True)
+                self._ui.menu_View.addAction(action_view)
+                self._view_actions.append(action_view)
+
+            if active_widget is not None:
+                self._ui.viewTabWidget.setCurrentWidget(w)
+            else:
+                self._ui.viewTabWidget.setCurrentIndex(0)
+            self._ui.viewTabWidget.setTabsClosable(True)
         else:
-            print('pop up error box')
+            tab_bar.set_editable(False)
 
-    def _visualiseSimulationClicked(self):
-        sender = self.sender()
-        if sender == self.dockWidgetContentsSimulationEditor:
-            actions = self._ui.menu_View.actions()
-            visualise_action = [a for a in actions if a.text() == self._visualisation_view.getName()][0]
-            visualise_action.activate(QtWidgets.QAction.ActionEvent.Trigger)
-
-        simulation = self._simulation_view.getSimulation()
-        if simulation.validate():
-            self._model.visualiseSimulation(simulation)
-        else:
-            print('pop up error box')
+            add_view = AddView()
+            add_view.clicked.connect(self._add_view_clicked)
+            self._ui.viewTabWidget.addTab(add_view, "Add View")
+            self._ui.viewTabWidget.setTabsClosable(False)
 
     def _viewTriggered(self):
         v = self.sender().data()
@@ -447,7 +446,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # following may need changing once sceneviewer can look at sub scenes, since resets to root scene:
         if treeChange and (changedRegion is self._model.getDocument().getRootRegion()):
             zincRootRegion = changedRegion.getZincRegion()
-            self._visualisation_view.setScene(zincRootRegion.getScene())
+            print("region change set visualisation view scene")
+            # self._visualisation_view.setScene(zincRootRegion.getScene())
 
     def _onDocumentChanged(self):
         document = self._model.getDocument()
@@ -457,8 +457,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # need to pass new Zinc context to dialogs and widgets using global modules
         zincContext = document.getZincContext()
-        self._visualisation_view.setZincContext(zincContext)
-        # self._simulation_view.setZincContext(zincContext)
         self.dockWidgetContentsSpectrumEditor.setSpectrums(document.getSpectrums())
         self.dockWidgetContentsMaterialEditor.setMaterials(document.getMaterials())
         self.dockWidgetContentsTessellationEditor.setTessellations(document.getTessellations())
@@ -470,29 +468,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # need to pass new root region to the following
         self.dockWidgetContentsRegionEditor.setRootRegion(rootRegion)
-
         self.dockWidgetContentsSceneEditor.setZincRootRegion(zincRootRegion)
+        self.dockWidgetContentsSceneviewerEditor.setZincRootRegion(zincRootRegion)
         self.dockWidgetContentsFieldEditor.setRootArgonRegion(rootRegion)
         self.dockWidgetContentsFieldEditor.setTimekeeper(zincContext.getTimekeepermodule().getDefaultTimekeeper())
 
-        if self._visualisation_view_ready:
-            self._restoreSceneviewerState()
-        else:
-            self._visualisation_view_state_update_pending = True
-
-        # project = document.getProject()
-        # index = self._model.getProjectModel().getIndex(project)
-        # self._problem_view.setCurrentIndex(index.row())
-        # self._simulation_view.setCurrentIndex(index.row())
-        # self._problem_view.setProblem(project.getProblem())
+        view_manager = document.getViewManager()
+        self._views_changed(view_manager)
 
     def _regionSelected(self, region):
         # self.dockWidgetContentsModelSourcesEditor.setRegion(region)
         zincRegion = region.getZincRegion()
         # scene = zincRegion.getScene()
         # self.dockWidgetContentsSceneEditor.setScene(scene)
-        self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
-        self.dockWidgetContentsFieldEditor.setArgonRegion(region)
+        # self.dockWidgetContentsFieldEditor.setFieldmodule(zincRegion.getFieldmodule())
+        # self.dockWidgetContentsFieldEditor.setArgonRegion(region)
 
     def _visualisationViewReady(self):
         self._visualisation_view_ready = True
@@ -517,14 +507,38 @@ class MainWindow(QtWidgets.QMainWindow):
     def _restoreSceneviewerState(self):
         document = self._model.getDocument()
         sceneviewer_state = document.getSceneviewer().serialize()
-        self._visualisation_view.setSceneviewerState(sceneviewer_state)
-        self.dockWidgetContentsSceneviewerEditor.setSceneviewer(self._visualisation_view.getSceneviewer())
+        # self._visualisation_view.setSceneviewerState(sceneviewer_state)
+        # self.dockWidgetContentsSceneviewerEditor.setSceneviewer(self._visualisation_view.getSceneviewer())
         self._visualisation_view_state_update_pending = False
 
     def _recordSceneviewerState(self):
-        sceneviewer_state = self._visualisation_view.getSceneviewerState()
         document = self._model.getDocument()
-        document.getSceneviewer().deserialize(sceneviewer_state)
+        view_manager = document.getViewManager()
+        sceneviewer_state = []
+        for index in range(self._ui.viewTabWidget.count()):
+            tab = self._ui.viewTabWidget.widget(index)
+            tab_layout = tab.layout()
+
+            view = view_manager.getView(index)
+            view.setName(self._ui.viewTabWidget.tabText(index))
+
+            rows = tab_layout.rowCount()
+            columns = tab_layout.columnCount()
+            for r in range(rows):
+                for c in range(columns):
+                    sceneviewer_widget = tab_layout.itemAtPosition(r, c).widget()
+                    view.updateSceneviewer(r, c, sceneviewer_widget.getSceneviewer())
+
+    def _observe_sceneviewer_focus(self, widget):
+        layout = widget.layout()
+
+        rows = layout.rowCount()
+        columns = layout.columnCount()
+        for r in range(rows):
+            for c in range(columns):
+                sceneviewer_widget = layout.itemAtPosition(r, c).widget()
+                print("observe:", r, c, sceneviewer_widget.getSceneviewer())
+                # sceneviewer_widget.getSceneviewer().currentChanged.connect(self._current_sceneviewer_changed)
 
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
@@ -582,15 +596,15 @@ class MainWindow(QtWidgets.QMainWindow):
         Open a model from a recent file.
         """
         filename = self.sender().text()
-        self._ui.menu_Open_recent.removeAction(self.sender())
+        self._ui.menu_Open_Recent.removeAction(self.sender())
         self._model.removeRecent(filename)
         self._openModel(filename)
 
     def _clearTriggered(self):
         self._model.clearRecents()
-        actions = self._ui.menu_Open_recent.actions()
+        actions = self._ui.menu_Open_Recent.actions()
         for action in actions[:-2]:
-            self._ui.menu_Open_recent.removeAction(action)
+            self._ui.menu_Open_Recent.removeAction(action)
 
         self._updateUi()
 
@@ -598,19 +612,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # Check to see if the Workflow is in a saved state.
         if self._model.isModified():
             ret = QtWidgets.QMessageBox.warning(self, 'Unsaved Changes', 'You have unsaved changes, would you like to save these changes now?',
-                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
             if ret == QtWidgets.QMessageBox.Yes:
                 self._saveTriggered()
 
     def _quitApplication(self):
         self.confirmClose()
-        # self._setCurrentView('0')
         self._writeSettings()
 
     def closeEvent(self, event):
         self._quitApplication()
         super(MainWindow, self).closeEvent(event)
-
-
-def getEditorMenuName(view):
-    return view.getName() + ' Editors'
