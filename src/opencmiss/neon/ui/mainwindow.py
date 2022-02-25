@@ -375,6 +375,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _views_changed(self, view_manager):
         views = view_manager.getViews()
+        active_view = view_manager.getActiveView()
 
         # Remove existing views from menu
         for view_action in self._view_actions:
@@ -395,7 +396,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self._view_actions.append(separator_action)
             # Instate views.
             zincContext = self._model.getZincContext()
-            active_view = view_manager.getActiveView()
             for v in views:
                 w = ViewWidget(v.getScenes(), v.getGridSpecification(), self._ui.viewTabWidget)
                 # w.graphicsReady.connect(self._view_graphics_ready)
