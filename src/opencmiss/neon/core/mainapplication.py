@@ -38,6 +38,9 @@ class MainApplication(QtCore.QObject):
         self._document = ArgonDocument()
         self._document.initialiseVisualisationContents()
 
+        view_manager = self._document.getViewManager()
+        view_manager.addViewByType("Layout1", "default")
+
         self._preferences = Preferences()
 
     def getZincContext(self):
@@ -61,6 +64,15 @@ class MainApplication(QtCore.QObject):
     def getLocation(self):
         return self._location
 
+    def getViews(self):
+        return self._document.getViewManager().getViews()
+
+    def getActiveView(self):
+        return self._document.getViewManager().getActiveView()
+
+    def setActiveView(self, view):
+        self._document.getViewManager().setActiveView(view)
+
     def new(self):
         """
         Create a blank document with the supplied project, or default project if not supplied
@@ -71,6 +83,9 @@ class MainApplication(QtCore.QObject):
         self._document = ArgonDocument()
 
         self._document.initialiseVisualisationContents()
+        view_manager = self._document.getViewManager()
+        view_manager.addViewByType("Layout1", "default")
+
         self.documentChanged.emit()
 
     def save(self):
