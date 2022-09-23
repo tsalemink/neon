@@ -92,7 +92,6 @@ class MainWindow(QtWidgets.QMainWindow):
         tab_bar = self._ui.viewTabWidget.tabBar()
         tab_bar.tabTextEdited.connect(self._viewTabTextEdited)
 
-
         self._undoRedoStack.indexChanged.connect(self._undoRedoStackIndexChanged)
         self._undoRedoStack.canUndoChanged.connect(self._ui.action_Undo.setEnabled)
         self._undoRedoStack.canRedoChanged.connect(self._ui.action_Redo.setEnabled)
@@ -220,7 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
             layout = dlg.selected_layout()
             document = self._model.getDocument()
             view_manager = document.getViewManager()
-            view_manager.addView(layout)
+            view_manager.addViewByType(layout)
             view_manager.setActiveView(layout)
             self._views_changed(view_manager)
 
@@ -369,8 +368,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._ui.viewTabWidget.setCornerWidget(btn)
 
-    def _current_sceneviewer_changed(self, row, col):
-        sceneviewer = self._ui.viewTabWidget.currentWidget().getSceneviewer(row, col)
+    def _current_sceneviewer_changed(self):
+        sceneviewer = self._ui.viewTabWidget.currentWidget().getActiveSceneviewer()
         self.dockWidgetContentsSceneviewerEditor.setSceneviewer(sceneviewer)
 
     def _views_changed(self, view_manager):
@@ -395,7 +394,6 @@ class MainWindow(QtWidgets.QMainWindow):
             separator_action.setActionGroup(self._view_action_group)
             self._view_actions.append(separator_action)
             # Instate views.
-            zincContext = self._model.getZincContext()
             for v in views:
                 w = ViewWidget(v.getScenes(), v.getGridSpecification(), self._ui.viewTabWidget)
                 # w.graphicsReady.connect(self._view_graphics_ready)

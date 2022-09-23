@@ -39,7 +39,7 @@ class MainApplication(QtCore.QObject):
         self._document.initialiseVisualisationContents()
 
         view_manager = self._document.getViewManager()
-        view_manager.addView("Layout1", "default")
+        view_manager.addViewByType("Layout1", "default")
 
         self._preferences = Preferences()
 
@@ -84,7 +84,7 @@ class MainApplication(QtCore.QObject):
 
         self._document.initialiseVisualisationContents()
         view_manager = self._document.getViewManager()
-        view_manager.addView("Layout1", "default")
+        view_manager.addViewByType("Layout1", "default")
 
         self.documentChanged.emit()
 
