@@ -18,13 +18,13 @@ import os.path
 from PySide2 import QtCore, QtGui, QtWidgets
 
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 
 from opencmiss.zincwidgets.addviewwidget import AddView
 from opencmiss.zincwidgets.editabletabbar import EditableTabBar
 from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
+from opencmiss.zincwidgets.loggereditorwidget import LoggerEditorWidget
 from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
 from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
 from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
