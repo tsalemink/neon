@@ -1,8 +1,8 @@
-'''
+"""
 Slightly modified code from:
 
     https://gist.githubusercontent.com/jdreaver/0be2e44981159d0854f5/raw/3170b5e6be28aa179c321b16650086f096ba06b9/scientificspin.py
-'''
+"""
 # Regular expression to find floats. Match groups are the whole string, the
 # whole coefficient, the decimal part of the coefficient, and the exponent
 # part.
