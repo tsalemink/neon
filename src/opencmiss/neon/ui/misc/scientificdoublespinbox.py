@@ -8,7 +8,7 @@ Slightly modified code from:
 # part.
 import re
 
-from PySide import QtGui
+from PySide6 import QtGui, QtWidgets
 
 
 _float_re = re.compile(r'(([+-]?\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)')
@@ -33,7 +33,7 @@ class FloatValidator(QtGui.QValidator):
         return match.groups()[0] if match else ""
 
 
-class ScientificDoubleSpinBox(QtGui.QDoubleSpinBox):
+class ScientificDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
     def __init__(self, *args, **kwargs):
         super(ScientificDoubleSpinBox, self).__init__(*args, **kwargs)

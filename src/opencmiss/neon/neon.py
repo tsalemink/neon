@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
 import sys
 
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 from opencmiss.neon.core.mainapplication import MainApplication
 from opencmiss.neon.ui.mainwindow import MainWindow
-from opencmiss.neon.settings.mainsettings import setApplicationSettings
+from opencmiss.neon.settings.mainsettings import set_application_settings
 
 
 def main():
@@ -27,14 +27,14 @@ def main():
 
     app = QtWidgets.QApplication(argv)
 
-    setApplicationSettings(app)
+    set_application_settings(app)
 
     m = MainApplication()
 
     w = MainWindow(m)
     w.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

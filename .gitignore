@@ -67,3 +67,5 @@ target/
 
 # PyCharm
 .idea/
+
+default.profraw

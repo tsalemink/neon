@@ -15,16 +15,16 @@
 """
 import os.path
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
 from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
 from opencmiss.neon.undoredo.commands import CommandEmpty
 
 from opencmiss.zincwidgets.addviewwidget import AddView
 from opencmiss.zincwidgets.editabletabbar import EditableTabBar
 from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
+from opencmiss.zincwidgets.loggereditorwidget import LoggerEditorWidget
 from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
 from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
 from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
@@ -50,13 +50,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._location = None  # The last location/directory used by the application
         self._current_view = None
 
-        self._undoRedoStack = QtWidgets.QUndoStack(self)
+        self._undoRedoStack = QtGui.QUndoStack(self)
 
         # Pre-create dialogs
         self._setupEditors()
         self._registerEditors()
 
-        self._view_action_group = QtWidgets.QActionGroup(self)
+        self._view_action_group = QtGui.QActionGroup(self)
         self._view_actions = []
         self._setup_views()
         self._setupOtherWindows()
@@ -294,7 +294,7 @@ class MainWindow(QtWidgets.QMainWindow):
         actions = self._ui.menu_Open_Recent.actions()
         insert_before_action = actions[0]
         self._model.addRecent(recent)
-        recent_action = QtWidgets.QAction(self._ui.menu_Open_Recent)
+        recent_action = QtGui.QAction(self._ui.menu_Open_Recent)
         recent_action.setText(recent)
         self._ui.menu_Open_Recent.insertAction(insert_before_action, recent_action)
         recent_action.triggered.connect(self._open)
@@ -405,7 +405,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 if active_view == view_name:
                     active_widget = w
 
-                action_view = QtWidgets.QAction(view_name, self)
+                action_view = QtGui.QAction(view_name, self)
                 action_view.setData(w)
                 # action_view.setCheckable(True)
                 action_view.setActionGroup(self._view_action_group)

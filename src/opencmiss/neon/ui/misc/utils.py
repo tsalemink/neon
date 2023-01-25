@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
 from functools import wraps
 
-from PySide import QtCore, QtGui
+from PySide6 import QtCore, QtWidgets
 
 
 def set_wait_cursor(f):
@@ -27,9 +27,9 @@ def set_wait_cursor(f):
     @wraps(f)
     def do_wait_cursor(*a, **kw):
         try:
-            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+            QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
             return f(*a, **kw)
         finally:
             # Always unset
-            QtGui.QApplication.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
     return do_wait_cursor

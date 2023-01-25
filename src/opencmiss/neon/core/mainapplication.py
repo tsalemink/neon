@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
+"""
 import os
 
-from PySide2 import QtCore
+from PySide6 import QtCore
 
 from opencmiss.argon.argondocument import ArgonDocument
 from opencmiss.argon.argonlogger import ArgonLogger
