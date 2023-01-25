@@ -1,4 +1,4 @@
-'''
+"""
    Copyright 2015 University of Auckland
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,8 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-'''
-import sys
-
-from PySide2 import QtCore
-import os.path
+"""
+from PySide6 import QtCore
 
 
 VERSION_MAJOR = 0
@@ -29,16 +26,8 @@ APPLICATION_NAME = 'Neon'
 ORGANISATION_NAME = 'OpenCMISS'
 ORGANISATION_DOMAIN = 'opencmiss.org'
 
-EXTERNAL_BINARIES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'bin'))
-EXTERNAL_DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'data'))
 
-if sys.version_info > (3, 0):
-    PYTHON3 = True
-else:
-    PYTHON3 = False
-
-
-def setApplicationSettings(app):
+def set_application_settings(app):
 
     app.setOrganizationDomain(ORGANISATION_DOMAIN)
     app.setOrganizationName(ORGANISATION_NAME)

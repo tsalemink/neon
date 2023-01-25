@@ -15,7 +15,7 @@
 """
 import os.path
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
 from opencmiss.neon.ui.editors.loggereditorwidget import LoggerEditorWidget
