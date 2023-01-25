@@ -34,7 +34,7 @@ def main():
     w = MainWindow(m)
     w.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

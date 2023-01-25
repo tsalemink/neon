@@ -13,10 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from PySide6 import QtWidgets
+from PySide6 import QtGui
 
 
-class CommandEmpty(QtWidgets.QUndoCommand):
+class CommandEmpty(QtGui.QUndoCommand):
 
     def __init__(self):
         super(CommandEmpty, self).__init__()
