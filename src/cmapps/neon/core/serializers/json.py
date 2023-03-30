@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
-from opencmiss.neon.core.serializers.base import BaseSerialiser
+from cmlibs.neon.core.serializers.base import BaseSerialiser
 
 
 class JSON(BaseSerialiser):

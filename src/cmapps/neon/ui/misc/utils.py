@@ -28,6 +28,7 @@ def set_wait_cursor(f):
     def do_wait_cursor(*a, **kw):
         try:
             QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.CursorShape.WaitCursor)
+            QtWidgets.QApplication.processEvents()
             return f(*a, **kw)
         finally:
             # Always unset

@@ -69,7 +69,7 @@ class Ui_AboutDialog(object):
 
     def retranslateUi(self, AboutDialog):
         AboutDialog.setWindowTitle(QCoreApplication.translate("AboutDialog", u"About", None))
-        self.label.setText(QCoreApplication.translate("AboutDialog", u"OpenCMISS-Neon", None))
-        self.label_2.setText(QCoreApplication.translate("AboutDialog", u"Visual editing environment for OpenCMISS [http://opencmiss.org]].", None))
+        self.label.setText(QCoreApplication.translate("AboutDialog", u"Neon", None))
+        self.label_2.setText(QCoreApplication.translate("AboutDialog", u"Visual editing environment for Zinc continuum models, see more at [https://cmlibs.org].", None))
     # retranslateUi
 

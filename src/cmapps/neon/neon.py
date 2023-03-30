@@ -13,15 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import sys
+
 from PySide6 import QtWidgets
 
-from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
+from cmlibs.neon.core.mainapplication import MainApplication
+from cmlibs.neon.ui.mainwindow import MainWindow
+from cmlibs.neon.settings.mainsettings import set_application_settings
 
 
-class AboutDialog(QtWidgets.QDialog):
+def main():
+    argv = sys.argv[:]
 
-    def __init__(self, parent):
-        super(AboutDialog, self).__init__(parent)
+    app = QtWidgets.QApplication(argv)
 
-        self._ui = Ui_AboutDialog()
-        self._ui.setupUi(self)
+    set_application_settings(app)
+
+    m = MainApplication()
+
+    w = MainWindow(m)
+    w.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == '__main__':
+    main()

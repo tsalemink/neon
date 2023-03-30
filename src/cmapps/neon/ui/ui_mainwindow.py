@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
     QMenuBar, QSizePolicy, QStatusBar, QTabWidget,
     QToolBar, QWidget)
 
-from opencmiss.neon.ui import icons_rc
+from cmlibs.neon.ui import icons_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
