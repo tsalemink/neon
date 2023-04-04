@@ -1,6 +1,6 @@
 import unittest
 
-from opencmiss.zincwidgets.tessellationeditorwidget import processMultiFormatData
+from cmlibs.widgets.tessellationeditorwidget import processMultiFormatData
 
 
 test_ex_01 = '1'

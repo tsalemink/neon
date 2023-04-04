@@ -32,7 +32,7 @@
          </font>
         </property>
         <property name="text">
-         <string>OpenCMISS-Neon</string>
+         <string>Neon</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -42,7 +42,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Visual editing environment for OpenCMISS [http://opencmiss.org]].</string>
+         <string>Visual editing environment for Zinc continuum models, see more at [https://cmlibs.org].</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
