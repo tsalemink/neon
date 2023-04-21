@@ -45,7 +45,7 @@ Topic :: Scientific/Engineering :: Visualization
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-requires = ['cmlibs.utils >= 0.3.0', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets >= 2.1.0']
+requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets']
 
 setup(
     name='cmapps.neon',
