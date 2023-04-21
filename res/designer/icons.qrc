@@ -1,27 +1,27 @@
 <RCC>
-  <qresource prefix="zincwidgets">
-    <file>images/icons/neon-icon-v2.png</file>
-    <file>images/icons/applications-system-icon.png</file>
-    <file>images/icons/mathematics-icon.png</file>
-    <file>images/icons/playback-start-reverse-icon.png</file>
-    <file>images/icons/playback-start-icon.png</file>
-    <file>images/icons/playback-stop-icon.png</file>
-    <file>images/icons/document-new-icon.png</file>
-    <file>images/icons/go-up-icon.png</file>
-    <file>images/icons/application-exit.png</file>
-    <file>images/icons/devices-camera-photo-icon.png</file>
-    <file>images/icons/dialog-ok-apply.png</file>
-    <file>images/icons/document-open.png</file>
-    <file>images/icons/document-print.png</file>
-    <file>images/icons/document-save-as.png</file>
-    <file>images/icons/document-save.png</file>
-    <file>images/icons/edit-delete-cancel.png</file>
-    <file>images/icons/edit-redo.png</file>
-    <file>images/icons/edit-undo.png</file>
-    <file>images/icons/go-down-icon.png</file>
-    <file>images/icons/list-remove-icon.png</file>
-    <file>images/icons/list-add-icon.png</file>
-    <file>images/icons/help-about.png</file>
-    <file>images/icons/neon-icon.png</file>
+  <qresource prefix="neon">
+    <file>../images/icons/neon-icon-v2.png</file>
+    <file>../images/icons/applications-system-icon.png</file>
+    <file>../images/icons/mathematics-icon.png</file>
+    <file>../images/icons/playback-start-reverse-icon.png</file>
+    <file>../images/icons/playback-start-icon.png</file>
+    <file>../images/icons/playback-stop-icon.png</file>
+    <file>../images/icons/document-new-icon.png</file>
+    <file>../images/icons/go-up-icon.png</file>
+    <file>../images/icons/application-exit.png</file>
+    <file>../images/icons/devices-camera-photo-icon.png</file>
+    <file>../images/icons/dialog-ok-apply.png</file>
+    <file>../images/icons/document-open.png</file>
+    <file>../images/icons/document-print.png</file>
+    <file>../images/icons/document-save-as.png</file>
+    <file>../images/icons/document-save.png</file>
+    <file>../images/icons/edit-delete-cancel.png</file>
+    <file>../images/icons/edit-redo.png</file>
+    <file>../images/icons/edit-undo.png</file>
+    <file>../images/icons/go-down-icon.png</file>
+    <file>../images/icons/list-remove-icon.png</file>
+    <file>../images/icons/list-add-icon.png</file>
+    <file>../images/icons/help-about.png</file>
+    <file>../images/icons/neon-icon.png</file>
   </qresource>
 </RCC>
