@@ -30,20 +30,20 @@ readme.append('')
 
 software_licence = readfile("LICENSE")
 
-classifiers = """\
-Development Status :: 3 - Alpha
-Intended Audience :: Developers
-Intended Audience :: Education
-Intended Audience :: Science/Research
-License :: OSI Approved :: Apache Software License
-Programming Language :: Python
-Operating System :: Microsoft :: Windows
-Operating System :: Unix
-Operating System :: MacOS :: MacOS X
-Topic :: Scientific/Engineering :: Medical Science Apps.
-Topic :: Scientific/Engineering :: Visualization
-Topic :: Software Development :: Libraries :: Python Modules
-"""
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets']
 
@@ -59,7 +59,7 @@ setup(
     description='Visual editing environment for Zinc.',
     long_description_content_type='text/x-rst',
     license_files=("LICENSE",),
-    classifiers=filter(None, classifiers.split("\n")),
+    classifiers=classifiers,
     install_requires=requires,
     entry_points={
         'console_scripts': ['neon=cmapps.neon.neon:main'],
