@@ -17,9 +17,9 @@ import os.path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from cmlibs.neon.ui.dialogs.aboutdialog import AboutDialog
-from cmlibs.neon.ui.ui_mainwindow import Ui_MainWindow
-from cmlibs.neon.undoredo.commands import CommandEmpty
+from cmapps.neon.ui.dialogs.aboutdialog import AboutDialog
+from cmapps.neon.ui.ui_mainwindow import Ui_MainWindow
+from cmapps.neon.undoredo.commands import CommandEmpty
 
 from cmlibs.widgets.addviewwidget import AddView
 from cmlibs.widgets.editabletabbar import EditableTabBar
