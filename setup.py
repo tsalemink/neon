@@ -26,7 +26,7 @@ readme = readfile("README.rst", split=True)
 readme.append('License')
 readme.append('=======')
 readme.append('')
-readme.append('')
+readme.append('::')
 
 software_licence = readfile("LICENSE")
 
@@ -57,6 +57,7 @@ setup(
     author='Neon Developers',
     author_email='neon.developers@auckland.ac.nz',
     description='Visual editing environment for Zinc.',
+    long_description='\n'.join(readme) + software_licence,
     long_description_content_type='text/x-rst',
     license_files=("LICENSE",),
     classifiers=classifiers,
