@@ -14,6 +14,7 @@
    limitations under the License.
 """
 
+
 class NeonError(Exception):
 
     def __init__(self, message):

@@ -13,23 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from functools import wraps
-
-from PySide import QtCore, QtGui
+from cmapps.neon.core.serializers.base import BaseSerialiser
 
 
-def set_wait_cursor(f):
-    """
-    Decorator to a gui action method (e.g. methods in QtGui.QWidget) to
-    set and unset a wait cursor and unset after the method is finished.
-    """
+class JSON(BaseSerialiser):
 
-    @wraps(f)
-    def do_wait_cursor(*a, **kw):
-        try:
-            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-            return f(*a, **kw)
-        finally:
-            # Always unset
-            QtGui.QApplication.restoreOverrideCursor()
-    return do_wait_cursor
+    def __init__(self):
+        pass

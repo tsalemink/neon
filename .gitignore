@@ -71,3 +71,4 @@ target/
 # Virtual environments
 .venv/
 
+default.profraw

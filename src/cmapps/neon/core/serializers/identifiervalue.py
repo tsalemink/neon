@@ -13,10 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from opencmiss.neon.core.serializers.base import BaseSerialiser
+from cmapps.neon.core.serializers.base import BaseSerialiser
 
 
-class JSON(BaseSerialiser):
+class IdentifierValue(BaseSerialiser):
 
-    def __init__(self):
-        pass
+    def serialize(self, parameters):
+        string = ''
+        for k in parameters:
+            string += '{0} {1}\n'.format(k, parameters[k])
+
+        return string

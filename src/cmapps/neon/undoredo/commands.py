@@ -13,15 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from PySide2 import QtWidgets
-
-from opencmiss.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
+from PySide6 import QtGui
 
 
-class AboutDialog(QtWidgets.QDialog):
+class CommandEmpty(QtGui.QUndoCommand):
 
-    def __init__(self, parent):
-        super(AboutDialog, self).__init__(parent)
+    def __init__(self):
+        super(CommandEmpty, self).__init__()
 
-        self._ui = Ui_AboutDialog()
-        self._ui.setupUi(self)
+    def redo(self):
+        pass
+
+    def undo(self):
+        pass

@@ -13,17 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from opencmiss.neon.core.serializers.base import BaseSerialiser
+import sys
+
+from PySide6 import QtWidgets
+
+from cmapps.neon.core.mainapplication import MainApplication
+from cmapps.neon.ui.mainwindow import MainWindow
+from cmapps.neon.settings.mainsettings import set_application_settings
 
 
-class IdentifierValue(BaseSerialiser):
+def main():
+    argv = sys.argv[:]
 
-    def __init__(self):
-        pass
+    app = QtWidgets.QApplication(argv)
 
-    def serialize(self, parameters):
-        string = ''
-        for k in parameters:
-            string += '{0} {1}\n'.format(k, parameters[k])
+    set_application_settings(app)
 
-        return string
+    m = MainApplication()
+
+    w = MainWindow(m)
+    w.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == '__main__':
+    main()

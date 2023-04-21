@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'src', 'opencmiss', 'neon', '__init__.py')) as fd:
+with open(os.path.join(here, 'src', 'cmapps', 'neon', '__init__.py')) as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
@@ -45,24 +45,24 @@ Topic :: Scientific/Engineering :: Visualization
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-requires = ['opencmiss.utils >= 0.3.0', 'PySide2', 'opencmiss.zinc', 'opencmiss.zincwidgets >= 2.1.0']
+requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets']
 
 setup(
-    name='opencmiss.neon',
+    name='cmapps.neon',
     packages=find_packages("src"),
     package_dir={"": "src"},
     version=version,
-    url='http://opencmiss.org/',
+    url='https://cmlibs.org/',
     license='Apache-2.0',
     author='Neon Developers',
     author_email='neon.developers@auckland.ac.nz',
-    description='Visual editing environment for OpenCMISS.',
+    description='Visual editing environment for Zinc.',
     long_description_content_type='text/x-rst',
     license_files=("LICENSE",),
     classifiers=filter(None, classifiers.split("\n")),
     install_requires=requires,
     entry_points={
-        'console_scripts': ['neon=opencmiss.neon.neon:main'],
-        'gui_scripts': ['neon-gui=opencmiss.neon.neon:main'],
+        'console_scripts': ['neon=cmapps.neon.neon:main'],
+        'gui_scripts': ['neon-gui=cmapps.neon.neon:main'],
     },
 )

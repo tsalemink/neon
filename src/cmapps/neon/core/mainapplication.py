@@ -15,12 +15,12 @@
 """
 import os
 
-from PySide2 import QtCore
+from PySide6 import QtCore
 
-from opencmiss.argon.argondocument import ArgonDocument
-from opencmiss.argon.argonlogger import ArgonLogger
-from opencmiss.neon.core.preferences import Preferences
-from opencmiss.neon.core.misc.neonerror import NeonError
+from cmlibs.argon.argondocument import ArgonDocument
+from cmlibs.argon.argonlogger import ArgonLogger
+from cmapps.neon.core.preferences import Preferences
+from cmapps.neon.core.misc.neonerror import NeonError
 
 
 class MainApplication(QtCore.QObject):

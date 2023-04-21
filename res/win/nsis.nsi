@@ -5,7 +5,7 @@
   
   !define APP_NAME "Neon"
   !define APP_VERSION "1.0.0"
-  !define APP_ORGANISATION "OpenCMISS"
+  !define APP_ORGANISATION "CMLibs"
   !define VERSION "1.0.0"
   !define PATCH  "1"
   !define INST_DIR "..\..\src\dist"

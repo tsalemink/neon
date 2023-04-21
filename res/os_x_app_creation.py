@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess
 
-MAIN_WINDOW_UI_FILE = 'src/opencmiss/neon/ui/ui_mainwindow.py'
+MAIN_WINDOW_UI_FILE = 'src/cmapps/neon/ui/ui_mainwindow.py'
 
 
 def remove_parent_of_menubar():
@@ -55,15 +55,15 @@ def undo_code_change():
 
 
 def main():
-    import opencmiss.zinc.context
+    import cmlibs.zinc.context
 
-    directory = os.path.dirname(opencmiss.zinc.context.__file__)
+    directory = os.path.dirname(cmlibs.zinc.context.__file__)
     base_dir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
     destination = os.environ['HOME']
     pwd = os.getcwd()
     os.chdir(base_dir)
     remove_parent_of_menubar()
-    os.chdir(os.path.join(base_dir, 'src', 'opencmiss'))
+    os.chdir(os.path.join(base_dir, 'src', 'cmlibs'))
     create_softlink_to_zinc(directory)
     os.chdir(os.path.join(base_dir, 'src'))
     execute_py2app_build()
@@ -72,7 +72,7 @@ def main():
     mv_app(destination)
     os.chdir(os.path.join(base_dir, 'src'))
     rm_build_dist()
-    os.chdir(os.path.join(base_dir, 'src', 'opencmiss'))
+    os.chdir(os.path.join(base_dir, 'src', 'cmlibs'))
     rm_softlink()
     os.chdir(base_dir)
     undo_code_change()

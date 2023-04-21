@@ -15,26 +15,26 @@
 """
 import os.path
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
-from opencmiss.neon.ui.dialogs.aboutdialog import AboutDialog
-from opencmiss.neon.ui.ui_mainwindow import Ui_MainWindow
-from opencmiss.neon.undoredo.commands import CommandEmpty
+from cmapps.neon.ui.dialogs.aboutdialog import AboutDialog
+from cmapps.neon.ui.ui_mainwindow import Ui_MainWindow
+from cmapps.neon.undoredo.commands import CommandEmpty
 
-from opencmiss.zincwidgets.addviewwidget import AddView
-from opencmiss.zincwidgets.editabletabbar import EditableTabBar
-from opencmiss.zincwidgets.fieldlisteditorwidget import FieldListEditorWidget
-from opencmiss.zincwidgets.loggereditorwidget import LoggerEditorWidget
-from opencmiss.zincwidgets.materialeditorwidget import MaterialEditorWidget
-from opencmiss.zincwidgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
-from opencmiss.zincwidgets.regioneditorwidget import RegionEditorWidget
-from opencmiss.zincwidgets.sceneeditorwidget import SceneEditorWidget
-from opencmiss.zincwidgets.scenelayoutchooserdialog import SceneLayoutChooserDialog
-from opencmiss.zincwidgets.sceneviewereditorwidget import SceneviewerEditorWidget
-from opencmiss.zincwidgets.spectrumeditorwidget import SpectrumEditorWidget
-from opencmiss.zincwidgets.tessellationeditorwidget import TessellationEditorWidget
-from opencmiss.zincwidgets.timeeditorwidget import TimeEditorWidget
-from opencmiss.zincwidgets.viewwidget import ViewWidget
+from cmlibs.widgets.addviewwidget import AddView
+from cmlibs.widgets.editabletabbar import EditableTabBar
+from cmlibs.widgets.fieldlisteditorwidget import FieldListEditorWidget
+from cmlibs.widgets.loggereditorwidget import LoggerEditorWidget
+from cmlibs.widgets.materialeditorwidget import MaterialEditorWidget
+from cmlibs.widgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
+from cmlibs.widgets.regioneditorwidget import RegionEditorWidget
+from cmlibs.widgets.sceneeditorwidget import SceneEditorWidget
+from cmlibs.widgets.scenelayoutchooserdialog import SceneLayoutChooserDialog
+from cmlibs.widgets.sceneviewereditorwidget import SceneviewerEditorWidget
+from cmlibs.widgets.spectrumeditorwidget import SpectrumEditorWidget
+from cmlibs.widgets.tessellationeditorwidget import TessellationEditorWidget
+from cmlibs.widgets.timeeditorwidget import TimeEditorWidget
+from cmlibs.widgets.viewwidget import ViewWidget
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -50,13 +50,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._location = None  # The last location/directory used by the application
         self._current_view = None
 
-        self._undoRedoStack = QtWidgets.QUndoStack(self)
+        self._undoRedoStack = QtGui.QUndoStack(self)
 
         # Pre-create dialogs
         self._setupEditors()
         self._registerEditors()
 
-        self._view_action_group = QtWidgets.QActionGroup(self)
+        self._view_action_group = QtGui.QActionGroup(self)
         self._view_actions = []
         self._setup_views()
         self._setupOtherWindows()
@@ -294,7 +294,7 @@ class MainWindow(QtWidgets.QMainWindow):
         actions = self._ui.menu_Open_Recent.actions()
         insert_before_action = actions[0]
         self._model.addRecent(recent)
-        recent_action = QtWidgets.QAction(self._ui.menu_Open_Recent)
+        recent_action = QtGui.QAction(self._ui.menu_Open_Recent)
         recent_action.setText(recent)
         self._ui.menu_Open_Recent.insertAction(insert_before_action, recent_action)
         recent_action.triggered.connect(self._open)
@@ -358,7 +358,7 @@ class MainWindow(QtWidgets.QMainWindow):
         view_manager.setActiveView(self._ui.viewTabWidget.tabText(index))
 
     def _setup_views(self):
-        icon = QtGui.QIcon(":/zincwidgets/images/icons/list-add-icon.png")
+        icon = QtGui.QIcon(":/widgets/images/icons/list-add-icon.png")
         btn = QtWidgets.QToolButton()
         btn.setStyleSheet("border-radius: 0.75em; border-width: 1px; border-style: solid; border-color: dark-grey;"
                           " background-color: grey; min-width: 1.5em; min-height: 1.5em; margin-right: 1em;")
@@ -405,7 +405,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 if active_view == view_name:
                     active_widget = w
 
-                action_view = QtWidgets.QAction(view_name, self)
+                action_view = QtGui.QAction(view_name, self)
                 action_view.setData(w)
                 # action_view.setCheckable(True)
                 action_view.setActionGroup(self._view_action_group)

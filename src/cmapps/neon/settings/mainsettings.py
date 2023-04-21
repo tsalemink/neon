@@ -13,10 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import sys
-
-from PySide2 import QtCore
-import os.path
+from PySide6 import QtCore
 
 
 VERSION_MAJOR = 0
@@ -26,19 +23,11 @@ VERSION_STRING = str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + "." + str(VERSI
 VERSION_LIST = [VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH]
 
 APPLICATION_NAME = 'Neon'
-ORGANISATION_NAME = 'OpenCMISS'
-ORGANISATION_DOMAIN = 'opencmiss.org'
-
-EXTERNAL_BINARIES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'bin'))
-EXTERNAL_DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'data'))
-
-if sys.version_info > (3, 0):
-    PYTHON3 = True
-else:
-    PYTHON3 = False
+ORGANISATION_NAME = 'CMLibs'
+ORGANISATION_DOMAIN = 'cmlibs.org'
 
 
-def setApplicationSettings(app):
+def set_application_settings(app):
 
     app.setOrganizationDomain(ORGANISATION_DOMAIN)
     app.setOrganizationName(ORGANISATION_NAME)
