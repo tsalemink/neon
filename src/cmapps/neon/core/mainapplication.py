@@ -19,8 +19,8 @@ from PySide6 import QtCore
 
 from cmlibs.argon.argondocument import ArgonDocument
 from cmlibs.argon.argonlogger import ArgonLogger
-from cmlibs.neon.core.preferences import Preferences
-from cmlibs.neon.core.misc.neonerror import NeonError
+from cmapps.neon.core.preferences import Preferences
+from cmapps.neon.core.misc.neonerror import NeonError
 
 
 class MainApplication(QtCore.QObject):

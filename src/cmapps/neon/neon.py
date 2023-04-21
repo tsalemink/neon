@@ -17,9 +17,9 @@ import sys
 
 from PySide6 import QtWidgets
 
-from cmlibs.neon.core.mainapplication import MainApplication
-from cmlibs.neon.ui.mainwindow import MainWindow
-from cmlibs.neon.settings.mainsettings import set_application_settings
+from cmapps.neon.core.mainapplication import MainApplication
+from cmapps.neon.ui.mainwindow import MainWindow
+from cmapps.neon.settings.mainsettings import set_application_settings
 
 
 def main():

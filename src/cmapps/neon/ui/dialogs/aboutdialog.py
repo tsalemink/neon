@@ -15,7 +15,7 @@
 """
 from PySide6 import QtWidgets
 
-from cmlibs.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
+from cmapps.neon.ui.dialogs.ui_aboutdialog import Ui_AboutDialog
 
 
 class AboutDialog(QtWidgets.QDialog):

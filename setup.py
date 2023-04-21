@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'src', 'cmlibs', 'neon', '__init__.py')) as fd:
+with open(os.path.join(here, 'src', 'cmapps', 'neon', '__init__.py')) as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
@@ -45,10 +45,10 @@ Topic :: Scientific/Engineering :: Visualization
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-requires = ['cmlibs.utils >= 0.3.0', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets >= 2.1.0']
+requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets']
 
 setup(
-    name='cmlibs.neon',
+    name='cmapps.neon',
     packages=find_packages("src"),
     package_dir={"": "src"},
     version=version,
@@ -62,7 +62,7 @@ setup(
     classifiers=filter(None, classifiers.split("\n")),
     install_requires=requires,
     entry_points={
-        'console_scripts': ['neon=cmlibs.neon.neon:main'],
-        'gui_scripts': ['neon-gui=cmlibs.neon.neon:main'],
+        'console_scripts': ['neon=cmapps.neon.neon:main'],
+        'gui_scripts': ['neon-gui=cmapps.neon.neon:main'],
     },
 )

@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess
 
-MAIN_WINDOW_UI_FILE = 'src/cmlibs/neon/ui/ui_mainwindow.py'
+MAIN_WINDOW_UI_FILE = 'src/cmapps/neon/ui/ui_mainwindow.py'
 
 
 def remove_parent_of_menubar():
