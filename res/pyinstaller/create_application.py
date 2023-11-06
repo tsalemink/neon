@@ -21,10 +21,6 @@ def main():
         '-n', f'{APPLICATION_NAME}',
         '--windowed',
         '--noconfirm',
-        '--hidden-import', 'cmlibs.zinc',
-        '--hidden-import', 'cmlibs.argon',
-        '--hidden-import', 'cmlibs.utils',
-        '--hidden-import', 'cmlibs.widgets',
     ]
 
     pyside_dir = os.path.dirname(RefMod.__file__)
