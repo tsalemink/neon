@@ -29,15 +29,18 @@ def main():
         rcc_exe = os.path.join(pyside_dir, 'Qt', 'libexec', "rcc")
         uic_exe = os.path.join(pyside_dir, 'Qt', 'libexec', "uic")
 
+        macos_icon = os.path.join('..', 'macos', 'Neon.icns')
+        run_command.append(f'--icon={macos_icon}')
+
     elif platform.system() == "Windows":
         rcc_exe = os.path.join(pyside_dir, "rcc.exe")
         uic_exe = os.path.join(pyside_dir, "uic.exe")
 
+        win_icon = os.path.join('..', 'win', 'Neon.ico')
+        run_command.append(f'--icon={win_icon}')
+
     else:
         raise NotImplementedError("Platform is not supported for creating a Neon application.")
-
-    icon = os.path.join('..', 'images', 'icons', 'neon-icon.png')
-    run_command.append(f'--icon={icon}')
 
     run_command.append(os.pathsep.join([f'--add-binary={rcc_exe}', 'PySide6/']))
     run_command.append(os.pathsep.join([f'--add-binary={uic_exe}', 'PySide6/']))
