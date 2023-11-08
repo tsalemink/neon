@@ -8,7 +8,6 @@ test -f $dmg_name && rm $dmg_name
 create-dmg \
   --volname "$app_name_with_version" \
   --volicon "Neon.icns" \
-#  --background "map-client-dmg-background.png" \
   --window-pos 200 120 \
   --window-size 800 400 \
   --icon-size 100 \
