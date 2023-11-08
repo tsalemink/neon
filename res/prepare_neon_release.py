@@ -51,6 +51,21 @@ def main():
         return
 
     current_directory = os.getcwd()
+
+    # TODO: REMOVE:
+    print("START...")
+    directory_contents = os.listdir(current_directory)
+    for entry in directory_contents:
+        print(entry)
+
+    # TODO: REMOVE:
+    print("AND...")
+    os.chdir(f"{NEON_REPO}")
+    directory_contents = os.listdir(os.getcwd())
+    for entry in directory_contents:
+        print(entry)
+    print("END...")
+
     os.chdir(f"{NEON_REPO}/res/pyinstaller/")
 
     result = subprocess.run([sys.executable, "create_application.py"], env=working_env)
