@@ -75,6 +75,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Setup scripts
+        uses: actions/checkout@v3
+        with:
+          path: scripts
       - name: Create installer asset
         id: create-installer
         shell: bash
@@ -94,31 +98,22 @@ jobs:
             exit 1
           fi
           cd $GITHUB_WORKSPACE
+          cd scripts
 
           # Manually install PyInstaller rather than use the dev install requires from setup.py.
           $pip_exe install pyinstaller
 
-          # TESTING...
-          ls
-          cd ..
-          ls
-          cd ..
-          ls
-
           $python_exe res/prepare_neon_release.py ${{ matrix.tag }}
-
-          mkdir assets
-          cd assets
 
           if [ "$RUNNER_OS" == "macOS" ]; then
             #echo "Have to find out how to modify a finder window in headless mode with AppleScript."
             #echo "Asset not ready for $RUNNER_OS"
-            asset=$GITHUB_WORKSPACE/assets/neon/res/macos/Neon-${{ matrix.release-name }}.dmg
+            asset=$GITHUB_WORKSPACE/scripts/neon/res/macos/Neon-${{ matrix.release-name }}.dmg
             echo $asset
             echo "file=$asset" >> $GITHUB_OUTPUT
           elif [ "$RUNNER_OS" == "Windows" ]; then
             ls -lh neon/package
-            asset=$GITHUB_WORKSPACE/assets/neon/package/Neon-${{ matrix.release-name }}.exe
+            asset=$GITHUB_WORKSPACE/scripts/neon/package/Neon-${{ matrix.release-name }}.exe
             asset=${asset//\\//}
             echo $asset
             echo "file=$asset" >> $GITHUB_OUTPUT
