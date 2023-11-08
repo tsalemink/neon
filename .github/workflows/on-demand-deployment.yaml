@@ -98,6 +98,11 @@ jobs:
           # Manually install PyInstaller rather than use the dev install requires from setup.py.
           $pip_exe install pyinstaller
 
+# TODO: This still can't find the file...
+# TESTING...
+          cd ..
+          ls
+
           $python_exe res/prepare_neon_release.py ${{ matrix.tag }}
 
           mkdir assets
