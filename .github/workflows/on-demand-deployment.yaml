@@ -101,6 +101,8 @@ jobs:
           # TESTING...
           cd ..
           ls
+          cd neon
+          ls
 
           $python_exe res/prepare_neon_release.py ${{ matrix.tag }}
 
