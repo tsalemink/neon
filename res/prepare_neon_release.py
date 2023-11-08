@@ -45,10 +45,10 @@ def main():
     # TODO: It looks like this is supposed to resolve the error that is occurring below.
     #   This seems to be failing with `ERROR: neon/src is not a valid editable requirement.`
     #   Try removing the `neon` part like we did with the other paths.
-    #   Then try just using `.` - I feel like this is correct but the src dir seems to work for the MAP-CLient...
+    #   Then try just using `.` - I feel like this is correct but the src dir seems to work for the MAP-Client...
     # result = subprocess.run([pip, "install", "-e", f"{local_neon}/src"])
-    result = subprocess.run([pip, "install", "-e", "src"])
-    # result = subprocess.run([pip, "install", "-e", "."])
+    # result = subprocess.run([pip, "install", "-e", "src"])
+    result = subprocess.run([pip, "install", "-e", "."])
     print(' == result install:', result.returncode, flush=True)
 
     working_env = os.environ.copy()
