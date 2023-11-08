@@ -36,7 +36,12 @@ def main():
     result = subprocess.run([pip, "install", "numpy"])
     print(' == result install extras:', result.returncode, flush=True)
 
+    # TODO: Maybe remove this block...?
     if local_neon is None:
+
+        # TODO: REMOVE:
+        print("NO LOCAL...")
+
         neon_url = f"https://github.com/cmlibs/{NEON_REPO}"
         local_neon = NEON_REPO
         result = subprocess.run(["git", "-c", "advice.detachedHead=false", "clone", "--depth", "1", neon_url, "-b", args.neon_release])
@@ -53,20 +58,23 @@ def main():
     current_directory = os.getcwd()
 
     # TODO: REMOVE:
-    print("START...")
-    directory_contents = os.listdir(current_directory)
-    for entry in directory_contents:
-        print(entry)
+    #   This is already in the repository; "res" is listed as one of the
+    # print("START...")
+    # directory_contents = os.listdir(current_directory)
+    # for entry in directory_contents:
+    #     print(entry)
 
     # TODO: REMOVE:
-    print("AND...")
-    os.chdir(f"{NEON_REPO}")
-    directory_contents = os.listdir(os.getcwd())
-    for entry in directory_contents:
-        print(entry)
-    print("END...")
+    # print("AND...")
+    # os.chdir(f"{NEON_REPO}")
+    # directory_contents = os.listdir(os.getcwd())
+    # for entry in directory_contents:
+    #     print(entry)
+    # print("END...")
 
-    os.chdir(f"{NEON_REPO}/res/pyinstaller/")
+    # TODO: Correct path...
+    # os.chdir(f"{NEON_REPO}/res/pyinstaller/")
+    os.chdir(f"res/pyinstaller/")
 
     result = subprocess.run([sys.executable, "create_application.py"], env=working_env)
     print(' == result application creation:', result.returncode, flush=True)
@@ -80,12 +88,16 @@ def main():
     release_name = '.'.join(tag_parts[:3])
 
     if platform.system() == "Windows":
-        os.chdir(f"{NEON_REPO}/res/win")
+        # TODO: Correct path...
+        # os.chdir(f"{NEON_REPO}/res/win")
+        os.chdir(f"res/win")
         result = subprocess.run([sys.executable, "create_installer.py", release_name], env=working_env)
         print(' == result create installer:', result.returncode, flush=True)
         os.chdir(current_directory)
     elif platform.system() == "Darwin":
-        os.chdir(f"{NEON_REPO}/res/macos")
+        # TODO: Correct path...
+        # os.chdir(f"{NEON_REPO}/res/macos")
+        os.chdir(f"res/macos")
         result = subprocess.run(["/bin/bash", "create_installer.sh", release_name], env=working_env)
         print(' == result create installer:', result.returncode, flush=True)
         os.chdir(current_directory)
