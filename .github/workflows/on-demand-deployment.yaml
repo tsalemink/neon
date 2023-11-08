@@ -99,9 +99,10 @@ jobs:
           $pip_exe install pyinstaller
 
           # TESTING...
+          ls
           cd ..
           ls
-          cd neon
+          cd ..
           ls
 
           $python_exe res/prepare_neon_release.py ${{ matrix.tag }}
