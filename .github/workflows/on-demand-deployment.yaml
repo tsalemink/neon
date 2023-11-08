@@ -94,13 +94,14 @@ jobs:
             exit 1
           fi
           cd $GITHUB_WORKSPACE
-          mkdir assets
-          cd assets
 
           # Manually install PyInstaller rather than use the dev install requires from setup.py.
           $pip_exe install pyinstaller
 
           $python_exe res/prepare_neon_release.py ${{ matrix.tag }}
+
+          mkdir assets
+          cd assets
 
           if [ "$RUNNER_OS" == "macOS" ]; then
             #echo "Have to find out how to modify a finder window in headless mode with AppleScript."
