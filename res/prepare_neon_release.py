@@ -42,7 +42,13 @@ def main():
         result = subprocess.run(["git", "-c", "advice.detachedHead=false", "clone", "--depth", "1", neon_url, "-b", args.neon_release])
         print(' == result git:', result.returncode, flush=True)
 
-    result = subprocess.run([pip, "install", "-e", f"{local_neon}/src"])
+    # TODO: It looks like this is supposed to resolve the error that is occurring below.
+    #   This seems to be failing with `ERROR: neon/src is not a valid editable requirement.`
+    #   Try removing the `neon` part like we did with the other paths.
+    #   Then try just using `.` - I feel like this is correct but the src dir seems to work for the MAP-CLient...
+    # result = subprocess.run([pip, "install", "-e", f"{local_neon}/src"])
+    result = subprocess.run([pip, "install", "-e", "src"])
+    # result = subprocess.run([pip, "install", "-e", "."])
     print(' == result install:', result.returncode, flush=True)
 
     working_env = os.environ.copy()
@@ -52,15 +58,9 @@ def main():
 
     current_directory = os.getcwd()
 
-    # TODO: REMOVE:
-    #   This is already in the repository; "res" is listed as one of the
-    # print("START...")
-    # directory_contents = os.listdir(current_directory)
-    # for entry in directory_contents:
-    #     print(entry)
-
     os.chdir(f"res/pyinstaller/")
 
+    # TODO: Calling create-application is failing because it is unable to identify "cmapps" which is in the src directory.
     result = subprocess.run([sys.executable, "create_application.py"], env=working_env)
     print(' == result application creation:', result.returncode, flush=True)
     os.chdir(current_directory)
