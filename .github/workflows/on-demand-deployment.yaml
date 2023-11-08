@@ -94,8 +94,8 @@ jobs:
             exit 1
           fi
           cd $GITHUB_WORKSPACE
-          cd scripts
-          # ${{ steps.get_tag.outputs.tag }}
+          mkdir assets
+          cd assets
 
           # Manually install PyInstaller rather than use the dev install requires from setup.py.
           $pip_exe install pyinstaller
@@ -105,12 +105,12 @@ jobs:
           if [ "$RUNNER_OS" == "macOS" ]; then
             #echo "Have to find out how to modify a finder window in headless mode with AppleScript."
             #echo "Asset not ready for $RUNNER_OS"
-            asset=$GITHUB_WORKSPACE/scripts/neon/res/macos/Neon-${{ matrix.release-name }}.dmg
+            asset=$GITHUB_WORKSPACE/assets/neon/res/macos/Neon-${{ matrix.release-name }}.dmg
             echo $asset
             echo "file=$asset" >> $GITHUB_OUTPUT
           elif [ "$RUNNER_OS" == "Windows" ]; then
             ls -lh neon/package
-            asset=$GITHUB_WORKSPACE/scripts/neon/package/Neon-${{ matrix.release-name }}.exe
+            asset=$GITHUB_WORKSPACE/assets/neon/package/Neon-${{ matrix.release-name }}.exe
             asset=${asset//\\//}
             echo $asset
             echo "file=$asset" >> $GITHUB_OUTPUT
