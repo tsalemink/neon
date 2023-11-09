@@ -112,12 +112,10 @@ jobs:
             echo $asset
             echo "file=$asset" >> $GITHUB_OUTPUT
           elif [ "$RUNNER_OS" == "Windows" ]; then
-# TODO: REMOVE (TESTING)...
+
+            # TODO: REMOVE (TESTING)...
             ls
 
-# TODO: This is throwing an error.
-#            ls -lh neon/package
-#            asset=$GITHUB_WORKSPACE/scripts/neon/package/Neon-${{ matrix.release-name }}.exe
             ls -lh package
             asset=$GITHUB_WORKSPACE/scripts/package/Neon-${{ matrix.release-name }}.exe
             asset=${asset//\\//}
