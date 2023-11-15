@@ -107,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui.action_Clear.setEnabled(len(recents))
 
     def _addDockWidgets(self):
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockWidgetModelSourcesEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSpectrumEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetMaterialEditor)
@@ -115,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSceneviewerEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetFieldEditor)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockWidgetLoggerEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
