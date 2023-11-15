@@ -8,7 +8,7 @@
   !define APP_ORGANISATION "CMLibs"
   !define VERSION "1.0.0"
   !define PATCH  "1"
-  !define INST_DIR "..\..\src\dist"
+  !define INST_DIR "..\..\dist"
 
 ;--------------------------------
 ;Variables
@@ -35,7 +35,7 @@
 
   ;Name and file
   Name "${APP_NAME} ${APP_VERSION}"
-  OutFile "..\..\src\package\${APP_NAME}-${APP_VERSION}.exe"
+  OutFile "..\..\package\${APP_NAME}-${APP_VERSION}.exe"
 
   ;Set compression
   SetCompressor lzma
