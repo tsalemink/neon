@@ -45,7 +45,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets']
+requires = ['cmlibs.utils', 'PySide6', 'cmlibs.zinc', 'cmlibs.widgets', 'cmlibs.argon']
 
 setup(
     name='cmapps.neon',
