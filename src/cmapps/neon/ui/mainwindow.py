@@ -356,6 +356,7 @@ class MainWindow(QtWidgets.QMainWindow):
         document = self._model.getDocument()
         view_manager = document.getViewManager()
         view_manager.setActiveView(self._ui.viewTabWidget.tabText(index))
+        self._current_sceneviewer_changed()
 
     def _setup_views(self):
         icon = QtGui.QIcon(":/widgets/images/icons/list-add-icon.png")
