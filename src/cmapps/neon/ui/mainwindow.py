@@ -24,7 +24,7 @@ from cmapps.neon.undoredo.commands import CommandEmpty
 from cmlibs.widgets.addviewwidget import AddView
 from cmlibs.widgets.editabletabbar import EditableTabBar
 from cmlibs.widgets.fieldlisteditorwidget import FieldListEditorWidget
-from cmlibs.widgets.loggereditorwidget import LoggerEditorWidget
+from cmlibs.widgets.logviewerwidget import LogViewerWidget
 from cmlibs.widgets.materialeditorwidget import MaterialEditorWidget
 from cmlibs.widgets.modelsourceseditorwidget import ModelSourcesEditorWidget, ModelSourcesModel
 from cmlibs.widgets.regioneditorwidget import RegionEditorWidget
@@ -107,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui.action_Clear.setEnabled(len(recents))
 
     def _addDockWidgets(self):
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockWidgetModelSourcesEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidgetModelSourcesEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetTessellationEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSpectrumEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetMaterialEditor)
@@ -115,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetRegionEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetSceneviewerEditor)
         self.tabifyDockWidget(self.dockWidgetModelSourcesEditor, self.dockWidgetFieldEditor)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockWidgetLoggerEditor)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.dockWidgetLoggerEditor)
         self.tabifyDockWidget(self.dockWidgetLoggerEditor, self.dockWidgetTimeEditor)
 
     def _setupEditors(self):
@@ -320,7 +320,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dockWidgetLoggerEditor = QtWidgets.QDockWidget("Log Viewer", self)
         # self.dockWidgetLoggerEditor.setWindowTitle('Logger')
         self.dockWidgetLoggerEditor.setObjectName("dockWidgetLoggerEditor")
-        logger_widget = LoggerEditorWidget(self.dockWidgetLoggerEditor)
+        logger_widget = LogViewerWidget(self.dockWidgetLoggerEditor)
         # logger_widget.setObjectName("dockWidgetContentsLoggerEditor")
         self.dockWidgetLoggerEditor.setWidget(logger_widget)
         self.dockWidgetLoggerEditor.setHidden(True)
@@ -510,7 +510,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for r in range(rows):
                 for c in range(columns):
                     sceneviewer_widget = tab_layout.itemAtPosition(r, c).widget()
-                    view.updateSceneviewer(r, c, sceneviewer_widget.getSceneviewer())
+                    view.updateSceneviewer(r, c, sceneviewer_widget.get_zinc_sceneviewer())
 
     def _undoRedoStackIndexChanged(self, index):
         self._model.setCurrentUndoRedoIndex(index)
