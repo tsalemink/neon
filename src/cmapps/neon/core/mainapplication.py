@@ -17,6 +17,7 @@ import os
 
 from PySide6 import QtCore
 
+from cmapps.neon.core.definitions import DEFAULT_VIEW_NAME
 from cmlibs.argon.argondocument import ArgonDocument
 from cmlibs.argon.argonlogger import ArgonLogger
 from cmapps.neon.core.preferences import Preferences
@@ -39,7 +40,7 @@ class MainApplication(QtCore.QObject):
         self._document.initialiseVisualisationContents()
 
         view_manager = self._document.getViewManager()
-        view_manager.addViewByType("Layout1", "default")
+        view_manager.addViewByType("Layout1", DEFAULT_VIEW_NAME)
 
         self._preferences = Preferences()
 
@@ -84,7 +85,7 @@ class MainApplication(QtCore.QObject):
 
         self._document.initialiseVisualisationContents()
         view_manager = self._document.getViewManager()
-        view_manager.addViewByType("Layout1", "default")
+        view_manager.addViewByType("Layout1", DEFAULT_VIEW_NAME)
 
         self.documentChanged.emit()
 

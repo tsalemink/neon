@@ -17,6 +17,7 @@ import os.path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from cmapps.neon.core.definitions import DEFAULT_VIEW_NAME
 from cmapps.neon.ui.dialogs.aboutdialog import AboutDialog
 from cmapps.neon.ui.ui_mainwindow import Ui_MainWindow
 from cmapps.neon.undoredo.commands import CommandEmpty
@@ -219,7 +220,7 @@ class MainWindow(QtWidgets.QMainWindow):
             layout = dlg.selected_layout()
             document = self._model.getDocument()
             view_manager = document.getViewManager()
-            view_manager.addViewByType(layout)
+            view_manager.addViewByType(layout, DEFAULT_VIEW_NAME)
             view_manager.setActiveView(layout)
             self._views_changed(view_manager)
 
@@ -370,8 +371,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._ui.viewTabWidget.setCornerWidget(btn)
 
     def _current_sceneviewer_changed(self):
-        sceneviewer = self._ui.viewTabWidget.currentWidget().getActiveSceneviewer()
-        self.dockWidgetContentsSceneviewerEditor.setSceneviewer(sceneviewer)
+        current_widget = self._ui.viewTabWidget.currentWidget()
+        if current_widget:
+            sceneviewer = current_widget.getActiveSceneviewer()
+            self.dockWidgetContentsSceneviewerEditor.setSceneviewer(sceneviewer)
 
     def _views_changed(self, view_manager):
         views = view_manager.getViews()
